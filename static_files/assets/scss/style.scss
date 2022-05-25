@@ -1,0 +1,172 @@
+/*
+------------- Table of content ----------------
+
+Template Name: Zairito Responsive  HTML5 Template
+Template URI: http://zainiktheme.com
+Description: Zairito Responsive  HTML5 Template
+Author: Gobinda Sarkar
+Author URI: http://zairito.com
+Version: 1.0
+
+---------------------- common content ----------
+    1.body reset content
+    #.Preloader area
+    #.Popup modal area
+    #.header area
+        #.header-area-v2
+        #.header-area-v3
+        #.mobile-header-area
+    #.butotn
+    #.hero-section
+        #.hero-section-v2
+        #.hero-section-v3
+    #.brads-area
+        #.brads-area-v2
+    #.popular-categories-area
+        #.popular-categories-area-v2
+    #.section-header-area
+    #.single-grid-product
+        #.single-grid-product-v2
+        #.sigle-grid-product-v3
+    #.single-list-product
+    #.about-area
+    #.primary-tabs
+    #.secendary-tabs
+    #.product-banner
+    #.blog-area
+        #.blog-area-v2
+    #.single-grid-blog
+        #.single-grid-blog-v2
+        #.single-grid-blog-v3
+    #.image-gallery-area
+        #.image-gallery-area-v2
+    #.testimonial-area
+        #.testimonial-area-v2
+        #.testimonial-area-v3
+    #.shop-map-area
+    #.spectial-offer-area
+        #.spectial-offer-v2
+    #.recommend-product-area
+    #.breadcrumb-area
+        #.breadcrumb-area-v2
+        #.breadcrumb-area-v3
+    #.about-us-area
+    #.service-area
+    #.our-features-area
+    #.contact-us-area
+    #.wish-list-area
+    #.empty-wish-list
+    #.sidebar-widget-area
+    #.pagination-area
+    #.product-area
+    #.product-single-area
+        #.product-single-area-v2
+        #.product-single-area-v3
+    #. Cart Product
+    #. Cart Page
+    #. Checkout page
+    #. Compare Page
+    #. Error Page
+    #.jairito-features-area
+    #.product-about-area
+    #.best-selling-area
+    #.funfact-area
+    #.page-menu-wrap
+    #.term-conditions-area
+    #.privacy-policy-area
+    #.refund-policy-area
+    #.shipping-return-area
+    #.faq-area
+    #.blog-single-area
+    #.comments-area
+    #.footer-area
+        #.footer-area-v2
+        #.footer-area-v3
+
+*/
+
+// variable
+@import "variable/_variable.scss";
+
+// mixin
+@import "mixin/_mixin.scss";
+
+// body reset content
+@import "reset/_predefine.scss";
+
+// component content
+@import "section/preloader/preloader";
+@import "section/popup-modal/popup-modal";
+@import "section/header/header";
+@import "section/header/header-area-v2";
+@import "section/header/header-area-v3";
+@import "section/header/mobile-header";
+@import "section/button/button";
+@import "section/sign-in/sign-in";
+@import "section/hero-section/hero-section";
+@import "section/hero-section/hero-section-v2";
+@import "section/hero-section/hero-section-v3";
+@import "section/brads-area/brads-area";
+@import "section/brads-area/brads-area-v2";
+@import "section/popular-categories-area/popular-categories-area";
+@import "section/popular-categories-area/popular-categories-area-v2";
+@import "section/section-header-area/section-header-area";
+@import "section/products/single-grid-product";
+@import "section/products/single-grid-product-v2"; 
+@import "section/products/single-grid-product-v3"; 
+@import "section/about-area/about-area";
+@import "section/tabs/primary-tabs";
+@import "section/tabs/secendary-tabs";
+@import "section/product-banner/product-banner";
+@import "section/blog/blog-area";
+@import "section/blog/blog-area-v2";
+@import "section/blog/single-grid-blog";
+@import "section/blog/single-grid-blog-v2";
+@import "section/blog/single-grid-blog-v3";
+@import "section/image-gallery-area/image-gallery-area";
+@import "section/image-gallery-area/image-gallery-area-v2";
+@import "section/testimonial-area/testimonial-area";
+@import "section/testimonial-area/testimonial-area-v2";
+@import "section/testimonial-area/testimonial-area-v3";
+@import "section/shop-map-area/shop-map-area";
+@import "section/spectial-offer-area/spectial-offer-area";
+@import "section/spectial-offer-area/spectial-offer-v2";
+@import "section/recommend-product-area/recommend-product-area";
+@import "section/breadcrumb-area/breadcrumb-area";
+@import "section/breadcrumb-area/breadcrumb-area-v2";
+@import "section/breadcrumb-area/breadcrumb-area-v3";
+@import "section/about-us-area/about-us-area";
+@import "section/service-area/service-area";
+@import "section/our-features-area/our-features-area";
+@import "section/contact-us-area/contact-us-area";
+@import "section/wish-list-area/wish-list-area";
+@import "section/empty-wish-list/empty-wish-list";
+@import "section/sidebar-widget-area/sidebar-widget-area";
+@import "section/pagination-area/pagination-area";
+@import "section/products/product-area";
+@import "section/products/single-list-product";
+@import "section/products/product-single";
+@import "section/products/product-single-v2";
+@import "section/products/product-single-v3";
+@import "section/products/cart-product";
+@import "section/products/cart-page";
+@import "section/checkout/checkout";
+@import "section/compare-page/compare-page";
+@import "section/error-page/error-page";
+@import "section/jairito-features-area/jairito-features-area";
+@import "section/product-about-area/product-about-area";
+@import "section/best-selling-area/best-selling-area";
+@import "section/funfact-area/funfact-area";
+@import "section/page-menu-wrap/page-menu-wrap";
+@import "section/term-conditions-area/term-conditions-area";
+@import "section/privacy-policy-area/privacy-policy-area";
+@import "section/refund-policy-area/refund-policy-area";
+@import "section/shipping-return-area/shipping-return-area";
+@import "section/faq-area/faq-area";
+@import "section/blog-single-area/blog-single-area";
+@import "section/comments-area/comments-area";
+@import "section/footer-area/footer-area";
+@import "section/footer-area/footer-area-v2";
+@import "section/footer-area/footer-area-v3";
+
+// page content

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load cart_template_tags %}
+
+{% block content %}
+
+    <h1 class="text-center">Order History</h1>
+    <div class="container">
+        {% if object %}
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Items</th>
+                    <th>Customer Email</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for info in object %}
+                    <tr>
+                        <td>
+                            {{ forloop.counter0 }}
+                        </td>
+                        <td>
+                            {{ request.user|get_items:forloop.counter0 }}
+                        </td>
+                        <td>{{ info.email }}</td>
+                        <td>{{ info.amount }}</td>
+                        {% if info.ordered %}
+                        <td>
+                            <b class="text-success">Success</b>
+                        </td>
+                        {% else %}
+                        <td>
+                            <b class="text-danger">Failed</b>
+                        </td>
+                        {% endif %}
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+        {% endif %}
+    </div>
+{% endblock content %}
+

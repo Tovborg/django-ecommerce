@@ -1,0 +1,125 @@
+/*-------------------------------
+#.footer-area-v2
+--------------------------------*/
+.footer-area-v2 {
+    padding-top: 8rem;
+    background: var(--primary-color-two);
+    .footer-widget-area {
+        padding: 5rem 0;
+        .single-widget {
+            margin-bottom: 3rem;
+            .widget-title {
+                margin-bottom: 3rem;
+                font-size: 2rem;
+                font-weight: 600;
+                text-transform: capitalize;
+                color: var(--white);
+            }
+        }
+        .about-widget {
+            .footer-brand-logo {
+                display: inline-block;
+                img {
+                    max-width: 130px;
+                }
+            }
+            .address-text {
+                margin-bottom: 1.5rem;
+                font-size: 1.5rem;
+                line-height: 2.5rem;
+                font-weight: 400;
+                color: #CCCCCC;
+            }
+            .block-content {
+                .contact {
+                    margin-bottom: 0;
+                    font-size: 1.5rem;
+                    line-height: 2.5rem;
+                    font-weight: 400;
+                    color: #CCCCCC;
+                }
+            }
+        }
+        .social-media {
+            margin: 0;
+            padding: 0;
+            li {
+                display: inline-block;
+                list-style: none;
+                margin-right: 1rem;
+                &:last-child {
+                    margin-right: 0
+                }
+                a {
+                    @include flex-position(flex, center, center);
+                    width: 4rem;
+                    height: 4rem;
+                    border-radius: 50%;
+                    border: 1px solid var(--white);
+                    color: var(--white);
+                    transition: $transition;
+                    &:hover {
+                        color: var(--primary-color);
+                        border-color: var(--primary-color);
+                    }
+                }
+            }
+        }
+        .widget-menu {
+            margin: 0;
+            padding: 0;
+            .meni-item {
+                display: block;
+                list-style: none;
+                margin-bottom: 1.5rem;
+                .menu-link {
+                    display: block;
+                    font-size: 1.5rem;
+                    font-weight: 400;
+                    text-transform: capitalize;
+                    color: #CCCCCC;
+                    transition: $transition;
+                    &:hover {
+                        color: var(--white);
+                        padding-left: .5rem;
+                    }
+                }
+            }
+        }
+    }
+    .footer-bottom {
+        .footer-bottom-wrap {
+            padding: 3rem 0;
+            border-top: 1px solid #469685;
+        }
+        .copyright-text {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #D6D6D6;
+            .brand-name {
+                color: #D6D6D6;
+                transition: $transition;
+                &:hover {
+                    color: var(--primary-color);
+                }
+            }
+        }
+    }
+}
+@media (max-width: 1199px) {
+    .footer-area-v2 .footer-widget-area .single-widget .widget-title {
+        font-size: 1.8rem;
+    }
+}
+@media (max-width: 991px) {
+    .footer-area-v2 {
+        padding-top: 0;
+    }
+    .footer-area-v2 .footer-widget-area {
+        padding: 5rem 0 2rem 0; 
+    }
+    .footer-area-v2 .footer-bottom .copyright-text {
+       margin-bottom: 1.5rem;
+    }
+}

@@ -1,0 +1,135 @@
+/*-------------------------
+#.shop-map-area
+--------------------------*/
+.shop-map-area {
+    position: relative;
+    .shop-info {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        left: 8%;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 5;
+        width: 720px;
+        min-height: 360px;
+        background-color: var(--white);
+        .shop-info-left {
+            width: 50%;
+            padding: 5rem 3rem;
+            .shop-info-title {
+                margin-bottom: 3.5rem;
+                font-size: 3.6rem;
+                font-weight: 600;
+                text-transform: capitalize;
+                color: var(--black);
+            }
+            .shop-info-sub-title {
+                margin-bottom: 2.5rem;
+                font-size: 2rem;
+                line-height: 3rem;
+                font-weight: 400;
+                text-transform: capitalize;
+                color: #555555;
+            }
+            .shop-opaing-time {
+                border-top: 1px solid #D0D0D0;
+                padding-top: 2rem;
+                .open-time {
+                    font-size: 2rem;
+                    font-weight: 400;
+                    line-height: 3rem;
+                    color: #555555;
+                }
+            }
+        }
+        .shop-info-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 50%;
+            background-image: url('../images/shop-image.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            .label {
+                display: inline-block;
+                position: absolute;
+                right: 2.5rem;
+                top: 2.5rem;
+                padding: .8rem 1rem;
+                background: var(--primary-color);
+                font-size: 2rem;
+                font-weight: 700;
+                text-transform: capitalize;
+                color: var(--white);
+            }
+        }
+    }
+    .google-map iframe {
+        width: 100%;
+        height: 500px;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 991px) {
+    .shop-map-area .shop-info {
+        width: 650px;
+    }
+    .shop-map-area .shop-info .shop-info-left .shop-info-title {
+        margin-bottom: 2.5rem;
+        font-size: 3rem;
+    }
+    .shop-map-area .shop-info .shop-info-left .shop-info-sub-title {
+        margin-bottom: 2rem;
+        font-size: 1.6rem;
+        line-height: 2.4rem;
+    }
+    .shop-map-area .shop-info .shop-info-left .shop-opaing-time .open-time {
+        font-size: 1.6rem;
+        line-height: 2.4rem;
+    }
+}
+@media (max-width: 767px) {
+    .shop-map-area .shop-info {
+        width: 70%;
+        min-height: 260px;
+    }
+    .shop-map-area .shop-info .shop-info-right {
+        display: none;
+    }
+    .shop-map-area .shop-info .shop-info-left {
+        width: 100%;
+    }
+}
+@media (max-width: 575px) {
+    .shop-map-area .shop-info .shop-info-left .shop-info-title {
+        margin-bottom: 1.5rem;
+        font-size: 2.2rem;
+    }
+    .shop-map-area .shop-info .shop-info-left {
+        padding: 2rem 2rem;
+    }
+    .shop-map-area .shop-info {
+        min-height: auto;
+    }
+}
+@media (max-width: 480px) {
+    .shop-map-area .shop-info {
+        top: auto;
+        left: 50%;
+        transform: translateY(0) translateX(-50%);
+        bottom: 0;
+    }
+}
+
+@media (max-width: 375px) {
+    .shop-map-area .shop-info .shop-info-left {
+        padding: 2.5rem 2rem;
+    }
+    .shop-map-area .shop-info {
+        width: 80%;
+    }
+}

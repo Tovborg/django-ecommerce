@@ -1,0 +1,178 @@
+/*-------------------------------
+#.comments-area
+--------------------------------*/
+.comments-area {
+    border: 1px solid #EDEDED;
+    .comments-title {
+        padding: 2rem 4rem;
+        font-size: 2rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        color: var(--black);
+        border-bottom: 1px solid #EDEDED;
+    }
+    .comment-list {
+        margin: 0;
+        padding: 4rem;
+        .single-comment {
+            position: relative;
+            margin-bottom: 3.5rem;
+            &:last-child {
+                margin-bottom: 0;
+            }
+            .comment-meta {
+                display: flex;
+                align-items: center;
+                margin-bottom: 2rem;
+                .comments-author-image {
+                    margin-right: 1.5rem;
+                    width: 7rem;
+                    height: 7rem;
+                    border-radius: 50%;
+                    object-fit: cover;
+                }
+                .comment-meta-info {
+                    .author-name {
+                        font-size: 1.8rem;
+                        font-weight: 600;
+                        text-transform: capitalize;
+                        color: #222222;
+                    }
+                    .comment-time {
+                        display: block;
+                        font-size: 1.5rem;
+                        font-weight: 400;
+                        color: #888888;
+                    }
+                }
+            }
+            .comment-content {
+                .comment-text {
+                    margin-bottom: 0;
+                    font-size: 1.5rem;
+                    line-height: 2.5rem;
+                    font-weight: 400;
+                    color: #777777;
+                }
+            }
+            .reply {
+                display: inline-block;
+                position: absolute;
+                right: 0;
+                top: 15px;
+                font-size: 1.5rem;
+                font-weight: 400;
+                text-transform: capitalize;
+                color: var(--primary-color);
+                &:hover {
+                    color: var(--hover-color);
+                }
+            }
+            .children {
+                margin-top: 3.5rem;
+                margin-left: 3.5rem;
+                border-left: 1px solid var(--primary-color);
+                padding-left: 2rem;
+            }
+        }
+    }
+}
+.comment-respond {
+    padding: 6rem 8rem;
+    background-color: #F9F9F9;
+    .reply-title {
+        margin-bottom: 4.2rem;
+        font-family: $bodyFont;
+        font-size: 3.6rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        color: var(--black);
+    }
+    .form-group {
+        margin-bottom: 3rem;
+        .form-control {
+            width: 100%;
+            height: 5.6rem;
+            border: 1px solid #C4C4C4;
+            border-radius: 0;
+            padding: 1.5rem 2rem;
+            font-family: $bodyFont;
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #888888;
+        }
+        .message-box {
+            height: 186px;
+        }
+    }
+    .submit-btn {
+        display: inline-block;
+        width: 320px;
+        height: 5.6rem;
+        background-color: var(--primary-color-two);
+        color: var(--white);
+        border: none;
+        font-size: 1.6rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        transition: $transition;
+        &:hover {
+            color: var(--white);
+            background-color: var(--hover-color-two);
+        }
+    }
+}
+@media (max-width: 991px) {
+    .comment-respond {
+        padding: 6rem;
+    }
+}
+@media (max-width: 767px) {
+    .comment-respond {
+        padding: 5rem 3rem;
+    }
+    .comments-area .comment-list .single-comment .children {
+        margin-left: 1.5rem;
+        padding-left: 1rem;
+    }
+}
+@media (max-width: 575px) {
+    .comments-area .comment-list .single-comment .comment-meta .comments-author-image {
+        margin-right: 1rem;
+        width: 5rem;
+        height: 5rem;
+    }
+    .comments-area .comment-list .single-comment .comment-meta .comment-meta-info .author-name {
+        font-size: 1.6rem;
+        margin: 0;
+    }
+    .comments-area .comment-list {
+        padding: 3rem 2rem;
+    }
+    .comments-area .comments-title {
+        padding: 2rem;
+    }
+}
+@media (max-width: 480px) {
+    .comment-respond .submit-btn {
+        width: 100%;
+    }
+    .comment-respond .reply-title {
+        margin-bottom: 3rem;
+        font-size: 3rem;
+    }
+}
+@media (max-width: 360px) {
+    .comment-respond .reply-title {
+        font-size: 2.8rem;
+    }
+    .comment-respond {
+        padding: 4rem 2rem;
+    }
+    .comments-area .comment-list .single-comment .reply {
+        position: inherit;
+    }
+    .comments-area .comments-title {
+        font-size: 1.8rem;
+    }
+}
