@@ -34,3 +34,4 @@ tomli==2.0.1
 typing-extensions==4.2.0
 urllib3==1.26.9
 wrapt==1.14.1
+pyjwt>=2.4.0
