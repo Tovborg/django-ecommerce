@@ -1,4 +1,3 @@
-from email import message
 from importlib.metadata import metadata
 from unicodedata import category
 from django.views.generic import ListView, DetailView, View, TemplateView
@@ -7,6 +6,7 @@ from platformdirs import user_cache_dir
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
+from requests import request
 from .models import *
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -18,19 +18,74 @@ from django.http import JsonResponse, HttpResponse, HttpResponseNotFound  # new
 from django.views.decorators.csrf import csrf_exempt
 import stripe
 from django.contrib.auth.models import User
-YOUR_DOMAIN = 'http://127.0.0.1:8000/'
+YOUR_DOMAIN = 'http://127.0.0.1:9000/'
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 
-class HomeView(ListView):
-    model = Item
-    paginate_by = 8
-    template_name = "home-page.html"
+class NavbarView(TemplateView):
+    template_name = "updated-navbar.html"
 
 
-class UpdatedHomeView(TemplateView):
-    model = Item
-    template_name = "index.html"
+class HomeView(View):
+    def get(self, *args, **kwargs):
+        try:
+            featured_products = Item.objects.filter(
+                featured=True
+            )
+            context = {
+                'featured': featured_products
+            }
+            return render(self.request, 'updated-home-page.html', context)
+        except ObjectDoesNotExist:
+            return render(self.request, 'updated-home-page.html')
+
+
+class CheckoutView(View):
+    def get(self, *args, **kwargs):
+        try:
+            order = OrderItem.objects.filter(
+                user=self.request.user, ordered=False)
+            cart_order = Order.objects.get(
+                user=self.request.user, ordered=False)
+            form = CheckoutForm()
+
+            context = {
+                'form': form,
+                'object': order,
+                'order': cart_order
+            }
+            return render(self.request, "checkout_page.html", context)
+        except ObjectDoesNotExist:
+            messages.error(self.request, "You do not have an active order")
+            return redirect("/")
+
+    def post(self, *args, **kwargs):
+        form = CheckoutForm(self.request.POST or None)
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            if form.is_valid():
+                street_address = self.request.POST.get('street_address')
+                apartment_address = self.request.POST.get('apartment_address')
+                country = form.cleaned_data.get('country')
+                zip = self.request.POST.get('zip')
+                payment_option = self.request.POST.get('payment_option')
+                billing_address = BillingAddress(
+                    user=self.request.user,
+                    street_address=street_address,
+                    apartment_address=apartment_address,
+                    country=country,
+                    zip=zip
+                )
+                billing_address.save()
+                order.billing_address = billing_address
+                order.save()
+                if payment_option == 'S':
+                    return redirect('core:checkout')
+            messages.warning(self.request, 'failed checkout')
+            return redirect('core:checkout-page')
+        except ObjectDoesNotExist:
+            messages.error(self.request, "You do not have an active order")
+            return redirect("core:order-summary")
 
 
 class ShirtView(ListView):
@@ -97,58 +152,6 @@ class OrderSummaryView(LoginRequiredMixin, View):
         except ObjectDoesNotExist:
             messages.error(self.request, "You do not have an active order")
             return redirect("/")
-
-
-class CheckoutView(View):
-    def get(self, *args, **kwargs):
-        try:
-            order = OrderItem.objects.filter(
-                user=self.request.user, ordered=False)
-            cart_order = Order.objects.get(
-                user=self.request.user, ordered=False)
-            form = CheckoutForm()
-
-            context = {
-                'form': form,
-                'object': order,
-                'order': cart_order
-            }
-            return render(self.request, "checkout-page.html", context)
-        except ObjectDoesNotExist:
-            messages.error(self.request, "You do not have an active order")
-            return redirect("/")
-
-    def post(self, *args, **kwargs):
-        form = CheckoutForm(self.request.POST or None)
-        try:
-            order = Order.objects.get(user=self.request.user, ordered=False)
-            if form.is_valid():
-                street_address = form.cleaned_data.get('street_address')
-                apartment_address = form.cleaned_data.get('apartment_address')
-                country = form.cleaned_data.get('country')
-                zip = form.cleaned_data.get('zip')
-                # TODO: add functionality for commented fields
-                # same_shipping_address = form.cleaned_data.get(
-                #     'same_shipping_address')
-                # save_info = form.cleaned_data.get('save_info')
-                payment_option = form.cleaned_data.get('payment_option')
-                billing_address = BillingAddress(
-                    user=self.request.user,
-                    street_address=street_address,
-                    apartment_address=apartment_address,
-                    country=country,
-                    zip=zip
-                )
-                billing_address.save()
-                order.billing_address = billing_address
-                order.save()
-                if payment_option == 'S':
-                    return redirect('core:checkout')
-            messages.warning(self.request, 'failed checkout')
-            return redirect('core:checkout-page')
-        except ObjectDoesNotExist:
-            messages.error(self.request, "You do not have an active order")
-            return redirect("core:order-summary")
 
 
 class ItemDetailView(DetailView):
@@ -325,11 +328,11 @@ def add_to_cart(request, slug):
             order_item.quantity += 1
             order_item.save()
             messages.info(request, "This item quantity was updated.")
-            return redirect("core:order-summary")
+            return redirect("core:checkout-page")
         else:
             order.items.add(order_item)
             messages.info(request, "This item was added to your cart.")
-            return redirect("core:order-summary")
+            return redirect("core:checkout-page")
     else:
 
         ordered_date = timezone.now()
@@ -337,7 +340,7 @@ def add_to_cart(request, slug):
             user=request.user, ordered_date=ordered_date, username=request.user)
         order.items.add(order_item)
         messages.info(request, "This item was added to your cart.")
-        return redirect("core:order-summary")
+        return redirect("core:checkout-page")
 
 
 @login_required
