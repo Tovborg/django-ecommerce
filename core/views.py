@@ -18,6 +18,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseNotFound  # new
 from django.views.decorators.csrf import csrf_exempt
 import stripe
 from django.contrib.auth.models import User
+from django.db.models import F
 YOUR_DOMAIN = 'http://127.0.0.1:8000/'
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
@@ -238,15 +239,14 @@ def webhook(request):
         order_qs = Order.objects.filter(username=user, ordered=False)
         order_qs.update(email=customer_email, amount=price,
                         description=sessionID, ordered=True)
-        order = Order.objects.filter(
+        order = Order.objects.get(
             description=sessionID,
-            username=user
         )
-        order_items = order[0].items.all()
-        for item in order_items:
-            print(item)
-
-    # ... handle other event types
+        for item in order.items.all():
+            items = item.item
+            items.times_ordered = F('times_ordered') + item.quantity
+            items.save()
+            # ... handle other event types
     else:
         print('Unhandled event type {}'.format(event.type))
 
