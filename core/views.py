@@ -18,7 +18,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseNotFound  # new
 from django.views.decorators.csrf import csrf_exempt
 import stripe
 from django.contrib.auth.models import User
-YOUR_DOMAIN = 'http://127.0.0.1:9000/'
+YOUR_DOMAIN = 'http://127.0.0.1:8000/'
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 
@@ -43,7 +43,10 @@ class HomeView(View):
 class CheckoutView(View):
     def get(self, *args, **kwargs):
         try:
-            order = OrderItem.objects.filter(
+            order_qs = Order.objects.filter(
+                user=self.request.user, ordered=False)
+            order = order_qs[0]
+            products = order.items.filter(
                 user=self.request.user, ordered=False)
             cart_order = Order.objects.get(
                 user=self.request.user, ordered=False)
@@ -51,13 +54,15 @@ class CheckoutView(View):
 
             context = {
                 'form': form,
-                'object': order,
+                'object': products,
                 'order': cart_order
             }
             return render(self.request, "checkout_page.html", context)
         except ObjectDoesNotExist:
             messages.error(self.request, "You do not have an active order")
             return redirect("/")
+        except IndexError:
+            return redirect('core:home-page')
 
     def post(self, *args, **kwargs):
         form = CheckoutForm(self.request.POST or None)
@@ -194,7 +199,7 @@ def create_checkout_session(request):
         },
         line_items=order_items,
         mode='payment',
-        success_url=YOUR_DOMAIN + "payment_finished/",
+        success_url=YOUR_DOMAIN,
         cancel_url=YOUR_DOMAIN,
     )
     # print(session)
@@ -225,30 +230,27 @@ def webhook(request):
         print('PaymentMethod was attached to a Customer!')
     elif event.type == 'checkout.session.completed':
         session = event['data']['object']
-        # Creating Order in model
-        # Test until I figure out how to grab customer-email from API
         price = session['amount_total'] / 100
         sessionID = session['id']
-        # print(session)
+        print(session)
         customer_email = session["customer_details"]["email"]
         user = session['metadata']['user']
         order_qs = Order.objects.filter(username=user, ordered=False)
         order_qs.update(email=customer_email, amount=price,
                         description=sessionID, ordered=True)
+        order = Order.objects.filter(
+            description=sessionID,
+            username=user
+        )
+        order_items = order[0].items.all()
+        for item in order_items:
+            print(item)
 
     # ... handle other event types
     else:
         print('Unhandled event type {}'.format(event.type))
 
     return HttpResponse(status=200)
-
-
-def cancel(request):
-    return render(request, 'cancel.html')
-
-
-def success(request):
-    return render(request, 'success.html')
 
 
 # Payments end

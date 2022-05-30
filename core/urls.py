@@ -13,13 +13,10 @@ urlpatterns = [
     path('remove-item-from-cart/<slug>/', remove_single_item_from_cart,
          name="remove_single_item_from_cart"),
     path('create-checkout-session/', create_checkout_session, name='checkout'),
-    path('success.html/', success, name='success'),
-    path('cancel.html/', cancel, name='cancel'),
     path('webhooks/stripe/', webhook, name="webhook"),
     path("payment_finished/", payment_finished, name="payment_finished"),
     path("order_history/", OrderHistoryView.as_view(), name="order_history"),
     path('shirts/', ShirtView.as_view(), name="shirts"),
     path('sportswear/', SportWearsView.as_view(), name="sportswear"),
     path('outwear/', OutwearView.as_view(), name="outwear"),
-    path('updated-home-page/', UpdatedHomeView.as_view(), name='updated-home-page')
 ]

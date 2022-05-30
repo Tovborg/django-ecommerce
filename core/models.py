@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from django.db import models
 from django.conf import settings
 from django.forms import IntegerField
@@ -15,9 +16,16 @@ CATEGORY_CHOICES = (
 )
 
 LABEL_CHOICES = (
-    ('P', 'primary'),
-    ('S', 'secondary'),
-    ('D', 'danger')
+    ('NC', 'New collection'),
+    ('T', 'Trending'),
+    ('OBG', 'Old but gold')
+)
+
+FEATURED_PRODUCTS_CHOICES = (
+    ('NA', 'New arrival'),
+    ('BS', 'Best selling'),
+    ('OS', 'On sale'),
+    ('FY', 'For you')
 )
 
 
@@ -31,13 +39,21 @@ class Item(models.Model):
     )
     discount_price = models.FloatField(blank=True, null=True)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
-    label = models.CharField(choices=LABEL_CHOICES, max_length=1)
+    label = models.CharField(choices=LABEL_CHOICES, max_length=4)
     image = models.ImageField(upload_to='uploads/', blank=True, null=True)
     slug = models.SlugField()
     description = models.TextField(
         max_length=800,
         verbose_name='Description'
     )
+    featured = models.BooleanField(default=False)
+    times_ordered = models.IntegerField(default=1)
+    featured_products = models.CharField(
+        choices=FEATURED_PRODUCTS_CHOICES, max_length=2, null=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def get_date(self):
+        return self.date_added.strftime('%b %d %Y')
 
     def __str__(self):
         return self.name
