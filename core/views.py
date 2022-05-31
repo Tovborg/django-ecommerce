@@ -1,8 +1,9 @@
 from importlib.metadata import metadata
+from logging import exception
 from unicodedata import category
-from django.views.generic import ListView, DetailView, View, TemplateView
+from django.dispatch import receiver
+from django.views.generic import ListView, DetailView, View, TemplateView, FormView
 from django.shortcuts import redirect, render, get_object_or_404
-from platformdirs import user_cache_dir
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
@@ -19,12 +20,36 @@ from django.views.decorators.csrf import csrf_exempt
 import stripe
 from django.contrib.auth.models import User
 from django.db.models import F
-YOUR_DOMAIN = 'http://127.0.0.1:8000/'
+from paypal.standard.forms import PayPalPaymentsForm
+from paypal.standard.models import ST_PP_COMPLETED
+from paypal.standard.ipn.signals import valid_ipn_received
+import logging
+from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment
+from paypalcheckoutsdk.orders import OrdersGetRequest
+import sys
+
+
+class PayPalClient:
+    def __init__(self):
+        self.client_id = "AQie0MKam6S2eIHkiYZTtoNxIJlNdVcD7pJN2aCp5wW-IRurKrBhsWDZ1Jmgnq_aNfyBCzg4FdS9uG5l"
+        self.client_secret = "ECmL-BwSGdtgNmgebInz_RQ8TPUdnyxIdFJE9xjg2W6iHldKwql7bW4WrYnrB9UMVn_Ubgnvo5L3zzTf"
+        self.environment = SandboxEnvironment(
+            client_id=self.client_id, client_secret=self.client_secret)
+        self.client = PayPalHttpClient(self.environment)
+
+
+YOUR_DOMAIN = 'http://127.0.0.1:9000/'
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
+logger = logging.getLogger(__name__)
 
 
 class NavbarView(TemplateView):
     template_name = "updated-navbar.html"
+
+
+class ItemDetailView(DetailView):
+    model = Item
+    template_name = "product-page.html"
 
 
 class HomeView(View):
@@ -56,8 +81,9 @@ class CheckoutView(View):
             context = {
                 'form': form,
                 'object': products,
-                'order': cart_order
+                'order': cart_order,
             }
+
             return render(self.request, "checkout_page.html", context)
         except ObjectDoesNotExist:
             messages.error(self.request, "You do not have an active order")
@@ -160,13 +186,9 @@ class OrderSummaryView(LoginRequiredMixin, View):
             return redirect("/")
 
 
-class ItemDetailView(DetailView):
-    model = Item
-    template_name = "product-page.html"
-
-
 # Payments
 
+# STRIPE PAYMENT
 
 # Creates stripe checkout session
 @csrf_exempt
@@ -252,7 +274,34 @@ def webhook(request):
 
     return HttpResponse(status=200)
 
+# STRIPE PAYMENTS END
+# PAYPAL
+@login_required
+def payment_complete(request):
+    PPClient = PayPalClient()
 
+    body = json.loads(request.body)
+    data = body["orderID"]
+    user_id = request.user.id
+
+    requestorder = OrdersGetRequest(data)
+    response = PPClient.client.execute(requestorder)
+
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    order_qs.update(
+        email=response.result.payer.email_address,
+        amount=int(float(response.result.purchase_units[0].amount.value)),
+        description=data,
+        ordered=True
+    )
+
+    return JsonResponse("Payment completed!", safe=False)
+
+
+class PaypalSuccess(TemplateView):
+    template_name = 'paypal_success.html'
+
+# PAYPAL END
 # Payments end
 
 

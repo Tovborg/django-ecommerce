@@ -111,7 +111,7 @@ class Order(models.Model):
 
     def get_total(self):
         total = 0
-        for order_item in OrderItem.objects.filter(user=self.user, ordered=False):
+        for order_item in self.items.all():
             total += order_item.get_final_price()
         return total
 

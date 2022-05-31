@@ -1,45 +1,83 @@
-<footer class="page-footer text-center font-small wow fadeIn mt-auto">
-
-    <!--Call to action-->
-
-
-    <hr class="my-3">
-
-    <!-- Social icons -->
-    <div class="pb-4">
-      <a href="https://www.facebook.com/mdbootstrap" target="_blank">
-        <i class="fab fa-facebook-f mr-3"></i>
-      </a>
-
-      <a href="https://twitter.com/MDBootstrap" target="_blank">
-        <i class="fab fa-twitter mr-3"></i>
-      </a>
-
-      <a href="https://www.youtube.com/watch?v=7MUISDJ5ZZ4" target="_blank">
-        <i class="fab fa-youtube mr-3"></i>
-      </a>
-
-      <a href="https://plus.google.com/u/0/b/107863090883699620484" target="_blank">
-        <i class="fab fa-google-plus-g mr-3"></i>
-      </a>
-
-      <a href="https://dribbble.com/mdbootstrap" target="_blank">
-        <i class="fab fa-dribbble mr-3"></i>
-      </a>
-
-      <a href="https://pinterest.com/mdbootstrap" target="_blank">
-        <i class="fab fa-pinterest mr-3"></i>
-      </a>
-
-      <a href="https://github.com/mdbootstrap/bootstrap-material-design" target="_blank">
-        <i class="fab fa-github mr-3"></i>
-      </a>
-
-      <a href="http://codepen.io/mdbootstrap/" target="_blank">
-        <i class="fab fa-codepen mr-3"></i>
-      </a>
-    </div>
-    <!-- Social icons -->
-
-
-  </footer>
+{% load static %}
+<footer class="footer-area-v2">
+  <div class="footer-widget-area">
+      <div class="container">
+          <div class="row">
+              <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="single-widget about-widget">
+                      <a href="index.html" class="footer-brand-logo mb-25"><img src="{% static 'assets/images/logo_transparent.png' %} " alt="footer-logo" /></a>
+                      <p class="address-text">685 Market Street <br /> San Francisco, CA 94105, <br />United States</p>
+                      <div class="block-content mb-30">
+                          <p class="contact">Call us: 1.800.000.6690</p>
+                          <p class="contact">Email: support@zainikthemes.com</p>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-2 col-md-6 col-sm-6">
+                  <div class="single-widget">
+                      <h3 class="widget-title mobile-dropdown-title">Shop by</h3>
+                      <ul class="widget-menu show">
+                          <li class="meni-item"><a class="menu-link" href="shop-grid-left-sidebar.html">Appliances</a></li>
+                          <li class="meni-item"><a class="menu-link" href="shop-grid-right-sidebar.html">Computers & Laptops</a></li>
+                          <li class="meni-item"><a class="menu-link" href="shop-grid.html">Cameras</a></li>
+                          <li class="meni-item"><a class="menu-link" href="shop-list.html">Mobile Phones </a></li>
+                          <li class="meni-item"><a class="menu-link" href="shop-list-right-sidebar.html">Televisions</a></li>
+                          <li class="meni-item"><a class="menu-link" href="shop-list-left-sidebar.html">Video Games</a></li>
+                      </ul>
+                  </div>
+              </div>
+              <div class="col-lg-2 col-md-6 col-sm-6">
+                  <div class="single-widget">
+                      <h3 class="widget-title mobile-dropdown-title">Information</h3>
+                      <ul class="widget-menu">
+                          <li class="meni-item"><a class="menu-link" href="about-us.html">About us</a></li>
+                          <li class="meni-item"><a class="menu-link" href="blog.html">Blog</a></li>
+                          <li class="meni-item"><a class="menu-link" href="shop-grid.html">Weekly Deals</a></li>
+                          <li class="meni-item"><a class="menu-link" href="cart.html">Cart</a></li>
+                          <li class="meni-item"><a class="menu-link" href="sign-in.html">Sign In</a></li>
+                          <li class="meni-item"><a class="menu-link" href="sign-up.html">Sign Up</a></li>
+                      </ul>
+                  </div>
+              </div>
+              <div class="col-lg-2 col-md-6 col-sm-6">
+                  <div class="single-widget">
+                      <h3 class="widget-title mobile-dropdown-title">Customer Service</h3>
+                      <ul class="widget-menu">
+                          <li class="meni-item"><a class="menu-link" href="faq.html">Help & FAQs</a></li>
+                          <li class="meni-item"><a class="menu-link" href="term-conditions.html">Terms of Conditions</a></li>
+                          <li class="meni-item"><a class="menu-link" href="privacy-policy.html">Privacy Policy</a></li>
+                          <li class="meni-item"><a class="menu-link" href="refund-policy.html">Online Returns Policy</a></li>
+                          <li class="meni-item"><a class="menu-link" href="shipping-return.html">Shipping & Return</a></li>
+                          <li class="meni-item"><a class="menu-link" href="contact.html">Contact us</a></li>
+                      </ul>
+                  </div>
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="single-widget social-media-widget">
+                      <h3 class="widget-title">Social Links</h3>
+                      <ul class="social-media">
+                          <li class="social-media-item"><a class="social-media-link" href="javascript:void(0)"><i class="fab fa-facebook-f"></i></a></li>
+                          <li class="social-media-item"><a class="social-media-link" href="javascript:void(0)"><i class="fab fa-twitter"></i></a></li>
+                          <li class="social-media-item"><a class="social-media-link" href="javascript:void(0)"><i class="fab fa-linkedin-in"></i></a></li>
+                          <li class="social-media-item"><a class="social-media-link" href="javascript:void(0)"><i class="fab fa-instagram"></i></a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="footer-bottom">
+      <div class="container">
+          <div class="footer-bottom-wrap">
+              <div class="row align-items-center">
+                  <div class="col-lg-6">
+                      <p class="copyright-text">Designed And Developed By TovborgWEB</p>
+                  </div>
+                  <div class="col-lg-6 text-lg-end">
+                      <img class="payment-icons" src="{% static 'assets/images/accepts-image.png' %} " alt="accepts-image" />
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</footer>

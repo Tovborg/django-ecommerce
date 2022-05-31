@@ -67,35 +67,6 @@
     </div>
 </div>
 <div class="popular-categories-area-v2 section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-5">
-                <div class="catagory-left">
-                    <h2 class="catagory-title">Most Popular/Trending  Categories</h2>
-                    <a href="shop-grid-left-sidebar.html" class="primary-btn-v2">View All Categories </a>
-                </div>
-            </div>
-            <div class="col-lg-7">
-                <ul class="catagory-list">
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-grid-left-sidebar.html">Weeding Dress <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-grid-right-sidebar.html">Athletic Wear <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-grid.html">Weeding Dress <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-list.html">Medial Mask <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-list-left-sidebar.html">Weeding Dress <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-list-right-sidebar.html">Medial Mask <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-grid.html">Athletic Wear <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-grid.html">Beach Wear <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-grid.html">Athletic Wear <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-grid.html">Athletic Wear <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-grid-left-sidebar.html">Medial Mask <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-grid-left-sidebar.html">Athletic Wear <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-grid-left-sidebar.html">Beach Wear <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-grid-left-sidebar.html">Athletic Wear <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                    <li class="sigle-catagory"><a class="catatory-link" href="shop-grid-left-sidebar.html">Beach Wear <i class="icon flaticon-arrow-point-to-right"></i></a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
 </div>
 {% if featured %}
 <div class="featured-products-area-v2 section-bg-two section-top pb-100">
@@ -108,11 +79,14 @@
             <div class="col-lg-4 col-md-6 col-sm-6">
                 <div class="single-grid-product-v2">
                     <div class="product-top">
-                        <a href="single-product-v2.html"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-1.png' %}" alt="product" /></a>
+                        <a href="{{ order_item.get_absolute_url }}"><img class="product-thumbnal" src="{% static 'assets/images/Webp.net-resizeimage.png' %}" alt="product" /></a>
+                        {% if order_item.discount_price %}
                         <div class="product-flags">
                             <span class="product-flag sale">SALE</span>
                             <span class="product-flag discount">-15%</span>
                         </div>
+                        {% endif %}
+                        
                         <ul class="prdouct-btn-wrapper">
                             <li class="single-product-btn">
                                 <a class="addToWishlist product-btn" href="compare.html" title="Add to compare"><i class="icon flaticon-bar-chart"></i></a>
@@ -142,7 +116,7 @@
                             {% endif %}
                             
                         </div>
-                        <div class="variable-single-item color-switch">
+                        {% comment %} <div class="variable-single-item color-switch">
                             <div class="product-variable-color">
                                 <label>
                                     <input name="modal-product-color"
@@ -161,7 +135,7 @@
                                     <span class="product-color-gray"></span>
                                 </label>
                             </div>
-                        </div>
+                        </div> {% endcomment %}
                         <ul class="size-switch">
                             <li class="single-size active">XL</li>
                             <li class="single-size">LARGE</li>
@@ -1447,63 +1421,6 @@
                         <li class="review-item active"><i class="icon flaticon-star"></i></li>
                         <li class="review-item"><i class="icon flaticon-star"></i></li>
                     </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="image-gallery-area-v2 section-top pb-110">
-    <div class="container">
-        <div class="section-header-two text-center">
-            <h2 class="section-title"> Zairito Gallery <br /> For Online Experience</h2>
-        </div>
-        <div class="row">
-            <div class="col-lg-8 col-md-8">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="single-gallery border-left">
-                            <img class="gallery-image" src="{% static 'assets/images/home-2-gallery-1.jpg' %} " alt="gallery" />
-                            <div class="popuo-overlay">
-                                <a class="popup-image" href="{% static 'assets/images/home-2-gallery-1.jpg' %} "><i class="view-icon flaticon-view"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-gallery border-bottom">
-                            <img class="gallery-image" src="{% static 'assets/images/home-2-gallery-2.jpg' %} " alt="gallery" />
-                            <div class="popuo-overlay">
-                                <a class="popup-image" href="{% static 'assets/images/home-2-gallery-2.jpg' %} "><i class="view-icon flaticon-view"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-gallery">
-                            <img class="gallery-image" src="{% static 'assets/images/home-2-gallery-3.jpg' %} " alt="gallery" />
-                            <div class="popuo-overlay">
-                                <a class="popup-image" href="{% static 'assets/images/home-2-gallery-3.jpg' %} "><i class="view-icon flaticon-view"></i></a>
-                            </div>
-                        </div>
-                        <div class="single-gallery">
-                            <img class="gallery-image" src="{% static 'assets/images/home-2-gallery-4.jpg' %} " alt="gallery" />
-                            <div class="popuo-overlay">
-                                <a class="popup-image" href="{% static 'assets/images/home-2-gallery-4.jpg' %} "><i class="view-icon flaticon-view"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-4">
-                <div class="single-gallery border-top">
-                    <img class="gallery-image" src="{% static 'assets/images/home-2-gallery-5.jpg' %} " alt="gallery" />
-                    <div class="popuo-overlay">
-                        <a class="popup-image" href="{% static 'assets/images/home-2-gallery-5.jpg' %} "><i class="view-icon flaticon-view"></i></a>
-                    </div>
-                </div>
-                <div class="single-gallery">
-                    <img class="gallery-image" src="{% static 'assets/images/home-2-gallery-6.jpg' %} " alt="gallery" />
-                    <div class="popuo-overlay">
-                        <a class="popup-image" href="{% static 'assets/images/home-2-gallery-6.jpg' %} "><i class="view-icon flaticon-view"></i></a>
-                    </div>
                 </div>
             </div>
         </div>

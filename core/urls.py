@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import *
 
 app_name = 'core'
@@ -16,7 +16,6 @@ urlpatterns = [
     path('webhooks/stripe/', webhook, name="webhook"),
     path("payment_finished/", payment_finished, name="payment_finished"),
     path("order_history/", OrderHistoryView.as_view(), name="order_history"),
-    path('shirts/', ShirtView.as_view(), name="shirts"),
-    path('sportswear/', SportWearsView.as_view(), name="sportswear"),
-    path('outwear/', OutwearView.as_view(), name="outwear"),
+    path('paypal/payment_complete/', payment_complete, name="payment-complete"),
+    path('paypal/success/', PaypalSuccess.as_view(), name="paypal-success")
 ]
