@@ -58,8 +58,20 @@ class HomeView(View):
             featured_products = Item.objects.filter(
                 featured=True
             )
+            new_arrival = Item.objects.filter(
+                featured_products='NA'
+            )
+            best_selling = Item.objects.filter(
+                featured_products='BS'
+            )
+            on_sale = Item.objects.filter(
+                featured_products='OS'
+            )
             context = {
-                'featured': featured_products
+                'featured': featured_products,
+                'new_arrival': new_arrival,
+                'best_selling': best_selling,
+                'on_sale': on_sale
             }
             return render(self.request, 'updated-home-page.html', context)
         except ObjectDoesNotExist:
@@ -388,7 +400,11 @@ def add_to_cart(request, slug):
 
         ordered_date = timezone.now()
         order = Order.objects.create(
-            user=request.user, ordered_date=ordered_date, username=request.user)
+            user=request.user,
+            ordered_date=ordered_date,
+            username=request.user,
+            order_identifier=Order.objects.all().last().order_identifier + 1
+        )
         order.items.add(order_item)
         messages.info(request, "This item was added to your cart.")
         return redirect("core:checkout-page")

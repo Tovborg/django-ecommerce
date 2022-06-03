@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_countries',
     'paypal.standard.ipn',
+    'sequences.apps.SequencesConfig',
 ]
 
 MIDDLEWARE = [
