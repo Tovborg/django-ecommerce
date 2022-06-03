@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load cart_template_tags %}
 
 {% block content %}
+<script src="https://code.jquery.com/jquery-3.5.1.js" 
+integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" 
+crossorigin="anonymous"></script>
 <div id="preloader">
   <div id="status">
       <img src="{% static 'assets/images/preloader.svg' %} " alt="img" />
@@ -45,7 +49,7 @@
                   <div class="product-single-right">
                       <div class="product-info">
                           <div class="product-info-top">
-                              <h4 class="product-catagory">ELLA - HALOTHEMES</h4>
+                              <h4 class="product-catagory">{{ object.get_category_display }}</h4>
                               <ul class="product-review">
                                   <li class="review-item active"><i class="flaticon-star"></i></li>
                                   <li class="review-item active"><i class="flaticon-star"></i></li>
@@ -54,11 +58,16 @@
                                   <li class="review-item"><i class="flaticon-star"></i></li>
                               </ul>
                           </div>
-                          <h3 class="product-name">Plaid Cotton Oxford Shirt</h3>
-                          <p class="note-text">Please note: We have this product in United States warehouse. If destination means you can receive the parcel faster and earlier than expected.</p>
+                          <h3 class="product-name">{{ object.name }}</h3>
+                          <p class="note-text">{{ object.description }}</p>
                           <div class="product-price">
-                              <span class="price">$700.08</span>
-                              <span class="regular-price">$770.18</span>
+                              {% if object.discount_price %}
+                              <span class="price">${{ object.discount_price }}</span>
+                              <span class="regular-price">${{ object.price }}</span>
+                              {% else %}
+                              <span class="price">${{ object.price }}</span>
+                              {% endif %}
+                              
                           </div>
                           <div class="product-size-area">
                               <h4 class="size-title">SIZE : XL</h4>
@@ -93,9 +102,9 @@
                           </div>
                           <div class="prdouct-btn-wrapper d-flex align-items-center">
                               <div class="cart-plus-minus">
-                                  <div class="dec qtybutton btn">-</div>
+                                <a href="{{ object.get_remove_from_cart_url }}"><div class="dec qtybutton btn">-</div></a>
                                   <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" readonly />
-                                  <div class="inc qtybutton btn">+</div>
+                                  <a href="{{ object.get_add_to_cart_url }}"><div class="inc qtybutton btn">+</div></a>
                               </div>
                               <a href="{{ object.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
                           </div>
@@ -151,15 +160,9 @@
 
               <div class="tab-pane fade show active" id="Description" role="tabpanel" aria-labelledby="Description-tab">
                   <div class="product-description">
-                      <p class="description-text">Curabitur aliquet quam id dui posuere blandit. Donec rutrum congue leo eget malesuada. Donec rutrum congue leo eget malesuada. Donec rutrum congue leo eget malesuada. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Curabitur non nulla sit amet nisl tempus convallis quis ac  egestas non nisi. Curabitur non nulla sit amet nisl tempus convallis quis ac dictum porta. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. </p>
+                      <p class="description-text">{{ object.description }}</p>
                       <div class="feature-area mb-35">
-                          <h3 class="feature-title">Sample Unordered List</h3>
-                          <ul class="unordered-lsit">
-                              <li class="list-item">Comodous in tempor ullamcorper miaculis.</li>
-                              <li class="list-item">Pellentesque vitae neque mollis urna mattis laoreet.</li>
-                              <li class="list-item">Divamus sit amet purus justo.</li>
-                              <li class="list-item">Proin molestie egestas orci ac suscipit risus posuere loremous.</li>
-                          </ul>
+                          
                       </div>
                       <div class="feature-area">
                           <h3 class="feature-title">Sample Ordered List</h3>
@@ -186,52 +189,124 @@
                                       <li class="review-item active"><i class="flaticon-star"></i></li>
                                       <li class="review-item"><i class="flaticon-star"></i></li>
                                   </ul>
-                                  <span class="review-count">Based on (2) Reviews </span>
+                                  <span class="review-count">Based on ({{ reviews.count }}) Reviews </span>
                               </div>
                           </div>
                           <div class="review-top-right">
-                              <a href="javascript:void(0)" class="write-review-btn">Write A Review</a>
+                              <button onclick="openCloseDiv()" class="write-review-btn shadow-none" id="review-button" style="outline:none; border-style:none;"><div>Write A Review</div></button>
                           </div>
                       </div>
+                    
                       <div class="reviews-list">
+                        <div id="review-div" class="single-review" style="display:none;">
+                            <div class="checkout">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="checkout-form">
+                                                <form method="POST" id="review-form">
+                                                {% csrf_token %}
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <h2 class="checkout-title">Write A Review</h2>
+                                                        </div>
+                                                        <div class="col-lg-12">
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control" id="reviewer" name="reviewer" placeholder="Your Name Here" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12">
+                                                            <div class="form-group">
+                                                                <textarea class="form-control" id="review_text" name="review_text" placeholder="write review here" required></textarea>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group">
+                                                                <input type="number" class="form-control" id="stars" name="stars" placeholder="Stars 1-5" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="review-top" style="border-bottom: none !important; ">
+                                                                <div class="review-top-right">
+                                                                    <button type="submit" class="write-review-btn shadow-none" id="review-button-submit" style="outline:none; border-style:none;"><div>Write A Review</div></button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <script>
+                                                    $(document).on('submit','#review-form',function(e){
+                                                        e.preventDefault();
+                                                        $.ajax({
+                                                            type:'POST',
+                                                            url:'{{ object.get_absolute_url }}',
+                                                            data:
+                                                            {
+                                                                reviewer:$("#reviewer").val(),
+                                                                review_text:$("#review_text").val(),
+                                                                stars:$("#stars").val(),
+                                                                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                                                            },
+                                                            success:function(){
+                                                                  console.log('it works')
+                                                                  div = document.getElementById('review-div');
+                                                                  div.style.display = 'none'
+                                                                  $("#review-form").reset();
+                                                                  live_update()
+                                                                  alert('Saved');
+                                                                    }
+                                                                  
+                                                                    
+                                                            })
+                                                        });
+                                                    function live_update() {
+                                                        $.ajax({
+                                                            type: "get",
+                                                            url: "{{ object.get_absolute_url }}",
+                                                            contentType: 'application/json',
+                                                            success: function(data){
+                                                                alert('success');
+                                                            },
+                                                            error: function(){
+                                                                alert("error");
+                                                            }
+                                                        });
+                                                    }
+                                                    
+                                                    
+                                                </script>
+                                                
+                                                
+                                                <!-- Include the PayPal JavaScript SDK -->
+                                                    
+                                                    
+                                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                          {% for review in reviews %}
                           <div class="single-review">
                               <div class="reviewer">
                                   <div class="reviewer-wrap">
                                       <img class="reviewer-image" src="{% static 'assets/images/reviewer-v2-image-1.png' %} " alt="reviewer-image" />
                                       <div class="reviewer-info">
-                                          <h4 class="reviewer-name">Cameron Williamson</h4>
-                                          <h4 class="review-meta"><span class="time">25th Sep 2021 </span> by <a class="author" href="javascript:void(0)">Angelo Mathews</a></h4>
+                                          <h4 class="reviewer-name">{{ review.reviewer }}</h4>
+                                          <h4 class="review-meta"><span class="time">{{ review.review_date }}</span> by <a class="author" href="javascript:void(0)">{{ review.user }}</a></h4>
                                       </div>
                                   </div>
                                   <ul class="review-list">
+                                      {% for star in review.stars|times %}
                                       <li class="review-item active"><i class="flaticon-star"></i></li>
-                                      <li class="review-item active"><i class="flaticon-star"></i></li>
-                                      <li class="review-item active"><i class="flaticon-star"></i></li>
-                                      <li class="review-item active"><i class="flaticon-star"></i></li>
-                                      <li class="review-item"><i class="flaticon-star"></i></li>
+                                      {% endfor %}
                                   </ul>
                               </div>
-                              <p class="review-text">Vivamus suscipit tortor eget felis porttitor volutpat. Nulla quis lorem ut libero malesuada feugiat. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel</p>
+                              <p class="review-text">{{ review.review_text }}</p>
                           </div>
-                          <div class="single-review">
-                              <div class="reviewer">
-                                  <div class="reviewer-wrap">
-                                      <img class="reviewer-image" src="{% static 'assets/images/reviewer-v2-image-2.png' %} " alt="reviewer-image" />
-                                      <div class="reviewer-info">
-                                          <h4 class="reviewer-name">James Williamson</h4>
-                                          <h4 class="review-meta"><span class="time">25th Sep 2021 </span> by <a class="author" href="javascript:void(0)">John Doe</a></h4>
-                                      </div>
-                                  </div>
-                                  <ul class="review-list">
-                                      <li class="review-item active"><i class="flaticon-star"></i></li>
-                                      <li class="review-item active"><i class="flaticon-star"></i></li>
-                                      <li class="review-item active"><i class="flaticon-star"></i></li>
-                                      <li class="review-item active"><i class="flaticon-star"></i></li>
-                                      <li class="review-item"><i class="flaticon-star"></i></li>
-                                  </ul>
-                              </div>
-                              <p class="review-text">Vivamus suscipit tortor eget felis porttitor volutpat. Nulla quis lorem ut libero malesuada feugiat. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel</p>
-                          </div>
+                          {% endfor %}
                       </div>
                   </div>
               </div>
@@ -282,7 +357,8 @@
 
   </div>
 </div>
-<div class="featured-products-area-v2 section-top pb-100">
+<div class="featured-products-area-v2 section-top pb-100"></div>
+{% comment %} <div class="featured-products-area-v2 section-top pb-100">
   <div class="container">
       <div class="section-header-two text-center">
           <h2 class="section-title">Releted Products</h2>
@@ -470,6 +546,17 @@
           </div>
       </div>
   </div>
-</div>
+</div> {% endcomment %}
+<script>
+    reviewSection = document.getElementById('review-div')
+    function openCloseDiv() {
+        if (reviewSection.style.display === "none") {
+            reviewSection.style.display = "block"
+        } else {
+            reviewSection.style.display = "none"
+        }
+    }
+</script>
+
 {% endblock content %}
 

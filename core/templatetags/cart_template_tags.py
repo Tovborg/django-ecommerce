@@ -61,3 +61,8 @@ def get_items(user, index):
         return ", ".join(item_list)
     else:
         return qs[index].items.all()[0].item.name
+
+
+@register.filter(name='times')
+def times(number):
+    return range(number)

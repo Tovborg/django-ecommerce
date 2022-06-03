@@ -1,3 +1,4 @@
+from unittest.util import _MAX_LENGTH
 from django import forms
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
@@ -29,3 +30,9 @@ class CheckoutForm(forms.Form):
     save_info = forms.BooleanField(required=False)
     payment_option = forms.ChoiceField(
         widget=forms.RadioSelect, choices=PAYMENT_CHOICES)
+
+
+class ReviewForm(forms.Form):
+    reviewer = forms.CharField(max_length=200)
+    stars = forms.IntegerField(max_value=5, min_value=1)
+    review_text = forms.Textarea()

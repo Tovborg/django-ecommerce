@@ -13,7 +13,7 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.contrib import messages
 import json
-from .forms import CheckoutForm
+from .forms import CheckoutForm, ReviewForm
 from django.conf import settings  # new
 from django.http import JsonResponse, HttpResponse, HttpResponseNotFound  # new
 from django.views.decorators.csrf import csrf_exempt
@@ -38,18 +38,13 @@ class PayPalClient:
         self.client = PayPalHttpClient(self.environment)
 
 
-YOUR_DOMAIN = 'http://127.0.0.1:9000/'
+YOUR_DOMAIN = 'http://127.0.0.1:8000/'
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
 logger = logging.getLogger(__name__)
 
 
 class NavbarView(TemplateView):
     template_name = "updated-navbar.html"
-
-
-class ItemDetailView(DetailView):
-    model = Item
-    template_name = "product-page.html"
 
 
 class HomeView(View):
@@ -130,6 +125,39 @@ class CheckoutView(View):
         except ObjectDoesNotExist:
             messages.error(self.request, "You do not have an active order")
             return redirect("core:order-summary")
+
+
+class ItemDetailView(DetailView):
+    model = Item
+    template_name = "product-page.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        item = self.get_object()
+        context['reviews'] = Reviews.objects.filter(
+            item=item
+        )
+        context['form'] = ReviewForm()
+        return context
+
+    def post(self, *args, **kwargs):
+
+        if self.request.method == 'POST':
+            reviewer = self.request.POST.get('reviewer')
+            stars = self.request.POST.get('stars')
+            review_text = self.request.POST.get('review_text')
+            review = Reviews(
+                item=self.get_object(),
+                user=self.request.user,
+                reviewer=reviewer,
+                review_text=review_text,
+                stars=stars
+            )
+            review.save()
+            print('form was validated')
+            return HttpResponse(json.dumps({'message': 'test'}))
+        else:
+            return HttpResponse('not a post request')
 
 
 class ShirtView(ListView):
@@ -365,7 +393,7 @@ def remove_single_item_from_cart(request, slug):
                 order.save()
                 messages.info(request, "This item was removed from cart")
             messages.info(request, "This item quantity was updated")
-            return redirect("core:order-summary")
+            return redirect("core:checkout-page")
         else:
             messages.info(request, "This item was not in your cart")
             return redirect("core:product-page", slug=slug)

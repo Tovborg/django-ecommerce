@@ -131,3 +131,16 @@ class BillingAddress(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class Reviews(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+    reviewer = models.CharField(max_length=150, null=True)
+    stars = models.IntegerField(default=1, max_length=5)
+    review_text = models.TextField(
+        max_length=800,
+        verbose_name='review content'
+    )
+    review_date = models.DateTimeField(auto_now_add=True)

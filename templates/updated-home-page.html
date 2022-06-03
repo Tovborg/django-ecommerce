@@ -207,7 +207,7 @@
                     {% for product in new_arrival %}
                     <div class="single-grid-product-v2">
                         <div class="product-top">
-                            <a href="single-product-v2.html"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-4.png' %} " alt="product" /></a>
+                            <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-4.png' %} " alt="product" /></a>
                             {% if product.discount_price %}
                             <div class="product-flags">
                                 <span class="product-flag sale">SALE</span>
