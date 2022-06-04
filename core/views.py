@@ -1,3 +1,4 @@
+from ast import If
 from importlib.metadata import metadata
 from logging import exception
 from unicodedata import category
@@ -7,7 +8,6 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from requests import request
 from .models import *
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -31,8 +31,8 @@ import sys
 
 class PayPalClient:
     def __init__(self):
-        self.client_id = "AQie0MKam6S2eIHkiYZTtoNxIJlNdVcD7pJN2aCp5wW-IRurKrBhsWDZ1Jmgnq_aNfyBCzg4FdS9uG5l"
-        self.client_secret = "ECmL-BwSGdtgNmgebInz_RQ8TPUdnyxIdFJE9xjg2W6iHldKwql7bW4WrYnrB9UMVn_Ubgnvo5L3zzTf"
+        self.client_id = settings.PAYPAL_CLIENT_ID
+        self.client_secret = settings.PAYPAL_SECRET_ID
         self.environment = SandboxEnvironment(
             client_id=self.client_id, client_secret=self.client_secret)
         self.client = PayPalHttpClient(self.environment)
@@ -458,3 +458,59 @@ class OrderHistoryView(LoginRequiredMixin, View):
             return redirect("core:home-page")
         else:
             return render(self.request, 'order_history.html', context)
+
+# Wishlist functionality
+
+
+class WishListView(ListView):
+    def get(self, *args, **kwargs):
+        wishlist_qs = Wishlist.objects.filter(
+            user=self.request.user
+        )
+        if wishlist_qs.exists():
+            wishlist = wishlist_qs[0]
+            wishlist_items = wishlist.items.all()
+            context = {
+                'object': wishlist_items
+            }
+            return render(self.request, "wish-list.html", context)
+        else:
+            return redirect('core:home-page')
+
+
+@login_required
+def add_to_wishlist(request, slug):
+    item = get_object_or_404(Item, slug=slug)
+    wishlist_qs = Wishlist.objects.filter(
+        user=request.user
+    )
+    if wishlist_qs.exists():
+        wishlist = wishlist_qs[0]
+        if wishlist.items.filter(slug=item.slug).exists():
+            return redirect('core:home-page')
+        else:
+            wishlist.items.add(item)
+            return redirect('core:wishlist')
+    else:
+        create_wishlist = Wishlist.objects.create(
+            user=request.user,
+        )
+        create_wishlist.items.add(item)
+        return redirect('core:wishlist')
+
+
+@login_required
+def remove_from_wishlist(request, slug):
+    item = get_object_or_404(Item, slug=slug)
+    wishlist_qs = Wishlist.objects.filter(
+        user=request.user
+    )
+    if wishlist_qs.exists():
+        wishlist = wishlist_qs[0]
+        if wishlist.items.filter(slug=item.slug).exists():
+            wishlist.items.remove(item)
+            return redirect('core:wishlist')
+        else:
+            return redirect('core:home-page')
+    else:
+        return redirect('core:home-page')

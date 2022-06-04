@@ -17,5 +17,9 @@ urlpatterns = [
     path("payment_finished/", payment_finished, name="payment_finished"),
     path("order_history/", OrderHistoryView.as_view(), name="order_history"),
     path('paypal/payment_complete/', payment_complete, name="payment-complete"),
-    path('paypal/success/', PaypalSuccess.as_view(), name="paypal-success")
+    path('paypal/success/', PaypalSuccess.as_view(), name="paypal-success"),
+    path('wish-list/', WishListView.as_view(), name="wishlist"),
+    path('add-to-wishlist/<slug>/', add_to_wishlist, name="add-to-wishlist"),
+    path('remove-from-wishlist/<slug>/',
+         remove_from_wishlist, name="remove-from-wishlist")
 ]

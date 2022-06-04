@@ -1,12 +1,17 @@
 import os
 import environ
-ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
+
+# Initialise environment variables
+# ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
+env = environ.Env()
+environ.Env.read_env()
 
 DEBUG = True
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = '-05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj'
+SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = []
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -71,8 +76,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-PAYPAL_CLIENT_ID = "AQie0MKam6S2eIHkiYZTtoNxIJlNdVcD7pJN2aCp5wW-IRurKrBhsWDZ1Jmgnq_aNfyBCzg4FdS9uG5l"
-PAYPAL_SECRET_ID = "ECmL-BwSGdtgNmgebInz_RQ8TPUdnyxIdFJE9xjg2W6iHldKwql7bW4WrYnrB9UMVn_Ubgnvo5L3zzTf"
+PAYPAL_CLIENT_ID = env('PAYPAL_CLIENT_ID')
+PAYPAL_SECRET_ID = env('PAYPAL_SECRET_ID')
 
 DATABASES = {
     "default": {
@@ -81,17 +86,17 @@ DATABASES = {
     }
 }
 
-if ENVIRONMENT == 'production':
-    DEBUG = False
-    SECRET_KEY = os.getenv('SECRET_KEY')
-    SESSION_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_REDIRECT_EXEMPT = []
-    SECURE_SSL_REDIRECT = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# if ENVIRONMENT == 'production':
+#     DEBUG = False
+#     SECRET_KEY = os.getenv('SECRET_KEY')
+#     SESSION_COOKIE_SECURE = True
+#     SECURE_BROWSER_XSS_FILTER = True
+#     SECURE_CONTENT_TYPE_NOSNIFF = True
+#     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+#     SECURE_HSTS_SECONDS = 31536000
+#     SECURE_REDIRECT_EXEMPT = []
+#     SECURE_SSL_REDIRECT = True
+#     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 SITE_ID = 1
@@ -99,6 +104,6 @@ LOGIN_REDIRECT_URL = '/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-STRIPE_PUBLIC_KEY = 'pk_test_51Kw5nlHaBBAjc5DS2FyREpZSQ6BhFoF2pc9Oxak3wjZnf1CGS0see6HHcggu8dbovqdzVo6xol16oDsyfDtlmDKl00dDIiLKA5'
-STRIPE_PRIVATE_KEY = 'sk_test_51Kw5nlHaBBAjc5DSo1oyLsNtPTw2rFaUU7PdSqaiX4IDryTAqLcVZ4X1utQT6hwCL8urhiQaU18arBedsmAvk2QH00jxEvRxw0'
-STRIPE_ENDPOINT_SECRET = 'whsec_f6a66c60a06a9984ca9dd55378ea6eb88a65bef34040eba8921378e087ef2682'
+STRIPE_PUBLIC_KEY = env('STRIPE_PUBLIC_KEY')
+STRIPE_PRIVATE_KEY = env('STRIPE_PRIVATE_KEY')
+STRIPE_ENDPOINT_SECRET = env('STRIPE_ENDPOINT_SECRET')

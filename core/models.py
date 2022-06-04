@@ -69,6 +69,12 @@ class Item(models.Model):
     def get_remove_from_cart_url(self):
         return reverse("core:remove-from-cart", kwargs={'slug': self.slug})
 
+    def get_add_to_wishlist_url(self):
+        return reverse("core:add-to-wishlist", kwargs={'slug': self.slug})
+
+    def get_remove_from_wishlist_url(self):
+        return reverse("core:remove-from-wishlist", kwargs={'slug': self.slug})
+
 
 class OrderItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -144,3 +150,12 @@ class Reviews(models.Model):
         verbose_name='review content'
     )
     review_date = models.DateTimeField(auto_now_add=True)
+
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+    items = models.ManyToManyField(Item, blank=True)
+
+    def __str__(self):
+        return str(self.user)
