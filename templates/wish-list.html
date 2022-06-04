@@ -44,8 +44,12 @@
                                 <button class="cart-remove-btn">Remove</button>
                             </div>
                             <div class="product-price">
-                                <span class="regular-price">$220.08</span>
-                                <span class="price">$150.08</span>
+                                {% if item.discount_price %}
+                                <span class="regular-price">${{ item.price }}</span>
+                                <span class="price">${{ item.discount_price }}</span>
+                                {% else %}
+                                <span class="price">${{ item.price }}</span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -178,8 +182,13 @@
                                 </td>
                                 <td>
                                     <div class="product-price text-center">
-                                        <h4 class="regular-price">$220.88</h4>
-                                        <h3 class="price">$278.58</h3>
+                                        {% if item.discount_price %}
+                                        <h4 class="regular-price">${{ item.price }}</h4>
+                                        <h3 class="price">${{ item.discount_price }}</h3>
+                                        {% else %}
+                                        <h3 class="price">${{ item.price }}</h3>
+                                        {% endif %}
+                                        
                                     </div>
                                 </td>
                                 <td>
