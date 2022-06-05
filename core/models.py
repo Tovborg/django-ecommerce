@@ -31,6 +31,13 @@ FEATURED_PRODUCTS_CHOICES = (
 )
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
+
 class Item(models.Model):
     name = models.CharField(
         max_length=70,
@@ -40,7 +47,7 @@ class Item(models.Model):
         verbose_name='Price'
     )
     discount_price = models.FloatField(blank=True, null=True)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
+    category = models.ManyToManyField(Category)
     label = models.CharField(choices=LABEL_CHOICES, max_length=4)
     image = models.ImageField(upload_to='uploads/', blank=True, null=True)
     slug = models.SlugField()
@@ -144,7 +151,7 @@ class Reviews(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     reviewer = models.CharField(max_length=150, null=True)
-    stars = models.IntegerField(default=1, max_length=5)
+    stars = models.IntegerField(default=1)
     review_text = models.TextField(
         max_length=800,
         verbose_name='review content'

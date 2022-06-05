@@ -19,7 +19,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseNotFound  # new
 from django.views.decorators.csrf import csrf_exempt
 import stripe
 from django.contrib.auth.models import User
-from django.db.models import F
+from django.db.models import F, Q
 from paypal.standard.forms import PayPalPaymentsForm
 from paypal.standard.models import ST_PP_COMPLETED
 from paypal.standard.ipn.signals import valid_ipn_received
@@ -27,6 +27,7 @@ import logging
 from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment
 from paypalcheckoutsdk.orders import OrdersGetRequest
 import sys
+import django_filters
 
 
 class PayPalClient:
@@ -314,6 +315,7 @@ def webhook(request):
 
     return HttpResponse(status=200)
 
+
 # STRIPE PAYMENTS END
 # PAYPAL
 @login_required
@@ -340,6 +342,7 @@ def payment_complete(request):
 
 class PaypalSuccess(TemplateView):
     template_name = 'paypal_success.html'
+
 
 # PAYPAL END
 # Payments end
@@ -459,6 +462,7 @@ class OrderHistoryView(LoginRequiredMixin, View):
         else:
             return render(self.request, 'order_history.html', context)
 
+
 # Wishlist functionality
 
 
@@ -487,7 +491,7 @@ def add_to_wishlist(request, slug):
     if wishlist_qs.exists():
         wishlist = wishlist_qs[0]
         if wishlist.items.filter(slug=item.slug).exists():
-            return redirect('core:home-page')
+            return redirect('core:wishlist')
         else:
             wishlist.items.add(item)
             return redirect('core:wishlist')
@@ -514,3 +518,20 @@ def remove_from_wishlist(request, slug):
             return redirect('core:home-page')
     else:
         return redirect('core:home-page')
+
+
+def ShopGrid(request):
+    all_items = Item.objects.all()
+    categories = Category.objects.all()
+    title_contains_query = request.GET.get('searchwidget1')
+    title_exact_query = request.GET.get('searchwidget1')
+
+    if title_contains_query != '' and title_contains_query is not None:
+        all_items = all_items.filter(name__icontains=title_contains_query)
+    elif title_exact_query != '' and title_exact_query is not None:
+        all_items = all_items.filter(name__iexact=title_exact_query)
+    context = {
+        'object': all_items,
+        'categories': categories
+    }
+    return render(request, 'shop-grid.html', context)
