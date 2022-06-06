@@ -520,18 +520,35 @@ def remove_from_wishlist(request, slug):
         return redirect('core:home-page')
 
 
+def is_valid_queryparam(param):
+    return param != '' and param is not None
+
+
 def ShopGrid(request):
     all_items = Item.objects.all()
     categories = Category.objects.all()
     title_contains_query = request.GET.get('searchwidget1')
     title_exact_query = request.GET.get('searchwidget1')
+    price_min = request.GET.get('minprice1')
+    price_max = request.GET.get('maxprice1')
+    for category in categories:
+        category.field_name = request.GET.get(category.name)
+        if is_valid_queryparam(category.field_name):
+            all_items = all_items.filter(category=category)
 
-    if title_contains_query != '' and title_contains_query is not None:
+    if is_valid_queryparam(title_contains_query):
         all_items = all_items.filter(name__icontains=title_contains_query)
-    elif title_exact_query != '' and title_exact_query is not None:
+    elif is_valid_queryparam(title_exact_query):
         all_items = all_items.filter(name__iexact=title_exact_query)
+
+    if is_valid_queryparam(price_min):
+        all_items = all_items.filter(price__gte=price_min)
+    if is_valid_queryparam(price_max):
+        all_items = all_items.filter(price__lte=price_max)
+
     context = {
         'object': all_items,
         'categories': categories
     }
+
     return render(request, 'shop-grid.html', context)

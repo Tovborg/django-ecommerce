@@ -21,25 +21,59 @@ crossorigin="anonymous"></script>
                       <div class="product-slier-big-image">
                           <div class="product-priview-slide-v2">
                               <div class="single-slide">
+                                  {% if object.home_page_image %}
+                                  <img class="slide-image" src="{{ object.home_page_image.url }}" alt="img">
+                                  {% else %}
                                   <img class="slide-image" src="{% static 'assets/images/home-two-product-image-2.png' %} " alt="product" />
+                                  {% endif %}
+                                  
                               </div>
                               <div class="single-slide">
-                                  <img class="slide-image" src="{% static 'assets/images/home-two-product-image-3.png' %} " alt="product" />
+                                {% if object.home_page_image %}
+                                <img class="slide-image" src="{{ object.home_page_image.url }}" alt="img">
+                                {% else %}
+                                <img class="slide-image" src="{% static 'assets/images/home-two-product-image-2.png' %} " alt="product" />
+                                {% endif %}
                               </div>
                               <div class="single-slide">
-                                  <img class="slide-image" src="{% static 'assets/images/home-two-product-image-1.png' %} " alt="product" />
+                                {% if object.home_page_image %}
+                                <img class="slide-image" src="{{ object.home_page_image.url }}" alt="img">
+                                {% else %}
+                                <img class="slide-image" src="{% static 'assets/images/home-two-product-image-2.png' %} " alt="product" />
+                                {% endif %}
                               </div>
                               <div class="single-slide">
-                                  <img class="slide-image" src="{% static 'assets/images/home-two-product-image-3.png' %} " alt="product" />
+                                {% if object.home_page_image %}
+                                <img class="slide-image" src="{{ object.home_page_image.url }}" alt="img">
+                                {% else %}
+                                <img class="slide-image" src="{% static 'assets/images/home-two-product-image-2.png' %} " alt="product" />
+                                {% endif %}
                               </div>
                           </div>
                       </div>
                       <div class="product-thumbnail-image">
                           <ul class="product-thumb-silide-v2">
-                              <li class="single-item"><img class="single-item-image" src="{% static 'assets/images/home-two-product-image-2.png' %} " alt="product" /></li>
+                              {% if object.shop_grid_image %}
+                              <li class="single-item"><img class="single-item-image" src="{{ object.shop_grid_image.url }}" alt="img"></li>
+                              {% else %}
                               <li class="single-item"><img class="single-item-image" src="{% static 'assets/images/home-two-product-image-3.png' %} " alt="product" /></li>
-                              <li class="single-item"><img class="single-item-image" src="{% static 'assets/images/home-two-product-image-1.png' %} " alt="product" /></li>
+                              {% endif %}
+                              {% if object.shop_grid_image %}
+                              <li class="single-item"><img class="single-item-image" src="{{ object.shop_grid_image.url }}" alt="img"></li>
+                              {% else %}
                               <li class="single-item"><img class="single-item-image" src="{% static 'assets/images/home-two-product-image-3.png' %} " alt="product" /></li>
+                              {% endif %}
+                              {% if object.shop_grid_image %}
+                              <li class="single-item"><img class="single-item-image" src="{{ object.shop_grid_image.url }}" alt="img"></li>
+                              {% else %}
+                              <li class="single-item"><img class="single-item-image" src="{% static 'assets/images/home-two-product-image-3.png' %} " alt="product" /></li>
+                              {% endif %}
+                              {% if object.shop_grid_image %}
+                              <li class="single-item"><img class="single-item-image" src="{{ object.shop_grid_image.url }}" alt="img"></li>
+                              {% else %}
+                              <li class="single-item"><img class="single-item-image" src="{% static 'assets/images/home-two-product-image-3.png' %} " alt="product" /></li>
+                              {% endif %}
+            
                           </ul>
                       </div>
                   </div>

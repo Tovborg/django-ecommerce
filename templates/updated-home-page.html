@@ -79,7 +79,11 @@
             <div class="col-lg-4 col-md-6 col-sm-6">
                 <div class="single-grid-product-v2">
                     <div class="product-top">
+                        {% if order_item.home_page_image %}
+                        <a href="{{ order_item.get_absolute_url }}"><img class="product-thumbnal" src="{{ order_item.home_page_image.url }}" alt="product" /></a>
+                        {% else %}
                         <a href="{{ order_item.get_absolute_url }}"><img class="product-thumbnal" src="{% static 'assets/images/Webp.net-resizeimage.png' %}" alt="product" /></a>
+                        {% endif %}
                         {% if order_item.discount_price %}
                         <div class="product-flags">
                             <span class="product-flag sale">SALE</span>
@@ -207,7 +211,11 @@
                     {% for product in new_arrival %}
                     <div class="single-grid-product-v2">
                         <div class="product-top">
+                            {% if product.home_page_image %}
+                            <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{{product.home_page_image.url}}" alt="product" /></a>
+                            {% else %}
                             <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-4.png' %} " alt="product" /></a>
+                            {% endif %}
                             {% if product.discount_price %}
                             <div class="product-flags">
                                 <span class="product-flag sale">SALE</span>
@@ -282,7 +290,11 @@
                     {% for product in best_selling %}
                     <div class="single-grid-product-v2">
                         <div class="product-top">
-                            <a href="single-product-v2.html"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-4.png' %} " alt="product" /></a>
+                            {% if product.home_page_image %}
+                            <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{{product.home_page_image.url}}" alt="product" /></a>
+                            {% else %}
+                            <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-4.png' %} " alt="product" /></a>
+                            {% endif %}
                             {% if product.discount_price %}
                             <div class="product-flags">
                                 <span class="product-flag sale">SALE</span>
@@ -355,7 +367,11 @@
                 {% for product in on_sale %}
                 <div class="single-grid-product-v2">
                     <div class="product-top">
-                        <a href="single-product-v2.html"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-4.png' %} " alt="product" /></a>
+                        {% if product.home_page_image %}
+                        <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{{product.home_page_image.url}}" alt="product" /></a>
+                        {% else %}
+                        <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-4.png' %} " alt="product" /></a>
+                        {% endif %}
                         {% if product.discount_price %}
                         <div class="product-flags">
                             <span class="product-flag sale">SALE</span>
@@ -425,7 +441,11 @@
                     {% for product in featured %}
                     <div class="single-grid-product-v2">
                         <div class="product-top">
-                            <a href="single-product-v2.html"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-4.png' %} " alt="product" /></a>
+                            {% if product.home_page_image %}
+                            <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{{product.home_page_image.url}}" alt="product" /></a>
+                            {% else %}
+                            <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-4.png' %} " alt="product" /></a>
+                            {% endif %}
                             {% if product.discount_price %}
                             <div class="product-flags">
                                 <span class="product-flag sale">SALE</span>

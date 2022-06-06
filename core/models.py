@@ -33,6 +33,7 @@ FEATURED_PRODUCTS_CHOICES = (
 
 class Category(models.Model):
     name = models.CharField(max_length=20)
+    field_name = models.CharField(max_length=20, default='default')
 
     def __str__(self):
         return self.name
@@ -49,7 +50,11 @@ class Item(models.Model):
     discount_price = models.FloatField(blank=True, null=True)
     category = models.ManyToManyField(Category)
     label = models.CharField(choices=LABEL_CHOICES, max_length=4)
-    image = models.ImageField(upload_to='uploads/', blank=True, null=True)
+    home_page_image = models.ImageField(
+        upload_to='uploads/', blank=True, null=True)
+    shop_grid_image = models.ImageField(
+        upload_to='uploads/', blank=True, null=True)
+
     slug = models.SlugField()
     description = models.TextField(
         max_length=800,
