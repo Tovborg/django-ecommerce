@@ -21,13 +21,10 @@ import stripe
 from django.contrib.auth.models import User
 from django.db.models import F, Q
 from paypal.standard.forms import PayPalPaymentsForm
-from paypal.standard.models import ST_PP_COMPLETED
-from paypal.standard.ipn.signals import valid_ipn_received
 import logging
 from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment
 from paypalcheckoutsdk.orders import OrdersGetRequest
-import sys
-import django_filters
+from django.core.paginator import Paginator
 
 
 class PayPalClient:
@@ -529,26 +526,46 @@ def ShopGrid(request):
     categories = Category.objects.all()
     title_contains_query = request.GET.get('searchwidget1')
     title_exact_query = request.GET.get('searchwidget1')
-    price_min = request.GET.get('minprice1')
-    price_max = request.GET.get('maxprice1')
+    pricemin = request.GET.get('pricemin1')
+    pricemax = request.GET.get('pricemax1')
+
+    used_colors = []
+    for item in all_items:
+        for color in item.color.all():
+            if color not in used_colors:
+                used_colors.append((color.name, color.code))
+    colors = used_colors[::-6]
+
     for category in categories:
         category.field_name = request.GET.get(category.name)
         if is_valid_queryparam(category.field_name):
             all_items = all_items.filter(category=category)
+
+    for color in colors:
+        color_name = color[0]
+        color_code = color[1]
+        color_field_name = request.GET.get(color_name)
+        pagination = Paginator(all_items, 8)
+        page_number = request.GET.get('page')
+        page_obj = pagination.get_page(page_number)
+        if is_valid_queryparam(color_field_name):
+            all_items = all_items.filter(color__name=color_name)
 
     if is_valid_queryparam(title_contains_query):
         all_items = all_items.filter(name__icontains=title_contains_query)
     elif is_valid_queryparam(title_exact_query):
         all_items = all_items.filter(name__iexact=title_exact_query)
 
-    if is_valid_queryparam(price_min):
-        all_items = all_items.filter(price__gte=price_min)
-    if is_valid_queryparam(price_max):
-        all_items = all_items.filter(price__lte=price_max)
+    if is_valid_queryparam(pricemin):
+        all_items = all_items.filter(price__gte=pricemin)
+    if is_valid_queryparam(pricemax):
+        all_items = all_items.filter(price__lte=pricemax)
 
     context = {
         'object': all_items,
-        'categories': categories
+        'categories': categories,
+        'colors': colors,
+        'page_obj': page_obj,
     }
 
     return render(request, 'shop-grid.html', context)

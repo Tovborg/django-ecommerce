@@ -112,26 +112,23 @@ crossorigin="anonymous"></script>
                               </ul>
                           </div>
                           <div class="product-color-area">
-                              <h4 class="color-title">COLOR: WHITE</h4>
+                              <h4 class="color-title" id="current_color">COLOR: WHITE</h4>
                                                               <div class="variable-single-item color-switch">
                           <div class="product-variable-color">
+                              {% for color in object.color.all %}
                               <label>
                                   <input name="modal-product-color"
-                                      class="color-select" type="radio" checked="">
-                                  <span class="product-color-black"></span>
+                                      class="color-select" type="radio" onchange="changeColor({{ color.name }})">
+                                  <span class="product-color-gray" style="background: {{color.code}} !important;"></span>
                               </label>
-                              <label>
-                                  <input name="modal-product-color"
-                                      class="color-select" type="radio">
-                                  <span class="product-color-tomato"></span>
-                              </label>
-
-                              <label>
-                                  <input name="modal-product-color"
-                                      class="color-select" type="radio">
-                                  <span class="product-color-gray"></span>
-                              </label>
+                              {% endfor %}
                           </div>
+                          <script>
+                              let current_color = document.getElementById('current_color');
+                              function changeColor(color) {
+                                  current_color.innerHTML = 'COLOR: ' + color;
+                              }
+                          </script>
                       </div>
                           </div>
                           <div class="prdouct-btn-wrapper d-flex align-items-center">

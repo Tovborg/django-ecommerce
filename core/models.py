@@ -8,7 +8,6 @@ from django_countries.fields import CountryField
 from django.core import validators
 from stripe import Product
 import uuid
-
 # Create your models here.
 
 CATEGORY_CHOICES = (
@@ -29,6 +28,14 @@ FEATURED_PRODUCTS_CHOICES = (
     ('OS', 'On sale'),
     ('FY', 'For you')
 )
+
+
+class Color(models.Model):
+    name = models.CharField(max_length=50)
+    code = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 class Category(models.Model):
@@ -65,6 +72,7 @@ class Item(models.Model):
     featured_products = models.CharField(
         choices=FEATURED_PRODUCTS_CHOICES, max_length=2, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
+    color = models.ManyToManyField(Color)
 
     def get_date(self):
         return self.date_added.strftime('%b %d %Y')
