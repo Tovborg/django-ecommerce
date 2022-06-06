@@ -163,7 +163,7 @@
                                         {% for value, name in form.fields.payment_option.choices %}
                                         <div class="form-group">
                                             <div class="form-check card-check">
-                                                <input class="form-check-input" type="radio" name="payment_option" id="{{ name }}" value="{{ value }}" checked="checked"/>
+                                                <input class="form-check-input" type="radio" name="payment_option" id="{{ name }}" value="{{ value }}" />
                                                 <label class="form-check-label" for="{{ name }}">{{ name }}</label>
                                                 <div class="input-icon">
                                                     <img src="{% static 'assets/images/Stripe-blurple-186x42-76b9615.png' %}" width="187" height="30" alt="payment-method" />
@@ -180,10 +180,35 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="paypal-button-container" class="checkout-btn form-btn"></div>
+                            <div id="paypal-button-container" class="paypal-checkout-btn paypal-form-btn"></div>
+                            {% comment %} <style>
+                                /* Media query for mobile viewport */
+                                @media screen and (max-width: 400px) {
+                                    #paypal-button-container {
+                                        width: 100%;
+                                    }
+                                }
+                                
+                                /* Media query for desktop viewport */
+                                @media screen and (min-width: 400px) {
+                                    #paypal-button-container {
+                                        width: 250px;
+                                    }
+                                }
+                            </style> {% endcomment %}
                             <script src="https://www.paypal.com/sdk/js?client-id=AQie0MKam6S2eIHkiYZTtoNxIJlNdVcD7pJN2aCp5wW-IRurKrBhsWDZ1Jmgnq_aNfyBCzg4FdS9uG5l"></script>
                             <script>
                                 // Listen or changes to the radio fields
+
+                                
+
+                                {% comment %} docReady(function {
+                                    const paypal = document.getElementById('paypal-button-container');
+                                    const stripe = document.getElementById('card-button-container');
+                                    paypal.style.display = 'none';
+                                    stripe.style.display = 'block'
+                                }) {% endcomment %}
+
                                 document.querySelectorAll('input[name=payment_option]').forEach(function(el) {
                                     el.addEventListener('change', function(event) {
                         
@@ -202,6 +227,7 @@
                                 });
 
                                 document.querySelector('#card-button-container').style.display = 'none';
+                                document.querySelector('#paypal-button-container').style.display = 'none';
                         
                                 function getCookie(name) {
                                     var cookieValue = null;

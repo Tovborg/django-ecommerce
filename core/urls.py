@@ -22,5 +22,7 @@ urlpatterns = [
     path('add-to-wishlist/<slug>/', add_to_wishlist, name="add-to-wishlist"),
     path('remove-from-wishlist/<slug>/',
          remove_from_wishlist, name="remove-from-wishlist"),
-    path('shop-grid/', ShopGrid, name="shop-grid")
+    path('shop-grid/', ShopGrid, name="shop-grid"),
+    path('womens/', WomensView.as_view(), name="womens"),
+    path('mens/', MensView.as_view(), name="mens"),
 ]

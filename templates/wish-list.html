@@ -15,91 +15,67 @@
     <!-- mobile-menu-area area end here  -->
 
     <!-- Cart Offcanvas Sidebar Menu area Start here  -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvasSidebar" aria-labelledby="cartOffcanvasSidebarLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="cartOffcanvasSidebarLabel">Shopping Cart</h5>
-          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
+{% if order %}
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvasSidebar" aria-labelledby="cartOffcanvasSidebarLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="cartOffcanvasSidebarLabel">Shopping Cart</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
 
-            <div class="cart-product-list">
+        <div class="cart-product-list">
 
-                <!-- Product item start -->
-                <div class="product-item cart-product-item">
-                    <div class="single-grid-product">
-                        <div class="product-top">
-                            <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
+            <!-- Product item start -->
+            {% for item in products %}
+            <div class="product-item cart-product-item">
+                <div class="single-grid-product">
+                    <div class="product-top">
+                        <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name-part">
+                            <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.item.name }}</a></h3>
+
+                            <div class="cart-quantity input-group">
+                                <a href="{% url 'core:remove_single_item_from_cart' item.item.slug %}"><div class="increase-btn dec qtybutton btn">-</div></a>
+                                <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="{{ item.quantity }}" readonly />
+                                <a href="{% url 'core:add-to-cart' item.item.slug %}"><div class="increase-btn inc qtybutton btn">+</div></a>
+                            </div>
+
+                            <button class="cart-remove-btn"><a href="{{ item.item.get_remove_from_cart_url }}">Remove</a></button>
                         </div>
-                        <div class="product-info">
-                            <div class="product-name-part">
-                                <h4 class="product-catagory">ELLA - HALOTHEMES</h4>
-                                <h3 class="product-name"><a class="product-link" href="single-product.html">Premier Cropped Jean</a></h3>
-
-                                <div class="cart-quantity input-group">
-                                    <div class="increase-btn dec qtybutton btn">-</div>
-                                    <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="1" readonly />
-                                    <div class="increase-btn inc qtybutton btn">+</div>
-                                </div>
-
-                                <button class="cart-remove-btn">Remove</button>
-                            </div>
-                            <div class="product-price">
-                                {% if item.discount_price %}
-                                <span class="regular-price">${{ item.price }}</span>
-                                <span class="price">${{ item.discount_price }}</span>
-                                {% else %}
-                                <span class="price">${{ item.price }}</span>
-                                {% endif %}
-                            </div>
+                        <div class="product-price">
+                            {% if item.item.discount_price %}
+                            <span class="regular-price">${{ item.item.price }}</span>
+                            <span class="price">${{ item.item.discount_price }}</span>
+                            {% else %}
+                            <span class="price">${{ item.get_total_item_price }}</span>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
-                <!-- Product item end -->
-
-                <!-- Product item start -->
-                <div class="product-item cart-product-item">
-                    <div class="single-grid-product">
-                        <div class="product-top">
-                            <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img2.png' %}" alt="cart"></a>
-                        </div>
-                        <div class="product-info">
-                            <div class="product-name-part">
-                                <h4 class="product-catagory">New - Collections</h4>
-                                <h3 class="product-name"><a class="product-link" href="single-product.html">Premier Bag Jean</a></h3>
-
-                                <div class="cart-quantity input-group">
-                                    <div class="increase-btn dec qtybutton btn">-</div>
-                                    <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="1" readonly />
-                                    <div class="increase-btn inc qtybutton btn">+</div>
-                                </div>
-
-                                <button class="cart-remove-btn">Remove</button>
-                            </div>
-                            <div class="product-price">
-                                <span class="regular-price">$215.08</span>
-                                <span class="price">$150.08</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product item end -->
             </div>
+            {% endfor %}
+            <!-- Product item end -->
 
-            <div class="total-bottom-part">
-                <div class="total-count d-flex">
-                    <h3>Total</h3>
-                    <h4>$567.00</h4>
-                </div>
-                <a href="checkout.html" class="proceed-to-btn d-block text-center">
-                    Proceed To Checkout
-                </a>
-                <div class="view-cart-go">
-                    <a href="cart.html">View Cart</a>
-                </div>
-            </div>
-
+            <!-- Product item start -->
+            
+            <!-- Product item end -->
         </div>
-      </div>
+
+        <div class="total-bottom-part">
+            <div class="total-count d-flex">
+                <h3>Total</h3>
+                <h4>${{ order.get_total }}</h4>
+            </div>
+            <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
+                Proceed To Checkout
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endif %}
     <!-- Cart Offcanvas Sidebar Menu area end here  -->
 
     <!-- breadcrumb area start here  -->
@@ -108,7 +84,7 @@
             <div class="breadcrumb-wrap text-center">
                 <h2 class="page-title">Wish List</h2>
                 <ul class="breadcrumb-pages">
-                    <li class="page-item"><a class="page-item-link" href="index.html">Home</a></li>
+                    <li class="page-item"><a class="page-item-link" href="{% url 'core:home-page' %}">Home</a></li>
                     <li class="page-item">Wish List</li>
                 </ul>
             </div>
@@ -138,11 +114,11 @@
                             <tr>
                                 <td>
                                     <div class="product-image">
-                                        <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/product-image-2.png' %}" alt="product" /></a>
+                                        <a href="single-product.html"><img class="product-thumbnal" src="{{ item.shop_grid_image.url }}" alt="product" /></a>
                                         <div class="product-flags">
                                             {% if item.discount_price %}
                                             <span class="product-flag sale">SALE</span>
-                                            <span class="product-flag discount">-15%</span>
+                                            <span class="product-flag discount">-{{ item.get_discount_percentage }}%</span>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -160,22 +136,13 @@
                                         </ul>
                                         <div class="variable-single-item color-switch">
                                             <div class="product-variable-color">
-                                                <label>
-                                                    <input name="modal-product-color"
-                                                        class="color-select" type="radio" checked="">
-                                                    <span class="product-color-black"></span>
-                                                </label>
+                                                {% for color in item.color.all %}
                                                 <label>
                                                     <input name="modal-product-color"
                                                         class="color-select" type="radio">
-                                                    <span class="product-color-tomato"></span>
+                                                    <span class="product-color-gray" style="background: {{color.code}} !important;"></span>
                                                 </label>
-            
-                                                <label>
-                                                    <input name="modal-product-color"
-                                                        class="color-select" type="radio">
-                                                    <span class="product-color-gray"></span>
-                                                </label>
+                                                {% endfor %}
                                             </div>
                                         </div>
                                     </div>
@@ -194,7 +161,6 @@
                                 <td>
                                     <div class="action-area">
                                         <a href="{{ item.get_add_to_cart_url }}" title="Add to cart" class="add-cart action-btn">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
-                                        <a class="buy-btn action-btn mt-15" href="checkout.html">Buy Now</a>
                                     </div>
                                 </td>
                                 <td><a href="{{ item.get_remove_from_wishlist_url }}" ><button class="delet-btn" title="Delete Item"><img src="{% static 'assets/images/close.svg' %}" alt="close" /></button></a></td>

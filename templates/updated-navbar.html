@@ -1,41 +1,6 @@
 {% load static %}
 
 <header class="header-area-v2 d-none d-lg-block">
-    <div class="header-top">
-        <div class="container-fluid">
-            <div class="header-wrap">
-                <div class="header-top-left">
-                    <p class="contact-info"><i class="icon flaticon-phone"></i> Call Us: Insert phone-number</p>
-                </div>
-                <div class="top-bar-menu">
-                    <ul class="menu-list">
-                        <li class="menu-item"><a class="menu-link" href="refund-policy.html"></a></li>
-                        <li class="menu-item"><a class="menu-link" href="about-us.html">About Us</a></li>
-                        <li class="menu-item"><a class="menu-link" href="blog.html">Blog</a></li>
-                        <li class="menu-item"><a class="menu-link" href="faq.html">How To Buy</a></li>
-                    </ul>
-                </div>
-                <div class="switcher-lang-currency">
-                    <div class="currency-switcher">
-                        <a href="#" class="currency">Usd <i class="fas fa-angle-down"></i></a>
-                        <ul class="currency-list">
-                            <li class="single-currency"><span class="flag"><i class="fas fa-dollar-sign"></i></span><a class="currency-text" href="#">USD</a></li>
-                            <li class="single-currency"><span class="flag"><i class="fas fa-pound-sign"></i></span><a class="currency-text" href="#">GBP</a></li>
-                            <li class="single-currency"><span class="flag"><i class="fas fa-euro-sign"></i></span><a class="currency-text" href="#">DKK</a></li>
-                        </ul>
-                    </div>
-                    <div class="lang-switcher">
-                        <a href="#" class="lang">Eng <i class="fas fa-angle-down"></i></a>
-                        <ul class="lang-list">
-                            <li class="single-lang"><a class="lang-text" href="#">Eng</a></li>
-                            <li class="single-lang"><a class="lang-text" href="#">Dan</a></li>
-                            
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="header-middle">
         <div class="header-wrap">
             <div class="search-area">
@@ -52,9 +17,8 @@
             </div>
             <div class="header-right">
                 <ul class="btn-list">
-                    <li class="single-item wishlist-area"><a class="single-btn wishlist-btn" href="wish-list.html"><i class="btn-icon flaticon-like"></i></a></li>
-                    <li class="single-item compare-area"><a class="single-btn compare-btn" href="{% url 'core:checkout-page' %}"><i class="btn-icon flaticon-bar-chart"></i></a></li>
-                    <li class="single-item cart-area"><a class="single-btn cart-btn" href="{% url 'core:checkout-page' %}"><i class="btn-icon flaticon-shopping-bag"></i></a></li>
+                    <li class="single-item wishlist-area"><a class="single-btn wishlist-btn" href="{% url 'core:wishlist' %}"><i class="btn-icon flaticon-like"></i></a></li>
+                    <li class="single-item cart-area"><a class="single-btn cart-btn" data-bs-toggle="offcanvas" href="#cartOffcanvasSidebar" role="button" aria-controls="cartOffcanvasSidebar"><i class="btn-icon flaticon-shopping-bag"></i></a></li>
                     {% if request.user.is_authenticated %}
                     <li class="single-item user-area"><a class="single-btn user-btn" href="{% url 'account_logout' %}"><i class="btn-icon flaticon-user"></i></a></li>
                     {% else %}
@@ -75,23 +39,22 @@
                                 <li class="mega-menu-item">
                                     <a class="mega-menu-title" href="#">Shop Categories</a>
                                     <ul class="menu-items">
-                                        <li class="mega-menu-items"><a class="mega-menu-link" href="shop-grid-left-sidebar.html">All items {% comment %}<span class="menu-item-badge new">New</span>{% endcomment %}</a></li>
-                                        <li class="mega-menu-items"><a class="mega-menu-link" href="shop-grid-right-sidebar.html">Categories</a></li>
-                                        <li class="mega-menu-items"><a class="mega-menu-link" href="shop-grid.html">Womens Jewelry<span class="menu-item-badge trending">Trending</span></a></li>
-                                        <li class="mega-menu-items"><a class="mega-menu-link" href="shop-list-left-sidebar.html">Mens Jewelry</a></li>
-                                        <li class="mega-menu-items"><a class="mega-menu-link" href="shop-list-right-sidebar.html">Accesories</a></li>
-                                        <li class="mega-menu-items"><a class="mega-menu-link" href="shop-list.html">Custom Jewelry</a></li>
+                                        <li class="mega-menu-items"><a class="mega-menu-link" href="{% url 'core:shop-grid' %}">All items {% comment %}<span class="menu-item-badge new">New</span>{% endcomment %}</a></li>
+                                        {% comment %} <li class="mega-menu-items"><a class="mega-menu-link" href="shop-grid-right-sidebar.html">Categories</a></li> {% endcomment %}
+                                        <li class="mega-menu-items"><a class="mega-menu-link" href="{% url 'core:womens' %}">Womens Jewelry<span class="menu-item-badge trending">Trending</span></a></li>
+                                        <li class="mega-menu-items"><a class="mega-menu-link" href="{% url 'core:mens' %}">Mens Jewelry</a></li>
+                                        {% comment %} <li class="mega-menu-items"><a class="mega-menu-link" href="shop-list-right-sidebar.html">Accesories</a></li> {% endcomment %}
+                                        {% comment %} <li class="mega-menu-items"><a class="mega-menu-link" href="shop-list.html">Custom Jewelry</a></li> {% endcomment %}
                                     </ul>
                                 </li>
                                 <li class="mega-menu-item">
                                     <a class="mega-menu-title" href="#">Others</a>
                                     <ul class="menu-items">
 
-                                        <li class="mega-menu-items"><a class="mega-menu-link" href="cart.html">Cart Page</a></li>
-                                        <li class="mega-menu-items"><a class="mega-menu-link" href="checkout.html">Checkout Page</a></li>
-                                        <li class="mega-menu-items"><a class="mega-menu-link" href="compare.html">Compare</a></li>
-                                        <li class="mega-menu-items"><a class="mega-menu-link" href="wish-list.html">Wishlist</a></li>
-                                        <li class="mega-menu-items"><a class="mega-menu-link" href="empty-wish-list.html">Empty Wishlist</a></li>
+                                        <li class="mega-menu-items"><a class="mega-menu-link" href="{% url 'core:checkout' %}">Checkout Page</a></li>
+                                        {% comment %} <li class="mega-menu-items"><a class="mega-menu-link" href="compare.html">Compare</a></li> {% endcomment %}
+                                        <li class="mega-menu-items"><a class="mega-menu-link" href="{% url 'core:wishlist' %}">Wishlist</a></li>
+                                        {% comment %} <li class="mega-menu-items"><a class="mega-menu-link" href="empty-wish-list.html">Empty Wishlist</a></li> {% endcomment %}
                                     </ul>
                                 </li>
                                 <li class="mega-menu-item">
@@ -132,18 +95,19 @@
             </ul>
         </nav>
     </div>
+    
 </header>
 <div class="mobile-header-area d-block d-lg-none">
     <div class="container">
         <div class="menu-wrap">
             <div class="header-left">
-                <a class="brand-logo" href="index.html"><img class="brand-image" src="{% static 'assets/images/zairito-home-two.png' %}" alt="zairito" /></a>
+                <a class="brand-logo" href="{% url 'core:home-page' %}"><h1 style="color: #0D7862; font-size: 35px;" class="brand-logo">Tovborg</h1></a>
             </div>
             <div class="header-right">
                 <ul class="btn-list">
-                    <li class="single-item wishlist-area"><a class="single-btn wishlist-btn" href="wish-list.html"><i class="btn-icon flaticon-like"></i></a></li>
-                    <li class="single-item compare-area"><a class="single-btn compare-btn" href="compare.html"><i class="btn-icon flaticon-bar-chart"></i></a></li>
+                    <li class="single-item wishlist-area"><a class="single-btn wishlist-btn" href="{% url 'core:wishlist' %}"><i class="btn-icon flaticon-like"></i></a></li>
                     <li class="single-item cart-area"><a class="single-btn cart-btn" data-bs-toggle="offcanvas" href="#cartOffcanvasSidebar" role="button" aria-controls="cartOffcanvasSidebar"><i class="btn-icon flaticon-shopping-bag"></i></a></li>
+                    {% comment %} <li class="single-item cart-area"><a class="single-btn cart-btn" data-bs-toggle="offcanvas" href="{% url 'core:checkout-page' %}" role="button" aria-controls="cartOffcanvasSidebar"><i class="btn-icon flaticon-shopping-bag"></i></a></li> {% endcomment %}
                     <li class="single-item user-area"><a class="single-btn user-btn" href="sign-in.html"><i class="btn-icon flaticon-user"></i></a></li>
                 </ul>
                 <button class="menu-bar" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMobileMenu" aria-controls="offcanvasMobileMenu"><i class="fas fa-bars"></i></button>
@@ -154,58 +118,23 @@
 <div class="offcanvas offcanvas-start menu-offcanvas" tabindex="-1" id="offcanvasMobileMenu">
     <div class="mobile-menu-area">
         <div class="offcanvas-header">
-            <a class="brand-logo" href="index.html"><img class="brand-image" src="{% static 'assets/images/zairito-home-two.png' %}" alt="zairito" /></a>
+            <a class="brand-logo" href="{% url 'core:home-page' %}"><h1 style="color: #0D7862; font-size: 40px;" class="brand-logo" >Tovborg</h1></a>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <div class="menu-search-form">
-            <form>
-                <div class="search-wrap">
-                    <select class="form-select">
-                        <option selected>Category</option>
-                        <option value="1">Health & Beauty</option>
-                        <option value="2">Women's Fashion</option>
-                        <option value="3">Men's Fashion</option>
-                        <option value="4">Electronic</option>
-                        <option value="5">Sports </option>
-                    </select>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="mobilesearch" name="search" placeholder="Search Here" />
-                        <button type="button" class="search-btn"><i class="flaticon-search"></i></button>
-                    </div>
-                </div>
-            </form>
-        </div>
+        
         <nav class="main-menu">
             <ul class="menu-list">
                 <li class="menu-item">
                     <span class="menu-expand"></span>
-                    <a class="menu-link" href="#">Home</a>
-                    <ul class="sub-menu">
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="index.html">Home One</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="index2.html">Home Two</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="index3.html">Home Three</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <span class="menu-expand"></span>
                     <a class="menu-link" href="#">Shop</a>
                     <ul class="sub-menu">
-                        <li class="sub-menu-item"><a class="sub-menu-title" href="#">Shop Layout</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="shop-grid-left-sidebar.html">Shop Grid Leftsidebar <span class="menu-item-badge new">New</span></a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="shop-grid-right-sidebar.html">Shop Grid Rightsidebar </a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="shop-grid.html">Shop Grid No Sidebar <span class="menu-item-badge trending">Trending</span></a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="shop-list-left-sidebar.html">Shop List Leftsidebar</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="shop-list-right-sidebar.html">Shop List Rightsidebar</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="shop-list.html">Shop List No Sidebar</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-title" href="#">List Layout & Others</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="single-product.html">Product Single 1</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="single-product-v2.html">Product Single 2</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="single-product-v3.html">Product Single 3</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="cart.html">Cart Page</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="checkout.html">Checkout Page</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="compare.html">Compare</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="wish-list.html">Wishlist</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link"  href="empty-wish-list.html">Empty Wishlist</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-title" href="#">Shop Categories</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="{% url 'core:shop-grid' %}">All Items</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="{% url 'core:womens' %}">Womens Jewelry</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="{% url 'core:mens' %}">Mens Jewelry</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-title" href="#">Others</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="{% url 'core:checkout-page' %}">Checkout Page</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="{% url 'core:wishlist' %}">Wishlist</a></li>
                     </ul>
                 </li>
                 <li class="menu-item">
@@ -257,6 +186,8 @@
         </div>
     </div>
 </div>
+
+
 <!-- Js file  -->
 
 

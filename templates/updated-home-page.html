@@ -1,6 +1,67 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+{% if order %}
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvasSidebar" aria-labelledby="cartOffcanvasSidebarLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="cartOffcanvasSidebarLabel">Shopping Cart</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="cart-product-list">
+
+            <!-- Product item start -->
+            {% for item in products %}
+            <div class="product-item cart-product-item">
+                <div class="single-grid-product">
+                    <div class="product-top">
+                        <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name-part">
+                            <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.item.name }}</a></h3>
+
+                            <div class="cart-quantity input-group">
+                                <a href="{% url 'core:remove_single_item_from_cart' item.item.slug %}"><div class="increase-btn dec qtybutton btn">-</div></a>
+                                <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="{{ item.quantity }}" readonly />
+                                <a href="{% url 'core:add-to-cart' item.item.slug %}"><div class="increase-btn inc qtybutton btn">+</div></a>
+                            </div>
+
+                            <button class="cart-remove-btn"><a href="{{ item.item.get_remove_from_cart_url }}">Remove</a></button>
+                        </div>
+                        <div class="product-price">
+                            {% if item.item.discount_price %}
+                            <span class="regular-price">${{ item.item.price }}</span>
+                            <span class="price">${{ item.item.discount_price }}</span>
+                            {% else %}
+                            <span class="price">${{ item.get_total_item_price }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- Product item end -->
+
+            <!-- Product item start -->
+            
+            <!-- Product item end -->
+        </div>
+
+        <div class="total-bottom-part">
+            <div class="total-count d-flex">
+                <h3>Total</h3>
+                <h4>${{ order.get_total }}</h4>
+            </div>
+            <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
+                Proceed To Checkout
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endif %}
 <div id="preloader">
     <div id="status">
         <img src="{% static 'assets/images/preloader.svg' %}" alt="img" />
@@ -17,7 +78,7 @@
                             <p class="hero-text">Curabitur non nulla sit amet nisl tempus convallis quis lectus. porttitor lectus 
                                 nibh. Curabitur arcu erat, accu msan id imperdiet et, porttitor at. Cras ultricies ligula sed magna dictum porta. Donec rutrum congue eget malesuaa. Lorem </p>
                             <div class="hero-btn">
-                                <a href="shop-grid.html" class="secondary-btn">See Colections <i class="iocn flaticon-right-arrow"></i></a>
+                                <a href="{% url 'core:shop-grid' %}" class="secondary-btn">See Collections <i class="iocn flaticon-right-arrow"></i></a>
                             </div>
                         </div>
                     </div>
@@ -69,40 +130,39 @@
 <div class="popular-categories-area-v2 section">
 </div>
 {% if featured %}
-<div class="featured-products-area-v2 section-bg-two section-top pb-100">
+<div class="featured-products-area-v2 section-bg-two section-top pb-100 tab-content" id="FeaturedProductsTabContent">
     <div class="container">
         <div class="section-header-two text-center">
             <h2 class="section-title">Featured Products</h2>
         </div>
-        <div class="row">
-            {% for order_item in featured %}
-            <div class="col-lg-4 col-md-6 col-sm-6">
+        <div class="tab-pane fade show active">
+            <div class="recommend-product-slide">
+                {% for product in featured %}
                 <div class="single-grid-product-v2">
                     <div class="product-top">
-                        {% if order_item.home_page_image %}
-                        <a href="{{ order_item.get_absolute_url }}"><img class="product-thumbnal" src="{{ order_item.home_page_image.url }}" alt="product" /></a>
+                        {% if product.home_page_image %}
+                        <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{{product.home_page_image.url}}" alt="product" /></a>
                         {% else %}
-                        <a href="{{ order_item.get_absolute_url }}"><img class="product-thumbnal" src="{% static 'assets/images/Webp.net-resizeimage.png' %}" alt="product" /></a>
+                        <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-4.png' %} " alt="product" /></a>
                         {% endif %}
-                        {% if order_item.discount_price %}
+                        {% if product.discount_price %}
                         <div class="product-flags">
                             <span class="product-flag sale">SALE</span>
-                            <span class="product-flag discount">-15%</span>
+                            <span class="product-flag discount">-{{ product.get_discount_percentage }}%</span>
                         </div>
                         {% endif %}
-                        
                         <ul class="prdouct-btn-wrapper">
                             <li class="single-product-btn">
                                 <a class="addToWishlist product-btn" href="compare.html" title="Add to compare"><i class="icon flaticon-bar-chart"></i></a>
                             </li>
                             <li class="single-product-btn">
-                                <a class="addCompare product-btn" href="{{ order_item.get_add_to_wishlist_url }}" title="Add to wishlist"><i class="icon flaticon-like"></i></a>
+                                <a class="addCompare product-btn" href="{{ product.get_add_to_wishlist_url }}" title="Add to wishlist"><i class="icon flaticon-like"></i></a>
                             </li>
                         </ul>
                     </div>
                     <div class="product-info text-center">
-                        <h4 class="product-catagory">New - Collection</h4>
-                        <h3 class="product-name"><a class="product-link" href="{{ order_item.get_absolute_url }}">{{ order_item.name }}</a></h3>
+                        <h4 class="product-catagory">{{ product.get_label_display }}</h4>
+                        <h3 class="product-name"><a class="product-link" href="single-product-v2.html">{{ product.name }}</a></h3>
                         <ul class="product-review">
                             <li class="review-item active"><i class="flaticon-star"></i></li>
                             <li class="review-item active"><i class="flaticon-star"></i></li>
@@ -111,16 +171,14 @@
                             <li class="review-item"><i class="flaticon-star"></i></li>
                         </ul>
                         <div class="product-price">
-                            
-                            {% if order_item.discount_price %}
-                            <span class="regular-price">${{ order_item.price }}</span>
-                            <span class="price">${{ order_item.discount_price }}</span>
+                            {% if product.discount_price %}
+                            <span class="regular-price">${{ product.price }}</span>
+                            <span class="price">${{ product.discount_price }}</span>
                             {% else %}
-                            <span class="price">${{ order_item.price }}</span>
+                            <span class="price">${{ product.price }}</span>
                             {% endif %}
-                            
                         </div>
-                        {% comment %} <div class="variable-single-item color-switch">
+                        <div class="variable-single-item color-switch">
                             <div class="product-variable-color">
                                 <label>
                                     <input name="modal-product-color"
@@ -139,17 +197,19 @@
                                     <span class="product-color-gray"></span>
                                 </label>
                             </div>
-                        </div> {% endcomment %}
+                        </div>
                         <ul class="size-switch">
                             <li class="single-size active">XL</li>
                             <li class="single-size">LARGE</li>
                             <li class="single-size">SMALL</li>
                         </ul>
-                        <a href="{{ order_item.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
+                        <a href="{{ product.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
                     </div>
                 </div>
+                {% endfor %}
+                
+
             </div>
-            {% endfor %}
         </div>
     </div>
 </div>
@@ -219,7 +279,7 @@
                             {% if product.discount_price %}
                             <div class="product-flags">
                                 <span class="product-flag sale">SALE</span>
-                                <span class="product-flag discount">-15%</span>
+                                <span class="product-flag discount">-{{ product.get_discount_percentage }}%</span>
                             </div>
                             {% endif %}
                             <ul class="prdouct-btn-wrapper">
@@ -298,7 +358,7 @@
                             {% if product.discount_price %}
                             <div class="product-flags">
                                 <span class="product-flag sale">SALE</span>
-                                <span class="product-flag discount">-15%</span>
+                                <span class="product-flag discount">-{{ product.get_discount_percentage }}%</span>
                             </div>
                             {% endif %}
                             <ul class="prdouct-btn-wrapper">
@@ -375,7 +435,7 @@
                         {% if product.discount_price %}
                         <div class="product-flags">
                             <span class="product-flag sale">SALE</span>
-                            <span class="product-flag discount">-15%</span>
+                            <span class="product-flag discount">-{{ product.get_discount_percentage }}%</span>
                         </div>
                         {% endif %}
                         <ul class="prdouct-btn-wrapper">
@@ -449,7 +509,7 @@
                             {% if product.discount_price %}
                             <div class="product-flags">
                                 <span class="product-flag sale">SALE</span>
-                                <span class="product-flag discount">-15%</span>
+                                <span class="product-flag discount">-{{ product.get_discount_percentage }}%</span>
                             </div>
                             {% endif %}
                             <ul class="prdouct-btn-wrapper">

@@ -7933,7 +7933,7 @@ secendary-tabs
   resize: none;
 }
 
-.contact-us-area .contact-form-area .form-btn {
+.contact-us-area .contact-form-area .form-btn .paypal-form-btn {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -15838,4 +15838,28 @@ secendary-tabs
   -ms-flex-pack: justify;
   justify-content: space-between;
   padding-bottom: 3rem;
+}
+
+.paypal-btn {
+  background-color: #96B480;
+  width: 100%;
+  height: 50px;
+  display: block;
+  border: 0;
+  font-size: 15px;
+  font-weight: 700;
+  -webkit-transition: all 0.3s linear;
+  transition: all 0.3s linear;
+}
+
+.paypal-checkout-btn {
+  width: 100%;
+  height: 50px;
+  display: block;
+  border: 0;
+  font-size: 15px;
+  font-weight: 700;
+  -webkit-transition: all 0.3s linear;
+  transition: all 0.3s linear;
+  color: var(--white);
 }

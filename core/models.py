@@ -22,12 +22,20 @@ LABEL_CHOICES = (
     ('OBG', 'Old but gold')
 )
 
+
 FEATURED_PRODUCTS_CHOICES = (
     ('NA', 'New arrival'),
     ('BS', 'Best selling'),
     ('OS', 'On sale'),
     ('FY', 'For you')
 )
+
+
+class Size(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 class Color(models.Model):
@@ -54,6 +62,7 @@ class Item(models.Model):
     price = models.FloatField(
         verbose_name='Price'
     )
+    sizes = models.ManyToManyField(Size, blank=True)
     discount_price = models.FloatField(blank=True, null=True)
     category = models.ManyToManyField(Category)
     label = models.CharField(choices=LABEL_CHOICES, max_length=4)
@@ -94,6 +103,9 @@ class Item(models.Model):
 
     def get_remove_from_wishlist_url(self):
         return reverse("core:remove-from-wishlist", kwargs={'slug': self.slug})
+
+    def get_discount_percentage(self):
+        return round((1 - (self.discount_price / self.price)) * 100)
 
 
 class OrderItem(models.Model):

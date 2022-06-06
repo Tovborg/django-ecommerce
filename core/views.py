@@ -41,13 +41,17 @@ stripe.api_key = settings.STRIPE_PRIVATE_KEY
 logger = logging.getLogger(__name__)
 
 
-class NavbarView(TemplateView):
-    template_name = "updated-navbar.html"
-
-
 class HomeView(View):
     def get(self, *args, **kwargs):
         try:
+            order_qs = Order.objects.filter(
+                user=self.request.user, ordered=False)
+            if order_qs.exists():
+                order = order_qs[0]
+                products = order.items.filter(
+                    ordered=False, user=self.request.user)
+                order_items = OrderItem.objects.filter(
+                    ordered=False, user=self.request.user)
             featured_products = Item.objects.filter(
                 featured=True
             )
@@ -64,8 +68,11 @@ class HomeView(View):
                 'featured': featured_products,
                 'new_arrival': new_arrival,
                 'best_selling': best_selling,
-                'on_sale': on_sale
+                'on_sale': on_sale,
+                'products': order_items,
+                'order': order,
             }
+
             return render(self.request, 'updated-home-page.html', context)
         except ObjectDoesNotExist:
             return render(self.request, 'updated-home-page.html')
@@ -122,7 +129,7 @@ class CheckoutView(View):
             return redirect('core:checkout-page')
         except ObjectDoesNotExist:
             messages.error(self.request, "You do not have an active order")
-            return redirect("core:order-summary")
+            return redirect("core:home-page")
 
 
 class ItemDetailView(DetailView):
@@ -361,7 +368,7 @@ def remove_from_cart(request, slug):
             order.items.remove(order_item)
             order_item.delete()
             messages.info(request, "This item was removed from your cart")
-            return redirect("core:order-summary")
+            return redirect("core:home-page")
         else:
             messages.info(request, "This item was not in your cart")
             return redirect("core:product-page", slug=slug)
@@ -431,7 +438,7 @@ def add_to_cart(request, slug):
             user=request.user,
             ordered_date=ordered_date,
             username=request.user,
-            order_identifier=Order.objects.all().last().order_identifier + 1
+            # order_identifier=Order.objects.all().last().order_identifier + 1
         )
         order.items.add(order_item)
         messages.info(request, "This item was added to your cart.")
@@ -471,8 +478,18 @@ class WishListView(ListView):
         if wishlist_qs.exists():
             wishlist = wishlist_qs[0]
             wishlist_items = wishlist.items.all()
+            order_qs = Order.objects.filter(
+                user=self.request.user, ordered=False)
+            if order_qs.exists():
+                order = order_qs[0]
+                products = order.items.filter(
+                    ordered=False, user=self.request.user)
+                order_items = OrderItem.objects.filter(
+                    ordered=False, user=self.request.user)
             context = {
-                'object': wishlist_items
+                'object': wishlist_items,
+                'products': order_items,
+                'order': order,
             }
             return render(self.request, "wish-list.html", context)
         else:
@@ -548,6 +565,14 @@ def ShopGrid(request):
         pagination = Paginator(all_items, 8)
         page_number = request.GET.get('page')
         page_obj = pagination.get_page(page_number)
+        order_qs = Order.objects.filter(
+            user=request.user, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            products = order.items.filter(
+                ordered=False, user=request.user)
+            order_items = OrderItem.objects.filter(
+                ordered=False, user=request.user)
         if is_valid_queryparam(color_field_name):
             all_items = all_items.filter(color__name=color_name)
 
@@ -566,6 +591,54 @@ def ShopGrid(request):
         'categories': categories,
         'colors': colors,
         'page_obj': page_obj,
+        'products': order_items,
+        'order': order,
     }
 
     return render(request, 'shop-grid.html', context)
+
+
+class WomensView(ListView):
+    def get(self, *args, **kwargs):
+        all_items = Item.objects.filter(category__field_name='womens')
+        pagination = Paginator(all_items, 8)
+        page_number = self.request.GET.get('page')
+        page_obj = pagination.get_page(page_number)
+        order_qs = Order.objects.filter(
+            user=self.request.user, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            products = order.items.filter(
+                ordered=False, user=self.request.user)
+            order_items = OrderItem.objects.filter(
+                ordered=False, user=self.request.user)
+        context = {
+            'object': all_items,
+            'page_obj': page_obj,
+            'products': order_items,
+            'order': order,
+        }
+        return render(self.request, 'womens.html', context)
+
+
+class MensView(ListView):
+    def get(self, *args, **kwargs):
+        all_items = Item.objects.filter(category__field_name='mens_jewellery')
+        pagination = Paginator(all_items, 8)
+        page_number = self.request.GET.get('page')
+        page_obj = pagination.get_page(page_number)
+        order_qs = Order.objects.filter(
+            user=self.request.user, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            products = order.items.filter(
+                ordered=False, user=self.request.user)
+            order_items = OrderItem.objects.filter(
+                ordered=False, user=self.request.user)
+        context = {
+            'object': all_items,
+            'page_obj': page_obj,
+            'products': order_items,
+            'order': order,
+        }
+        return render(self.request, 'mens.html', context)
