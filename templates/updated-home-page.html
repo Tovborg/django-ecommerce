@@ -180,22 +180,15 @@
                         </div>
                         <div class="variable-single-item color-switch">
                             <div class="product-variable-color">
-                                <label>
-                                    <input name="modal-product-color"
-                                        class="color-select" type="radio" checked="">
-                                    <span class="product-color-black"></span>
-                                </label>
-                                <label>
-                                    <input name="modal-product-color"
-                                        class="color-select" type="radio">
-                                    <span class="product-color-tomato"></span>
-                                </label>
-
-                                <label>
-                                    <input name="modal-product-color"
-                                        class="color-select" type="radio">
-                                    <span class="product-color-gray"></span>
-                                </label>
+                                {% for color in product.color.all %}
+                                    <label>
+                                        
+                                        <input name="modal-product-color"
+                                            class="color-select" type="radio">
+                                        <span class="product-color-tomato" style="background: {{ color.code }} !important;"></span>
+                                        
+                                    </label>
+                                {% endfor %}
                             </div>
                         </div>
                         <ul class="size-switch">
@@ -311,22 +304,15 @@
                             </div>
                             <div class="variable-single-item color-switch">
                                 <div class="product-variable-color">
+                                    {% for color in product.color.all %}
                                     <label>
-                                        <input name="modal-product-color"
-                                            class="color-select" type="radio" checked="">
-                                        <span class="product-color-black"></span>
-                                    </label>
-                                    <label>
+                                        
                                         <input name="modal-product-color"
                                             class="color-select" type="radio">
-                                        <span class="product-color-tomato"></span>
+                                        <span class="product-color-tomato" style="background: {{ color.code }} !important;"></span>
+                                        
                                     </label>
-
-                                    <label>
-                                        <input name="modal-product-color"
-                                            class="color-select" type="radio">
-                                        <span class="product-color-gray"></span>
-                                    </label>
+                                    {% endfor %}
                                 </div>
                             </div>
                             <ul class="size-switch">
@@ -390,22 +376,15 @@
                             </div>
                             <div class="variable-single-item color-switch">
                                 <div class="product-variable-color">
+                                    {% for color in product.color.all %}
                                     <label>
-                                        <input name="modal-product-color"
-                                            class="color-select" type="radio" checked="">
-                                        <span class="product-color-black"></span>
-                                    </label>
-                                    <label>
+                                        
                                         <input name="modal-product-color"
                                             class="color-select" type="radio">
-                                        <span class="product-color-tomato"></span>
+                                        <span class="product-color-tomato" style="background: {{ color.code }} !important;"></span>
+                                        
                                     </label>
-
-                                    <label>
-                                        <input name="modal-product-color"
-                                            class="color-select" type="radio">
-                                        <span class="product-color-gray"></span>
-                                    </label>
+                                    {% endfor %}
                                 </div>
                             </div>
                             <ul class="size-switch">
@@ -467,22 +446,15 @@
                         </div>
                         <div class="variable-single-item color-switch">
                             <div class="product-variable-color">
-                                <label>
-                                    <input name="modal-product-color"
-                                        class="color-select" type="radio" checked="">
-                                    <span class="product-color-black"></span>
-                                </label>
-                                <label>
-                                    <input name="modal-product-color"
-                                        class="color-select" type="radio">
-                                    <span class="product-color-tomato"></span>
-                                </label>
-
-                                <label>
-                                    <input name="modal-product-color"
-                                        class="color-select" type="radio">
-                                    <span class="product-color-gray"></span>
-                                </label>
+                                {% for color in product.color.all %}
+                                    <label>
+                                        
+                                        <input name="modal-product-color"
+                                            class="color-select" type="radio">
+                                        <span class="product-color-tomato" style="background: {{ color.code }} !important;"></span>
+                                        
+                                    </label>
+                                {% endfor %}
                             </div>
                         </div>
                         <ul class="size-switch">

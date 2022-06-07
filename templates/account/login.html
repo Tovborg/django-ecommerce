@@ -30,18 +30,21 @@
                           <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                         </div>
                         {% endif %}
+                        <script></script>
                         <div class="form-group">
                           <button type="submit" class="form-control btn btn-primary rounded submit px-3 primary-btn">{% trans "Sign In" %}</button>
                         </div>
                         <div class="remember-box form-group d-md-flex justify-content-between mb-0">
                           <div>
                               <label class="checkbox-wrap">Remember Me
-                                  <input type="checkbox" checked="checked">
+                                  <input type="checkbox" name="remember" class="checkboxinput form-check-input" id="id_remember">
                                   <span class="checkmark"></span>
-                                </label>
+                              </label>
                           </div>
                           <div class="text-md-end text-lg-end">
                               <a href="javascript:void(0)" class="forget-password-link">Forgot Password?</a>
+                              <br>
+                              <a href="{% url 'account_signup' %}" class="forget-password-link">Don't have an account?</a>
                           </div>
                         </div>
                       </form>
@@ -51,5 +54,12 @@
       </div>
   </div>
 </main>
+<script>
+  const remember_me = document.getElementById('div_id_remember');
+  function hideElement(element) {
+    element.style.display = 'none';
+  }
+  hideElement(remember_me);
+</script>
 {% endblock content %}
 

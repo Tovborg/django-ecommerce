@@ -44,14 +44,6 @@ logger = logging.getLogger(__name__)
 class HomeView(View):
     def get(self, *args, **kwargs):
         try:
-            order_qs = Order.objects.filter(
-                user=self.request.user, ordered=False)
-            if order_qs.exists():
-                order = order_qs[0]
-                products = order.items.filter(
-                    ordered=False, user=self.request.user)
-                order_items = OrderItem.objects.filter(
-                    ordered=False, user=self.request.user)
             featured_products = Item.objects.filter(
                 featured=True
             )
@@ -69,16 +61,27 @@ class HomeView(View):
                 'new_arrival': new_arrival,
                 'best_selling': best_selling,
                 'on_sale': on_sale,
-                'products': order_items,
-                'order': order,
+                # 'products': order_items,
+                # 'order': order,
             }
+            if self.request.user.is_authenticated:
+                order_qs = Order.objects.filter(
+                    user=self.request.user, ordered=False)
+                if order_qs.exists():
+                    order = order_qs[0]
+                    products = order.items.filter(
+                        ordered=False, user=self.request.user)
+                    order_items = OrderItem.objects.filter(
+                        ordered=False, user=self.request.user)
+                    context['products'] = order_items
+                    context['order'] = order
 
             return render(self.request, 'updated-home-page.html', context)
         except ObjectDoesNotExist:
             return render(self.request, 'updated-home-page.html')
 
 
-class CheckoutView(View):
+class CheckoutView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         try:
             order_qs = Order.objects.filter(
@@ -165,57 +168,6 @@ class ItemDetailView(DetailView):
             return HttpResponse('not a post request')
 
 
-class ShirtView(ListView):
-    def get(self, *args, **kwargs):
-
-        shirt_items = Item.objects.filter(
-            category='S'
-        )
-        context = {
-            'items': shirt_items
-        }
-        if shirt_items.exists():
-            return render(self.request, 'shirts.html', context)
-        else:
-            messages.info(
-                self.request, "There are currently no items in this category")
-            return redirect("/")
-
-
-class SportWearsView(ListView):
-    def get(self, *args, **kwargs):
-
-        sportwears_items = Item.objects.filter(
-            category='SW'
-        )
-        context = {
-            'items': sportwears_items
-        }
-        if sportwears_items.exists():
-            return render(self.request, 'sportwear.html', context)
-        else:
-            messages.info(
-                self.request, "There are currently no items in this category")
-            return redirect("/")
-
-
-class OutwearView(ListView):
-    def get(self, *args, **kwargs):
-
-        outwear = Item.objects.filter(
-            category='OW'
-        )
-        context = {
-            'items': outwear
-        }
-        if outwear.exists():
-            return render(self.request, 'outwear.html', context)
-        else:
-            messages.info(
-                self.request, "There are currently no items in this category")
-            return redirect("/")
-
-
 class OrderSummaryView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         try:
@@ -236,6 +188,7 @@ class OrderSummaryView(LoginRequiredMixin, View):
 # STRIPE PAYMENT
 
 # Creates stripe checkout session
+@login_required
 @csrf_exempt
 def create_checkout_session(request):
     order_qs = Order.objects.filter(user=request.user, ordered=False)
@@ -313,6 +266,8 @@ def webhook(request):
             items = item.item
             items.times_ordered = F('times_ordered') + item.quantity
             items.save()
+            item.ordered = True
+            item.save()
             # ... handle other event types
     else:
         print('Unhandled event type {}'.format(event.type))
@@ -334,6 +289,12 @@ def payment_complete(request):
     response = PPClient.client.execute(requestorder)
 
     order_qs = Order.objects.filter(user=request.user, ordered=False)
+    for item in order_qs[0].items.all():
+        items = item.item
+        items.times_ordered = F('times_ordered') + item.quantity
+        items.save()
+        item.ordered = True
+        item.save()
     order_qs.update(
         email=response.result.payer.email_address,
         amount=int(float(response.result.purchase_units[0].amount.value)),
@@ -438,7 +399,6 @@ def add_to_cart(request, slug):
             user=request.user,
             ordered_date=ordered_date,
             username=request.user,
-            # order_identifier=Order.objects.all().last().order_identifier + 1
         )
         order.items.add(order_item)
         messages.info(request, "This item was added to your cart.")
@@ -452,25 +412,10 @@ def payment_finished(request):
     return redirect("core:home-page")
 
 
-class OrderHistoryView(LoginRequiredMixin, View):
-    def get(self, *args, **kwargs):
-        order = Order.objects.filter(
-            user=self.request.user
-        )
-        context = {
-            'object': order,
-        }
-        if order.count() == 0:
-            messages.error(self.request, "You do not have an active order")
-            return redirect("core:home-page")
-        else:
-            return render(self.request, 'order_history.html', context)
-
-
 # Wishlist functionality
 
 
-class WishListView(ListView):
+class WishListView(LoginRequiredMixin, ListView):
     def get(self, *args, **kwargs):
         wishlist_qs = Wishlist.objects.filter(
             user=self.request.user
@@ -478,19 +423,23 @@ class WishListView(ListView):
         if wishlist_qs.exists():
             wishlist = wishlist_qs[0]
             wishlist_items = wishlist.items.all()
-            order_qs = Order.objects.filter(
-                user=self.request.user, ordered=False)
-            if order_qs.exists():
-                order = order_qs[0]
-                products = order.items.filter(
-                    ordered=False, user=self.request.user)
-                order_items = OrderItem.objects.filter(
-                    ordered=False, user=self.request.user)
+
             context = {
                 'object': wishlist_items,
                 'products': order_items,
                 'order': order,
             }
+            if self.request.user.is_authenticated:
+                order_qs = Order.objects.filter(
+                    user=self.request.user, ordered=False)
+                if order_qs.exists():
+                    order = order_qs[0]
+                    products = order.items.filter(
+                        ordered=False, user=self.request.user)
+                    order_items = OrderItem.objects.filter(
+                        ordered=False, user=self.request.user)
+                    context['products'] = order_items
+                    context['order'] = order
             return render(self.request, "wish-list.html", context)
         else:
             return redirect('core:home-page')
@@ -543,8 +492,8 @@ def ShopGrid(request):
     categories = Category.objects.all()
     title_contains_query = request.GET.get('searchwidget1')
     title_exact_query = request.GET.get('searchwidget1')
-    pricemin = request.GET.get('pricemin1')
-    pricemax = request.GET.get('pricemax1')
+    pricemin = request.GET.get('minprice1')
+    pricemax = request.GET.get('maxprice1')
 
     used_colors = []
     for item in all_items:
@@ -565,14 +514,7 @@ def ShopGrid(request):
         pagination = Paginator(all_items, 8)
         page_number = request.GET.get('page')
         page_obj = pagination.get_page(page_number)
-        order_qs = Order.objects.filter(
-            user=request.user, ordered=False)
-        if order_qs.exists():
-            order = order_qs[0]
-            products = order.items.filter(
-                ordered=False, user=request.user)
-            order_items = OrderItem.objects.filter(
-                ordered=False, user=request.user)
+
         if is_valid_queryparam(color_field_name):
             all_items = all_items.filter(color__name=color_name)
 
@@ -584,16 +526,25 @@ def ShopGrid(request):
     if is_valid_queryparam(pricemin):
         all_items = all_items.filter(price__gte=pricemin)
     if is_valid_queryparam(pricemax):
-        all_items = all_items.filter(price__lte=pricemax)
+        all_items = all_items.filter(price__lt=pricemax)
 
     context = {
         'object': all_items,
         'categories': categories,
         'colors': colors,
         'page_obj': page_obj,
-        'products': order_items,
-        'order': order,
     }
+    if request.user.is_authenticated:
+        order_qs = Order.objects.filter(
+            user=request.user, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            products = order.items.filter(
+                ordered=False, user=request.user)
+            order_items = OrderItem.objects.filter(
+                ordered=False, user=request.user)
+            context['products'] = order_items
+            context['order'] = order
 
     return render(request, 'shop-grid.html', context)
 
@@ -604,20 +555,21 @@ class WomensView(ListView):
         pagination = Paginator(all_items, 8)
         page_number = self.request.GET.get('page')
         page_obj = pagination.get_page(page_number)
-        order_qs = Order.objects.filter(
-            user=self.request.user, ordered=False)
-        if order_qs.exists():
-            order = order_qs[0]
-            products = order.items.filter(
-                ordered=False, user=self.request.user)
-            order_items = OrderItem.objects.filter(
-                ordered=False, user=self.request.user)
         context = {
             'object': all_items,
             'page_obj': page_obj,
-            'products': order_items,
-            'order': order,
         }
+        if self.request.user.is_authenticated:
+            order_qs = Order.objects.filter(
+                user=self.request.user, ordered=False)
+            if order_qs.exists():
+                order = order_qs[0]
+                products = order.items.filter(
+                    ordered=False, user=self.request.user)
+                order_items = OrderItem.objects.filter(
+                    ordered=False, user=self.request.user)
+                context['products'] = order_items
+                context['order'] = order
         return render(self.request, 'womens.html', context)
 
 
@@ -627,18 +579,20 @@ class MensView(ListView):
         pagination = Paginator(all_items, 8)
         page_number = self.request.GET.get('page')
         page_obj = pagination.get_page(page_number)
-        order_qs = Order.objects.filter(
-            user=self.request.user, ordered=False)
-        if order_qs.exists():
-            order = order_qs[0]
-            products = order.items.filter(
-                ordered=False, user=self.request.user)
-            order_items = OrderItem.objects.filter(
-                ordered=False, user=self.request.user)
+
         context = {
             'object': all_items,
             'page_obj': page_obj,
-            'products': order_items,
-            'order': order,
         }
+        if self.request.user.is_authenticated:
+            order_qs = Order.objects.filter(
+                user=self.request.user, ordered=False)
+            if order_qs.exists():
+                order = order_qs[0]
+                products = order.items.filter(
+                    ordered=False, user=self.request.user)
+                order_items = OrderItem.objects.filter(
+                    ordered=False, user=self.request.user)
+                context['products'] = order_items
+                context['order'] = order
         return render(self.request, 'mens.html', context)

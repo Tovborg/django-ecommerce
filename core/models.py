@@ -145,9 +145,8 @@ class Order(models.Model):
     ordered = models.BooleanField(default=False)
     billing_address = models.ForeignKey(
         'BillingAddress', on_delete=models.SET_NULL, blank=True, null=True)
-    order_number = models.UUIDField(
-        primary_key=False, default=uuid.uuid4, editable=False)
-    order_identifier = models.IntegerField(default=0, null=True, unique=True)
+    order_identifier = models.IntegerField(
+        default=0, null=True, blank=True)
 
     def __str__(self):
         return self.username

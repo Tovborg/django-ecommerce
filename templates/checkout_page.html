@@ -116,7 +116,7 @@
                     <div class="checkout-form">
                         <form method="POST">
                         {% csrf_token %}
-                            <div class="row">
+                            <div class="row" id="BillingAddressForm">
                                 <div class="col-lg-12">
                                     <h2 class="checkout-title">Billing Address</h2>
                                 </div>
@@ -216,18 +216,21 @@
                                         if (event.target.value === 'P') {
                                             document.querySelector('#card-button-container').style.display = 'none';
                                             document.querySelector('#paypal-button-container').style.display = 'inline-block';
+                                            document.getElementById('BillingAddressForm').style.display = 'none';
                                         }
                         
                                         // If Card is selected, show the standard continue button
                                         if (event.target.value === 'S') {
                                             document.querySelector('#card-button-container').style.display = 'inline-block';
                                             document.querySelector('#paypal-button-container').style.display = 'none';
+                                            document.getElementById('BillingAddressForm').style.display = 'flex';
                                         }
                                     });
                                 });
 
                                 document.querySelector('#card-button-container').style.display = 'none';
                                 document.querySelector('#paypal-button-container').style.display = 'none';
+                                
                         
                                 function getCookie(name) {
                                     var cookieValue = null;

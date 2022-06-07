@@ -32,7 +32,13 @@
                         <div class="form-group">
                           <button type="submit" class="form-control btn btn-primary rounded submit px-3 primary-btn">{% trans "Sign Up" %}</button>
                         </div>
+                        <div class="remember-box form-group d-md-flex justify-content-between mb-0">
+                          <div class="text-md-end text-lg-end">
+                              <a href="{% url 'account_login' %}" class="forget-password-link">Already have an account?</a>
+                          </div>
+                        </div>
                       </form>
+                      
                   </div>
               </div>
           </div>

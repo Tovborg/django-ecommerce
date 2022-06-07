@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 <header class="header-area-v2 d-none d-lg-block">
     <div class="header-middle">
@@ -20,7 +21,20 @@
                     <li class="single-item wishlist-area"><a class="single-btn wishlist-btn" href="{% url 'core:wishlist' %}"><i class="btn-icon flaticon-like"></i></a></li>
                     <li class="single-item cart-area"><a class="single-btn cart-btn" data-bs-toggle="offcanvas" href="#cartOffcanvasSidebar" role="button" aria-controls="cartOffcanvasSidebar"><i class="btn-icon flaticon-shopping-bag"></i></a></li>
                     {% if request.user.is_authenticated %}
-                    <li class="single-item user-area"><a class="single-btn user-btn" href="{% url 'account_logout' %}"><i class="btn-icon flaticon-user"></i></a></li>
+                    <form method="post" action="{% url 'account_logout' %}" id="account-logout-form">
+                        {% csrf_token %}
+                        {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                        {% endif %}
+                        <a class="single-item user-area" href="#" onclick="formSubmit()" style="display:block !important;"><li class="single-item user-area"><i class="btn-icon flaticon-user"></i></li></a>
+                    </form>
+                    <script>
+                        function formSubmit() {
+                            document.getElementById("account-logout-form").submit();
+                        }
+                    </script>
+                    
+                    
                     {% else %}
                     <li class="single-item user-area"><a class="single-btn user-btn" href="{% url 'account_login' %}"><i class="btn-icon flaticon-user"></i></a></li>
                     {% endif %}
@@ -51,7 +65,7 @@
                                     <a class="mega-menu-title" href="#">Others</a>
                                     <ul class="menu-items">
 
-                                        <li class="mega-menu-items"><a class="mega-menu-link" href="{% url 'core:checkout' %}">Checkout Page</a></li>
+                                        <li class="mega-menu-items"><a class="mega-menu-link" href="{% url 'core:checkout-page' %}">Checkout Page</a></li>
                                         {% comment %} <li class="mega-menu-items"><a class="mega-menu-link" href="compare.html">Compare</a></li> {% endcomment %}
                                         <li class="mega-menu-items"><a class="mega-menu-link" href="{% url 'core:wishlist' %}">Wishlist</a></li>
                                         {% comment %} <li class="mega-menu-items"><a class="mega-menu-link" href="empty-wish-list.html">Empty Wishlist</a></li> {% endcomment %}

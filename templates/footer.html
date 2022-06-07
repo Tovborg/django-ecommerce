@@ -17,12 +17,9 @@
                   <div class="single-widget">
                       <h3 class="widget-title mobile-dropdown-title">Shop by</h3>
                       <ul class="widget-menu show">
-                          <li class="meni-item"><a class="menu-link" href="shop-grid-left-sidebar.html">Appliances</a></li>
-                          <li class="meni-item"><a class="menu-link" href="shop-grid-right-sidebar.html">Computers & Laptops</a></li>
-                          <li class="meni-item"><a class="menu-link" href="shop-grid.html">Cameras</a></li>
-                          <li class="meni-item"><a class="menu-link" href="shop-list.html">Mobile Phones </a></li>
-                          <li class="meni-item"><a class="menu-link" href="shop-list-right-sidebar.html">Televisions</a></li>
-                          <li class="meni-item"><a class="menu-link" href="shop-list-left-sidebar.html">Video Games</a></li>
+                          <li class="meni-item"><a class="menu-link" href="{% url 'core:shop-grid' %}">All Items</a></li>
+                          <li class="meni-item"><a class="menu-link" href="{% url 'core:womens' %}">Womens Jewelry</a></li>
+                          <li class="meni-item"><a class="menu-link" href="{% url 'core:mens' %}">Mens Jewelry</a></li>
                       </ul>
                   </div>
               </div>
