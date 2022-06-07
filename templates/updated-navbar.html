@@ -26,8 +26,9 @@
                         {% if redirect_field_value %}
                         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
                         {% endif %}
-                        <a class="single-item user-area" href="#" onclick="formSubmit()" style="display:block !important;"><li class="single-item user-area"><i class="btn-icon flaticon-user"></i></li></a>
+                       
                     </form>
+                    <li class="single-item user-area"><a class="single-btn user-btn" onclick="formSubmit()"><i class="btn-icon flaticon-user"></i></a></li>
                     <script>
                         function formSubmit() {
                             document.getElementById("account-logout-form").submit();
@@ -81,30 +82,10 @@
                     </div>
                 </li>
                 
-                <li class="menu-item menu-item-has-children">
-                    <a class="menu-link" href="index2.html">Pages <i class="arrow-icon fas fa-angle-down"></i></a>
-                    <ul class="sub-menu">
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="term-conditions.html">Term & Conditions</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="privacy-policy.html">Privacy Policy</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="shipping-return.html">Shipping & Return</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="faq.html">Frequently Asked Questions</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="refund-policy.html">Refund policy</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="error.html">Error Page</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="sign-in.html">Sign In</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="sign-up.html">Sign Up</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item"><a class="menu-link" href="about-us.html">about us</a></li>
-                
-                <li class="menu-item menu-item-has-children">
-                    <a class="menu-link" href="index2.html">Blog <i class="arrow-icon fas fa-angle-down"></i></a>
-                    <ul class="sub-menu">
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="blog.html">Blog Grid</a></li>
-                        <li class="sub-menu-item"><a class="sub-menu-link" href="single-blog.html">Blog Single</a></li>
-                    </ul>
-                </li>
+            
 
-                <li class="menu-item"><a class="menu-link" href="contact.html">Contact</a></li>
+
+                <li class="menu-item"><a class="menu-link" href="{% url 'core:contact' %}">Contact</a></li>
                 
             </ul>
         </nav>

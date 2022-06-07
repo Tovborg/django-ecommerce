@@ -36,3 +36,11 @@ class ReviewForm(forms.Form):
     reviewer = forms.CharField(max_length=200)
     stars = forms.IntegerField(max_value=5, min_value=1)
     review_text = forms.Textarea()
+
+
+class ContactForm(forms.Form):
+    first_name = forms.CharField(max_length=200)
+    last_name = forms.CharField(max_length=200)
+    phone_number = forms.CharField(max_length=200)
+    email = forms.EmailField()
+    message = forms.CharField(widget=forms.Textarea)

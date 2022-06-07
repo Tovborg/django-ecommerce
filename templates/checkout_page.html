@@ -22,85 +22,63 @@
 <!-- Cart Offcanvas Sidebar Menu area Start here  -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvasSidebar" aria-labelledby="cartOffcanvasSidebarLabel">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="cartOffcanvasSidebarLabel">Shopping Cart</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      <h5 class="offcanvas-title" id="cartOffcanvasSidebarLabel">Shopping Cart</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
 
         <div class="cart-product-list">
 
             <!-- Product item start -->
+            {% for item in products %}
             <div class="product-item cart-product-item">
                 <div class="single-grid-product">
                     <div class="product-top">
-                        <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %}" alt="cart"></a>
+                        <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
                     </div>
                     <div class="product-info">
                         <div class="product-name-part">
-                            <h4 class="product-catagory">ELLA - HALOTHEMES</h4>
-                            <h3 class="product-name"><a class="product-link" href="single-product.html">Premier Cropped Jean</a></h3>
+                            <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.item.name }}</a></h3>
 
                             <div class="cart-quantity input-group">
-                                <div class="increase-btn dec qtybutton btn">-</div>
-                                <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="1" readonly />
-                                <div class="increase-btn inc qtybutton btn">+</div>
+                                <a href="{% url 'core:remove_single_item_from_cart' item.item.slug %}"><div class="increase-btn dec qtybutton btn">-</div></a>
+                                <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="{{ item.quantity }}" readonly />
+                                <a href="{% url 'core:add-to-cart' item.item.slug %}"><div class="increase-btn inc qtybutton btn">+</div></a>
                             </div>
 
-                            <button class="cart-remove-btn">Remove</button>
+                            <button class="cart-remove-btn"><a href="{{ item.item.get_remove_from_cart_url }}">Remove</a></button>
                         </div>
                         <div class="product-price">
-                            <span class="regular-price">$220.08</span>
-                            <span class="price">$150.08</span>
+                            {% if item.item.discount_price %}
+                            <span class="regular-price">${{ item.item.price }}</span>
+                            <span class="price">${{ item.item.discount_price }}</span>
+                            {% else %}
+                            <span class="price">${{ item.get_total_item_price }}</span>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
+            {% endfor %}
             <!-- Product item end -->
 
             <!-- Product item start -->
-            <div class="product-item cart-product-item">
-                <div class="single-grid-product">
-                    <div class="product-top">
-                        <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img2.png' %}" alt="cart"></a>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name-part">
-                            <h4 class="product-catagory">New - Collections</h4>
-                            <h3 class="product-name"><a class="product-link" href="single-product.html">Premier Bag Jean</a></h3>
-
-                            <div class="cart-quantity input-group">
-                                <div class="increase-btn dec qtybutton btn">-</div>
-                                <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="1" readonly />
-                                <div class="increase-btn inc qtybutton btn">+</div>
-                            </div>
-
-                            <button class="cart-remove-btn">Remove</button>
-                        </div>
-                        <div class="product-price">
-                            <span class="regular-price">$215.08</span>
-                            <span class="price">$150.08</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
             <!-- Product item end -->
         </div>
 
         <div class="total-bottom-part">
             <div class="total-count d-flex">
                 <h3>Total</h3>
-                <h4>$567.00</h4>
+                <h4>${{ order.get_total }}</h4>
             </div>
-            <a href="checkout.html" class="proceed-to-btn d-block text-center">
+            <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
                 Proceed To Checkout
             </a>
-            <div class="view-cart-go">
-                <a href="cart.html">View Cart</a>
-            </div>
         </div>
 
     </div>
-    </div>
+</div>
 <!-- Cart Offcanvas Sidebar Menu area end here  -->
 
 <!-- breadcrumb area start here  -->
@@ -311,7 +289,7 @@
                                     {% if order_item.item.discount_price %}
                                     <h3 class="price">${{ order_item.item.discount_price }}</h3>
                                     {% else %}
-                                    <h3 class="price">${{ order_item.item.price }}</h3>
+                                    <h3 class="price">${{ order_item.get_final_price }}</h3>
                                     {% endif %}
                                 </div>
                             </li>
@@ -335,4 +313,5 @@
         </div>
     </div>
 </section>
+<script src="https://js.stripe.com/v3/"></script>
 {% endblock content %}

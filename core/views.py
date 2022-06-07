@@ -13,7 +13,7 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.contrib import messages
 import json
-from .forms import CheckoutForm, ReviewForm
+from .forms import CheckoutForm, ReviewForm, ContactForm
 from django.conf import settings  # new
 from django.http import JsonResponse, HttpResponse, HttpResponseNotFound  # new
 from django.views.decorators.csrf import csrf_exempt
@@ -39,6 +39,10 @@ class PayPalClient:
 YOUR_DOMAIN = 'http://127.0.0.1:8000/'
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
 logger = logging.getLogger(__name__)
+
+
+def entry_not_found(request, exception):
+    return render(request, '404.html')
 
 
 class HomeView(View):
@@ -98,7 +102,17 @@ class CheckoutView(LoginRequiredMixin, View):
                 'object': products,
                 'order': cart_order,
             }
-
+            if self.request.user.is_authenticated:
+                order_qs = Order.objects.filter(
+                    user=self.request.user, ordered=False)
+                if order_qs.exists():
+                    order = order_qs[0]
+                    products = order.items.filter(
+                        ordered=False, user=self.request.user)
+                    order_items = OrderItem.objects.filter(
+                        ordered=False, user=self.request.user)
+                    context['products'] = order_items
+                    context['order'] = order
             return render(self.request, "checkout_page.html", context)
         except ObjectDoesNotExist:
             messages.error(self.request, "You do not have an active order")
@@ -166,21 +180,6 @@ class ItemDetailView(DetailView):
             return HttpResponse(json.dumps({'message': 'test'}))
         else:
             return HttpResponse('not a post request')
-
-
-class OrderSummaryView(LoginRequiredMixin, View):
-    def get(self, *args, **kwargs):
-        try:
-            order = OrderItem.objects.filter(
-                user=self.request.user, ordered=False)
-            cart_order = Order.objects.get(
-                user=self.request.user, ordered=False)
-            context = {'object': order, 'order': cart_order}
-            return render(self.request, 'order_summary.html', context)
-
-        except ObjectDoesNotExist:
-            messages.error(self.request, "You do not have an active order")
-            return redirect("/")
 
 
 # Payments
@@ -426,8 +425,6 @@ class WishListView(LoginRequiredMixin, ListView):
 
             context = {
                 'object': wishlist_items,
-                'products': order_items,
-                'order': order,
             }
             if self.request.user.is_authenticated:
                 order_qs = Order.objects.filter(
@@ -531,8 +528,8 @@ def ShopGrid(request):
     context = {
         'object': all_items,
         'categories': categories,
-        'colors': colors,
-        'page_obj': page_obj,
+        'colors': colors,  # colors
+        'page_obj': page_obj  # pagination
     }
     if request.user.is_authenticated:
         order_qs = Order.objects.filter(
@@ -596,3 +593,40 @@ class MensView(ListView):
                 context['products'] = order_items
                 context['order'] = order
         return render(self.request, 'mens.html', context)
+
+
+class ContactView(View):
+    def get(self, *args, **kwargs):
+        context = {}
+        if self.request.user.is_authenticated:
+            order_qs = Order.objects.filter(
+                user=self.request.user, ordered=False)
+            if order_qs.exists():
+                order = order_qs[0]
+                products = order.items.filter(
+                    ordered=False, user=self.request.user)
+                order_items = OrderItem.objects.filter(
+                    ordered=False, user=self.request.user)
+                context['products'] = order_items
+                context['order'] = order
+        return render(self.request, 'contact.html', context)
+
+    def post(self, *args, **kwargs):
+        form = ContactForm(self.request.POST or None)
+        if self.request.method == 'POST':
+            first_name = self.request.POST.get('FirstName')
+            last_name = self.request.POST.get('LastName')
+            email = self.request.POST.get('EmailAddress')
+            phone_number = self.request.POST.get('ContactNumber')
+            message = self.request.POST.get('message')
+            contact = to_contact(
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                phone=phone_number,
+                message=message
+            )
+            print(first_name, last_name, email, phone_number, message)
+            contact.save()
+
+            return redirect('core:home-page')

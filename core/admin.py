@@ -4,7 +4,5 @@ from .models import *
 admin.site.register(Item)
 admin.site.register(OrderItem)
 admin.site.register(Order)
-admin.site.register(Reviews)
-admin.site.register(Wishlist)
 admin.site.register(Category)
-admin.site.register(Color)
+admin.site.register(to_contact)
