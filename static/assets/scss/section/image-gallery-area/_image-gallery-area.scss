@@ -1,0 +1,85 @@
+/*-------------------------
+#.image-gallery-area
+--------------------------*/
+.image-gallery-area  {
+    .single-gallery {
+        position: relative;
+        margin-bottom: 2rem;
+        .gallery-image {
+            width: 100%;
+            height: auto;
+        }
+        .popuo-overlay {
+            @include flex-position(flex, center, center);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(239, 27, 39, 0.3);
+            left: 0;
+            top: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: $transition;
+            .popup-image {
+                @include flex-position(flex, center, center);
+                width: 5.4rem;
+                height: 5.4rem;
+                border-radius: 50%;
+                background-color: var(--black);
+                color: var(--white);
+                font-size: 2.5rem;
+                line-height: 1;
+                transition: $transition;
+                .view-icon {
+                    position: relative;
+                    top: 2px;
+                    &::before {
+                        line-height: 1;
+                    }
+                }
+                &:hover {
+                    color: var(--white);
+                    background-color: var(--primary-color);
+                }
+            }
+        }
+        &:hover {
+            .popuo-overlay {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+    }
+}
+@media (max-width: 1399px) {
+    .image-gallery-area .single-gallery.big-height img {
+        height: 495px;
+    }
+}
+@media (max-width: 1199px) {
+    .image-gallery-area .single-gallery.big-height img {
+        height: 330px;
+        object-fit: cover;
+    }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+	.image-gallery-area .section-header-area .sub-title {
+        margin-bottom: 1.5rem;
+    }
+    .image-gallery-area .section-header-area .section-title {
+        font-size: 2.2rem;
+    }
+    .image-gallery-area .section-header-area {
+        margin-bottom: 3rem;
+    }
+}
+@media (max-width: 991px) {
+    .image-gallery-area .single-gallery.big-height img {
+        height: 315px;
+    }
+}
+@media (max-width: 767px) {
+    .image-gallery-area .single-gallery.big-height img {
+        height: auto;
+    }
+}

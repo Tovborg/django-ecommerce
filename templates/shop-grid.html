@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load cart_template_tags %}
+
+{% block content %}
+<body>
+    <!-- Preloader Area Start -->
+    <div id="preloader">
+        <div id="status">
+            <img src="{% static 'assets/images/preloader.svg' %} " alt="img" />
+        </div>
+    </div>
+    <!-- Preloader Area End -->
+    
+    <!-- mobile-menu-area area end here  -->
+
+    <!-- Cart Offcanvas Sidebar Menu area Start here  -->
+{% if order %}
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvasSidebar" aria-labelledby="cartOffcanvasSidebarLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="cartOffcanvasSidebarLabel">Shopping Cart</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="cart-product-list">
+
+            <!-- Product item start -->
+            {% for item in products %}
+            <div class="product-item cart-product-item">
+                <div class="single-grid-product">
+                    <div class="product-top">
+                        <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name-part">
+                            <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.item.name }}</a></h3>
+
+                            <div class="cart-quantity input-group">
+                                <a href="{% url 'core:remove_single_item_from_cart' item.item.slug %}"><div class="increase-btn dec qtybutton btn">-</div></a>
+                                <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="{{ item.quantity }}" readonly />
+                                <a href="{% url 'core:add-to-cart' item.item.slug %}"><div class="increase-btn inc qtybutton btn">+</div></a>
+                            </div>
+
+                            <button class="cart-remove-btn"><a href="{{ item.item.get_remove_from_cart_url }}">Remove</a></button>
+                        </div>
+                        <div class="product-price">
+                            {% if item.item.discount_price %}
+                            <span class="regular-price">${{ item.item.price }}</span>
+                            <span class="price">${{ item.item.discount_price }}</span>
+                            {% else %}
+                            <span class="price">${{ item.get_total_item_price }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- Product item end -->
+
+            <!-- Product item start -->
+            
+            <!-- Product item end -->
+        </div>
+
+        <div class="total-bottom-part">
+            <div class="total-count d-flex">
+                <h3>Total</h3>
+                <h4>${{ order.get_total }}</h4>
+            </div>
+            <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
+                Proceed To Checkout
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endif %}
+    <!-- Cart Offcanvas Sidebar Menu area end here  -->
+
+    <!-- breadcrumb area start here  -->
+    <div class="breadcrumb-area">
+        <div class="container">
+            <div class="breadcrumb-wrap text-center">
+                <h2 class="page-title">Product Collections</h2>
+                <ul class="breadcrumb-pages">
+                    <li class="page-item"><a class="page-item-link" href="{% url 'core:home-page' %}">Home</a></li>
+                    <li class="page-item">Product Collections</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb area end here  -->
+
+    <!-- Product Area Start -->
+    <div class="product-area section">
+        <div class="container">
+            <div class="product-section-top">
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <div class="product-section-top-left">
+                            <button class="filter-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                                Filter <img src="{% static 'assets/images/angle-down.svg' %}" alt="angle-down" />
+                            </button>
+                            <div class="list-grid-view">
+                                <a href="shop-list.html" class="view-btn list-view"><img class="view-icon" src="{% static 'assets/images/view-list.svg' %}" alt="view-list" /></a>
+                                <a href="shop-grid.html" class="view-btn grid-view active"><img class="view-icon" src="{% static 'assets/images/view-grid.svg' %}" alt="view-grid" /></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="product-filter">
+                            <p class="shoing-result">Showing 1 - 9 of 9 result</p>
+                            <form>
+                                <select class="form-select">
+                                    <option selected>Default Sorting</option>
+                                    <option value="1">Categories</option>
+                                    <option value="2">Colors</option>
+                                    <option value="3">Tags</option>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-list">
+                <div class="row">
+                    {% for item in page_obj %}
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="single-grid-product">
+                            <div class="product-top">
+                                {% if item.shop_grid_image %}
+                                <a href="{{ item.get_absolute_url }}"><img class="product-thumbnal" src="{{ item.shop_grid_image.url }}" alt="product" /></a>
+                                {% else %}
+                                <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/product-image-1.png' %}" alt="product" /></a>
+                                {% endif %}
+                                
+                                <ul class="prdouct-btn-wrapper">
+                                    <li class="single-product-btn">
+                                        <a class="addCompare product-btn" href="{{ item.get_add_to_wishlist_url }}" title="Add to wishlist"><i class="icon flaticon-like"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="product-info text-center">
+                                <h4 class="product-catagory">{{ item.get_category_display }}</h4>
+                                <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.name }}</a></h3>
+                                <ul class="product-review">
+                                    
+                                    <li class="review-item active"><i class="flaticon-star"></i></li>
+                                    <li class="review-item active"><i class="flaticon-star"></i></li>
+                                    <li class="review-item active"><i class="flaticon-star"></i></li>
+                                    <li class="review-item"><i class="flaticon-star"></i></li>
+                                    <li class="review-item"><i class="flaticon-star"></i></li>
+                                </ul>
+                                <div class="product-price">
+                                    {% if item.discount_price %}
+                                    <span class="regular-price">${{ item.price }}</span>
+                                    <span class="price">${{ item.discount_price }}</span>
+                                    {% else %}
+                                    <span class="price">${{ item.price }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="variable-single-item color-switch">
+                                    <div class="product-variable-color">
+                                        {% for color in item.color.all %}
+                                        <label>
+                                            
+                                            <input name="modal-product-color"
+                                                class="color-select" type="radio">
+                                            <span class="product-color-tomato" style="background: {{ color.code }} !important;"></span>
+                                            
+                                        </label>
+                                        {% endfor %}
+
+                                    </div>
+                                </div>
+
+                                <ul class="size-switch">
+                                    <li class="single-size active">XL</li>
+                                    <li class="single-size">LARGE</li>
+                                    <li class="single-size">SMALL</li>
+                                </ul>
+                                
+                                <a href="{{ item.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="pagination-area mt-30">
+                    <ul class="paginations text-center">
+                        {% if page_obj.has_previous %}
+                        <li class="pagination-page"><a href="?page={{ page_obj.previous_page_number }}" class="pagination-link"><i class="fas fa-angle-double-left"></i></a></li>
+                        {% endif %}
+                        {% for page in page_obj.paginator.page_range %}
+                        <li class="pagination-page active"><a href="?page={{page}}" class="pagination-link">{{ page }}</a></li>
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                        <li class="pagination-page"><a href="?page={{ page_obj.next_page_number }}" class="pagination-link"><i class="fas fa-angle-double-right"></i></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- For Mobile Filter Sidebar Start -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Filter</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="sidebar-widget-area">
+                <div class="single-widget search-widget p-0 bg-transparent">
+                    <h3 class="widget-title">Search Here</h3>
+                    <form method="GET" action=".">
+                        <div class="form-group">
+                            <input type="text" class="form-control bg-color" id="searchwidget1" name="searchwidget1" placeholder="Product Store" />
+                            <button type="submit" class="search-btn"><i class="flaticon-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+                <div class="single-widget categories-widget p-0 bg-transparent">
+                    <h3 class="widget-title">Categories</h3>
+                    <div class="categories-list">
+                        <form id="category_form">
+                            {% for category in categories %}
+                            <div class="single-categorie">
+                                <div class="categorie-left">
+                                    <input class="form-check-input" type="checkbox" name="{{ category.name }}" id="Tshirts1" onchange="document.getElementById('category_form').submit()">
+                                    <label class="form-check-label" for="Tshirts1">{{ category.name }}</label>
+                                </div>
+                                <span class="categories-count">16</span>
+                            </div>
+                            {% endfor %}
+                        </form>
+                    </div>
+                </div>
+                <div class="single-widget price-widget p-0 bg-transparent">
+                    <h3 class="widget-title">Price</h3>
+                    <form action="#">
+                        <div class="price-wrap">
+                            <div class="price-wrap-left">
+                                <div class="single-price">
+                                    <input type="number" class="form-control" id="minprice1" name="minprice1" placeholder="$ Min" />
+                                </div>
+                                <div class="single-price">
+                                    <input type="number" class="form-control" id="maxprice1" name="maxprice1" placeholder="$ Max" />
+                                </div>
+                            </div>
+                            <button type="submit" class="price-submit"><i class="fas fa-play"></i></button>
+                        </div>
+                    </form>
+                </div>
+                <div class="single-widget colors-widget p-0 bg-transparent">
+    
+                    <h3 class="widget-title">Colors</h3>
+                    <div class="colors-list">
+                        <form id="color-form">
+                            {% for color in colors %}
+                            <div class="single-colors">
+                                <div class="colors-left">
+                                    <input class="form-check-input green" type="checkbox" id="Jungle1" style="background-color: {{ color|index:1 }} !important;" name="{{ color|index:0 }}" onchange="document.getElementById('color-form').submit()">
+                                    <label class="form-check-label" for="Jungle1" >{{ color|index:0 }}</label>
+                                </div>
+                                <span class="colors-count">15</span>
+                            </div>
+                            {% endfor %}
+                        </form>
+                    </div>
+                </div>
+                <div class="single-widget size-widget p-0 bg-transparent">
+                    <h3 class="widget-title">Size</h3>
+                    <div class="size-list">
+                        <div class="single-size">
+                            <input class="form-check-input" type="checkbox" id="SMALL1">
+                            <label class="form-check-label" for="SMALL1">SMALL</label>
+                        </div>
+                        <div class="single-size">
+                            <input class="form-check-input" type="checkbox" id="MEDIUM1">
+                            <label class="form-check-label" for="MEDIUM1">MEDIUM</label>
+                        </div>
+                        <div class="single-size">
+                            <input class="form-check-input" type="checkbox" id="LARGE1">
+                            <label class="form-check-label" for="LARGE1">LARGE</label>
+                        </div>
+                        <div class="single-size">
+                            <input class="form-check-input" type="checkbox" id="XL1">
+                            <label class="form-check-label" for="XL1">XL</label>
+                        </div>
+                        <div class="single-size">
+                            <input class="form-check-input" type="checkbox" id="XXL1">
+                            <label class="form-check-label" for="XXL1">XXL</label>
+                        </div>
+                        <div class="single-size">
+                            <input class="form-check-input" type="checkbox" id="XXXL1">
+                            <label class="form-check-label" for="XXXL1">XXXL</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="single-widget rating-widget p-0 bg-transparent">
+                    <h3 class="widget-title">Rating</h3>
+                    <ul class="rating-list">
+                        <li class="rating-item">
+                            <a class="rating-link" href="#">
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star active"></i>
+                            </a>
+                        </li>
+                        <li class="rating-item">
+                            <a class="rating-link" href="#">
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star"></i>
+                                <span class="and-up-text">And Up</span>
+                            </a>
+                        </li>
+                        <li class="rating-item">
+                            <a class="rating-link" href="#">
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star"></i>
+                                <i class="flaticon-star"></i>
+                                <span class="and-up-text">And Up</span>
+                            </a>
+                        </li>
+                        <li class="rating-item">
+                            <a class="rating-link" href="#">
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star"></i>
+                                <i class="flaticon-star"></i>
+                                <i class="flaticon-star"></i>
+                                <span class="and-up-text">And Up</span>
+                            </a>
+                        </li>
+                        <li class="rating-item">
+                            <a class="rating-link" href="#">
+                                <i class="flaticon-star active"></i>
+                                <i class="flaticon-star"></i>
+                                <i class="flaticon-star"></i>
+                                <i class="flaticon-star"></i>
+                                <i class="flaticon-star"></i>
+                                <span class="and-up-text">And Up</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- For Mobile Filter Sidebar End -->
+
+    <!-- Product Area End -->
+
+    <!-- shop map area start here -->
+   
+    
+    <!-- shop map area start here -->
+
+    <!-- footer area start here -->
+    
+    <!-- footer area end here -->
+    
+    <!-- Js file  -->
+</body>
+{% endblock content %}
+
+

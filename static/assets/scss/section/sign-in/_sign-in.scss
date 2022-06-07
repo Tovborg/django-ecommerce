@@ -1,0 +1,144 @@
+/*-------------------------
+#.Sign In Page area
+--------------------------*/
+.login-wrap {
+    position: relative;
+    background-color: #fff;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow:  0px 10px 34px -15px rgba(0,0,0,.24);
+    .icon {
+        width: 80px;
+        height: 80px;
+        background-color: #fff;
+        border-radius: 50%;
+        font-size: 30px;
+        margin: 0 auto;
+        margin-bottom: 30px;
+        box-shadow: 0px 10px 34px -15px rgba(0,0,0,.24);
+        span {
+            color: #000;
+        }
+    }
+    h1 {
+        font-size: 3rem;
+        font-weight: 500;
+        color: var(--black);
+    }
+    form {
+        .form-group {
+            margin-bottom: 20px;
+        }
+        input {
+            height: 50px;
+            border: 1px solid #C4C4C4;
+            border-radius: 0.6rem;
+            padding: 15px;
+            font-size: 16px;
+        }
+
+        /* Customize the label (the container) */
+        .checkbox-wrap {
+            display: flex;
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            align-items: center;
+        }
+        
+        /* Hide the browser's default checkbox */
+        .checkbox-wrap input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+        
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: 3px;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #eee;
+        }
+        
+        /* On mouse-over, add a grey background color */
+        .checkbox-wrap:hover input ~ .checkmark {
+            background-color: #ccc;
+        }
+        
+        /* When the checkbox is checked, add a blue background */
+        .checkbox-wrap input:checked ~ .checkmark {
+            background-color: #2196F3;
+        }
+        
+        /* Create the checkmark/indicator (hidden when not checked) */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        
+        /* Show the checkmark when checked */
+        .checkbox-wrap input:checked ~ .checkmark:after {
+            display: block;
+        }
+        
+        /* Style the checkmark/indicator */
+        .checkbox-wrap .checkmark:after {
+            left: 8px;
+            top: 4px;
+            width: 5px;
+            height: 10px;
+            border: solid #fff;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+        .forget-password-link {
+            font-weight: 500;
+            color: var(--black);
+            &:hover {
+                color: var(--hover-color);
+            }
+        }
+        .already-have-account {
+            margin-top: 20px;
+            text-align: center;
+            a {
+                margin-left: 5px;
+                font-weight: 500;
+            }
+        }
+    }
+}
+
+@media (max-width: 1400px) {
+
+}
+@media (max-width: 767px) {
+    .login-wrap form .already-have-account {
+        margin-top: 10px;
+        text-align: left;
+    }
+}
+@media (max-width: 575px) {
+    .login-wrap .primary-btn {
+        padding: .8rem 1.5rem;
+        font-size: 1.6rem;
+        height: 50px;
+    }
+}
+@media (max-width: 480px) {
+    .login-wrap {
+        padding: 30px;
+    }
+}

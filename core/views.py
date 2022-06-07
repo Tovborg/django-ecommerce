@@ -1,8 +1,5 @@
-from ast import If
-from importlib.metadata import metadata
-from logging import exception
-from unicodedata import category
-from django.dispatch import receiver
+
+
 from django.views.generic import ListView, DetailView, View, TemplateView, FormView
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -20,7 +17,6 @@ from django.views.decorators.csrf import csrf_exempt
 import stripe
 from django.contrib.auth.models import User
 from django.db.models import F, Q
-from paypal.standard.forms import PayPalPaymentsForm
 import logging
 from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment
 from paypalcheckoutsdk.orders import OrdersGetRequest
@@ -48,6 +44,7 @@ def entry_not_found(request, exception):
 class HomeView(View):
     def get(self, *args, **kwargs):
         try:
+            host = self.request.get_host()
             featured_products = Item.objects.filter(
                 featured=True
             )
@@ -65,6 +62,7 @@ class HomeView(View):
                 'new_arrival': new_arrival,
                 'best_selling': best_selling,
                 'on_sale': on_sale,
+                'host': host,
                 # 'products': order_items,
                 # 'order': order,
             }
