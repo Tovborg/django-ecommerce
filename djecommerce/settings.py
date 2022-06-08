@@ -89,7 +89,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'djecomDB',
+            'NAME': 'djecomdb',
             'USER': 'ecom_admin',
             'PASSWORD': 'Rasmus2010',
             'HOST': 'localhost',
