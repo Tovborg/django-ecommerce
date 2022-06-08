@@ -1,0 +1,88 @@
+/*-------------------------------
+#.jairito-features-area
+--------------------------------*/
+.jairito-features-area {
+    overflow: hidden;
+    .section-header-three {
+        margin-bottom: 10rem;
+    }
+    .jairito-features-wrap {
+        position: relative;
+        z-index: 1;
+        padding: 12px 0;
+        &:after {
+            position: absolute;
+            content: '';
+            width: 100%;
+            height: 100%;
+            background-color: #F9F9F9;
+            left: 0;
+            top: 0;
+            border-radius: 20px;
+            z-index: -1;
+            transform: scaleX(1.1);
+        }
+    }
+    .single-feature {
+        padding: 5rem 3rem;
+        border-radius: 15px;
+        transition: $transition;
+        .feature-icon {
+            @include flex-position(flex, center, center);
+            width: 8rem;
+            height: 8rem;
+            border-radius: .8rem;
+            background-color: #EDEDED;
+            margin: 0 auto;
+            margin-bottom: 4.5rem;
+        }
+        .feature-title {
+            margin-bottom: 2rem;
+            font-family: $FiraSansFont;
+            font-size: 2rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            color: var(--black);
+        }
+        .feature-content {
+            margin: 0;
+            font-size: 1.6rem;
+            line-height: 2.6rem;
+            color: #777777;
+        }
+        &:hover {
+            background: #FFFFFF;
+            box-shadow: 0px 5px 65px 2px rgba(0, 0, 0, 0.06);
+            transform: translateY(-55px);
+            .feature-icon {
+                background-color: #D5E5B5;
+            }
+        }
+    }
+}
+@media (max-width: 1199px) {
+    .jairito-features-area .single-feature {
+        padding: 4rem 1.5rem;
+    }
+}
+@media (max-width: 1024px) {
+    .jairito-features-area .jairito-features-wrap {
+        padding: 12px;
+    }
+    .jairito-features-area .jairito-features-wrap::after {
+        transform: scaleX(1);
+    }
+}
+@media (max-width: 991px) {
+    .jairito-features-area .section-header-three {
+        margin-bottom: 6rem;
+    }
+    .jairito-features-area .single-feature:hover {
+        transform: translateY(-35px);
+    }
+}
+@media (max-width: 767px) {
+    .jairito-features-area .section-header-three {
+        margin-bottom: 5rem;
+    }
+}

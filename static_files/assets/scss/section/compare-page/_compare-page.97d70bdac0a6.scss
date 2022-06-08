@@ -1,0 +1,136 @@
+/* ---------------------------------
+    Compare Page 
+-------------------------------------*/
+.compare-page-area {
+    .compare-table table {
+        margin-bottom: 0;
+        tbody {
+            tr {
+                td {
+                    text-align: center;
+                    padding: 25px 30px;
+                    vertical-align: middle;
+                    border: 1px solid #ededed;
+                    &:first-child {
+                        min-width: 180px;
+                        font-size: 17px;
+                        font-weight: 600;
+                        margin: 0;
+                        line-height: 1;
+                    }
+                    .product-review {
+                        display: flex;
+                        justify-content: center;
+                        li {
+                            color: #D0D0D0;
+                            margin-right: 2px;
+                            &.active {
+                                color: #FCA610;
+                            }
+                        }
+                    }
+                }
+                td.product-image-title {
+                    min-width: 285px;
+                    max-width: 285px;
+                    vertical-align: bottom;
+                }
+                
+                td.product-image-title .image .product-top {
+                    text-align: left;
+                }
+
+                td.product-image-title .image {
+                    clear: both;
+                    width: 100%;
+                    margin-bottom: 40px;
+                }
+                
+                td.product-image-title .image img {
+                    max-width: 100%;
+                    min-height: 200px;
+                    max-height: 200px;
+                }
+
+                td.product-image-title .category:hover,
+                td.product-image-title .title:hover {
+                    color: var(--primary-color);
+                }
+                
+                td.product-image-title .category {
+                    clear: both;
+                    color: #333;
+                    display: block;
+                    font-size: 13px;
+                    letter-spacing: 0.5px;
+                    line-height: 15px;
+                    margin-bottom: 7px;
+                    margin-top: 15px;
+                    text-transform: uppercase;
+                }
+                
+                td.product-image-title .title {
+                    clear: both;
+                    font-size: 2rem;
+                    line-height: 3rem;
+                    font-weight: 600;
+                    color: #000;
+                }
+                
+                td.pro-desc p {
+                    margin: 0;
+                }
+                
+                td.pro-price {
+                    font-size: 15px;
+                    font-weight: 600;
+                }
+                
+                td.pro-color {
+                    font-size: 15px;
+                    font-weight: 600;
+                }
+                
+                td.pro-addtocart .add-to-cart span {
+                    transition: 0.3s;
+                    font-size: 13px;
+                    text-transform: uppercase;
+                    font-weight: 700;
+                    line-height: 21px;
+                    overflow: hidden;
+                    display: block;
+                    text-align: center;
+                }
+                
+                td.pro-addtocart .add-to-cart.pro-stock {
+                    font-size: 15px;
+                    font-weight: 600;
+                }
+                
+                td.pro-addtocart .add-to-cart .pro-remove button {
+                    border: none;
+                    background-color: transparent;
+                    padding: 0;
+                }
+                td.pro-remove {
+                    button {
+                        transition:  1s ease all;
+                        &:hover {
+                            color: var(--primary-color);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .compare-page-area .compare-table table tbody tr td.product-image-title {
+        min-width: 250px;
+        max-width: 250px;
+    }
+    .compare-page-area .compare-table table tbody tr td.product-image-title .product-top {
+        height: 200px;
+    }
+}

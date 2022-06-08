@@ -1,0 +1,38 @@
+/*-------------------------------
+#.about-us-area
+--------------------------------*/
+.about-us-area {
+    .section-header-area {
+        margin-bottom: 3.5rem;
+    }
+    .about-us-text {
+        margin-bottom: 2.5rem;
+        font-size: 1.6rem;
+        line-height: 2.6rem;
+        font-weight: 400;
+        color: #777777;
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+@media (max-width: 1199px) {
+    .about-us-area .about-us-text {
+        margin-bottom: 1rem;
+    }
+    .about-us-area .section-header-area .sub-title {
+        margin-bottom: 1.5rem;
+    }
+    .about-us-area .section-header-area {
+        margin-bottom: 2.5rem;
+    }
+}
+@media (max-width: 767px) {
+    .about-us-area .about-us-image {
+        margin-bottom: 3rem;
+    }
+    .about-us-area .about-us-image img {
+        width: 100%;
+        height: auto;
+    }
+}
