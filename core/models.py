@@ -152,7 +152,7 @@ class Order(models.Model):
     )
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(null=True, blank=True, max_length=190)
+    description = models.TextField(null=True, blank=True)
     ordered = models.BooleanField(default=False)
     billing_address = models.ForeignKey(
         'BillingAddress', on_delete=models.SET_NULL, blank=True, null=True)
@@ -185,7 +185,7 @@ class Reviews(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
-    reviewer = models.CharField(max_length=150, null=True)
+    reviewer = models.CharField(max_length=100, null=True)
     stars = models.IntegerField(default=1)
     review_text = models.TextField(
         max_length=800,
