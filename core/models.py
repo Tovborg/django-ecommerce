@@ -90,7 +90,7 @@ class Item(models.Model):
     featured = models.BooleanField(default=False)
     times_ordered = models.IntegerField(default=1)
     featured_products = models.CharField(
-        choices=FEATURED_PRODUCTS_CHOICES, max_length=2, null=True, blank=True)
+        choices=FEATURED_PRODUCTS_CHOICES, max_length=10, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
     color = models.ManyToManyField(Color)
 
