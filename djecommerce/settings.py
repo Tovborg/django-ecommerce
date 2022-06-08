@@ -1,16 +1,20 @@
 import os
-import environ
+import sys
+import dj_database_url
+from django.core.management.utils import get_random_secret_key
+
 
 # Initialise environment variables
 # ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
-env = environ.Env()
-environ.Env.read_env()
 
-DEBUG = False
+
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = '-05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj'
-ALLOWED_HOSTS = ['*']
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS",
+                          "127.0.0.1,localhost").split(",")
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
 
 INSTALLED_APPS = [
@@ -78,15 +82,22 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-PAYPAL_CLIENT_ID = env('PAYPAL_CLIENT_ID')
-PAYPAL_SECRET_ID = env('PAYPAL_SECRET_ID')
+PAYPAL_CLIENT_ID = os.getenv('PAYPAL_CLIENT_ID')
+PAYPAL_SECRET_ID = os.getenv('PAYPAL_SECRET_ID')
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, 'db.sqlite3')
+if DEVELOPMENT_MODE is True:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        }
     }
-}
+elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
+    if os.getenv("DATABASE_URL", None) is None:
+        raise Exception("DATABASE_URL environment variable not defined")
+    DATABASES = {
+        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+    }
 
 # if ENVIRONMENT == 'production':
 #     DEBUG = False
@@ -106,6 +117,6 @@ LOGIN_REDIRECT_URL = '/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-STRIPE_PUBLIC_KEY = env('STRIPE_PUBLIC_KEY')
-STRIPE_PRIVATE_KEY = env('STRIPE_PRIVATE_KEY')
-STRIPE_ENDPOINT_SECRET = env('STRIPE_ENDPOINT_SECRET')
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
+STRIPE_PRIVATE_KEY = os.getenv('STRIPE_PRIVATE_KEY')
+STRIPE_ENDPOINT_SECRET = os.getenv('STRIPE_ENDPOINT_SECRET')
