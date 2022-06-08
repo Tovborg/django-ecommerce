@@ -5,11 +5,11 @@ import environ
 # ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 
 
-DEBUG = True
+DEBUG = False
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '-05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj'
-ALLOWED_HOSTS = ['167.99.137.99', '127.0.0.1']
+ALLOWED_HOSTS = ['164.92.189.162', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -88,12 +88,12 @@ PAYPAL_SECRET_ID = "ECmL-BwSGdtgNmgebInz_RQ8TPUdnyxIdFJE9xjg2W6iHldKwql7bW4WrYnr
 # else:
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'djecomdb',
-        'USER': 'ecom_admin',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ecomdb',
+        'USER': 'ecomdb_admin',
         'PASSWORD': 'Rasmus2010',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
     }
 }
 
