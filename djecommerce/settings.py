@@ -5,7 +5,7 @@ import environ
 # ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 
 
-DEBUG = False
+DEBUG = True
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '-05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj'
@@ -78,24 +78,24 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 PAYPAL_CLIENT_ID = "AQie0MKam6S2eIHkiYZTtoNxIJlNdVcD7pJN2aCp5wW-IRurKrBhsWDZ1Jmgnq_aNfyBCzg4FdS9uG5l"
 PAYPAL_SECRET_ID = "ECmL-BwSGdtgNmgebInz_RQ8TPUdnyxIdFJE9xjg2W6iHldKwql7bW4WrYnrB9UMVn_Ubgnvo5L3zzTf"
 
-if DEBUG:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": os.path.join(BASE_DIR, 'db.sqlite3')
-        }
+# if DEBUG:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.sqlite3",
+#             "NAME": os.path.join(BASE_DIR, 'db.sqlite3')
+#         }
+#     }
+# else:
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'djecomdb',
+        'USER': 'ecom_admin',
+        'PASSWORD': 'Rasmus2010',
+        'HOST': 'localhost',
+        'PORT': '',
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'djecomdb',
-            'USER': 'ecom_admin',
-            'PASSWORD': 'Rasmus2010',
-            'HOST': 'localhost',
-            'PORT': '',
-        }
-    }
+}
 
 # if ENVIRONMENT == 'production':
 #     DEBUG = False
