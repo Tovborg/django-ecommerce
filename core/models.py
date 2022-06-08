@@ -84,7 +84,7 @@ class Item(models.Model):
 
     slug = models.SlugField()
     description = models.TextField(
-        max_length=800,
+        max_length=190,
         verbose_name='Description'
     )
     featured = models.BooleanField(default=False)
@@ -145,14 +145,14 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE, null=True, blank=True)
     username = models.CharField(max_length=100)
-    email = models.EmailField(max_length=254)
+    email = models.EmailField(max_length=150)
     amount = models.IntegerField(default=0)
     items = models.ManyToManyField(
         to=OrderItem
     )
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(null=True, blank=True, max_length=800)
+    description = models.CharField(null=True, blank=True, max_length=190)
     ordered = models.BooleanField(default=False)
     billing_address = models.ForeignKey(
         'BillingAddress', on_delete=models.SET_NULL, blank=True, null=True)
