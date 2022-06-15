@@ -1,0 +1,366 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+        <!-- Preloader Area Start -->
+{% block extra_head %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{% endblock extra_head %}
+
+{% block content %}
+<div id="preloader">
+    <div id="status">
+        <img src="{% static 'assets/images/preloader.svg' %}" alt="img" />
+    </div>
+</div>
+<!-- Preloader Area End -->
+
+<!-- header area start here  -->
+
+<!-- mobile-header-area area end here  -->
+
+<!-- mobile-menu-area area start here  -->
+
+<!-- mobile-menu-area area end here  -->
+
+<!-- Cart Offcanvas Sidebar Menu area Start here  -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvasSidebar" aria-labelledby="cartOffcanvasSidebarLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="cartOffcanvasSidebarLabel">Shopping Cart</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="cart-product-list">
+
+            <!-- Product item start -->
+            {% for item in products %}
+            <div class="product-item cart-product-item">
+                <div class="single-grid-product">
+                    <div class="product-top">
+                        <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name-part">
+                            <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.item.name }}</a></h3>
+
+                            <div class="cart-quantity input-group">
+                                <a href="{% url 'core:remove_single_item_from_cart' item.item.slug %}"><div class="increase-btn dec qtybutton btn">-</div></a>
+                                <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="{{ item.quantity }}" readonly />
+                                <a href="{% url 'core:add-to-cart' item.item.slug %}"><div class="increase-btn inc qtybutton btn">+</div></a>
+                            </div>
+
+                            <button class="cart-remove-btn"><a href="{{ item.item.get_remove_from_cart_url }}">Remove</a></button>
+                        </div>
+                        <div class="product-price">
+                            {% if item.item.discount_price %}
+                            <span class="regular-price">${{ item.item.price }}</span>
+                            <span class="price">${{ item.item.discount_price }}</span>
+                            {% else %}
+                            <span class="price">${{ item.get_total_item_price }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- Product item end -->
+
+            <!-- Product item start -->
+            
+            <!-- Product item end -->
+        </div>
+
+        <div class="total-bottom-part">
+            <div class="total-count d-flex">
+                <h3>Total</h3>
+                <h4 id="total">${{ order.get_total }}</h4>
+            </div>
+            <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
+                Proceed To Checkout
+            </a>
+        </div>
+
+    </div>
+</div>
+<!-- Cart Offcanvas Sidebar Menu area end here  -->
+
+<!-- breadcrumb area start here  -->
+
+<!-- breadcrumb area end here  -->
+
+<!-- checkout page area start here  -->
+<section class="page-content section">
+    <div class="checkout">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="checkout-form">
+                        <form method="POST" id="billing-form">
+                        {% csrf_token %}
+                            <div class="row" id="BillingAddressForm">
+                                <div class="col-lg-12">
+                                    <h2 class="checkout-title">Billing Address</h2>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="You Name Here" required />
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" required />
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="street-address" name="street_address" placeholder="Street Address" required />
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="apartment-address" name="apartment_address" placeholder="Apartment Address" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="state" name="state" placeholder="State" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="zipcode" name="zip" placeholder="Zip/Postal Code" required />
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    {{ form.country }}
+                                </div>
+                            </div>
+                            <div class="payment-method">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h2 class="checkout-title">Payment Method</h2>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        {% for value, name in form.fields.payment_option.choices %}
+                                        <div class="form-group">
+                                            <div class="form-check card-check">
+                                                <input class="form-check-input" type="radio" name="payment_option" id="{{ name }}" value="{{ value }}" />
+                                                <label class="form-check-label" for="{{ name }}">{{ name }}</label>
+                                                <div class="input-icon">
+                                                    <img src="{% static 'assets/images/Stripe-blurple-186x42-76b9615.png' %}" width="187" height="30" alt="payment-method" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        <div class="form-group form-check terms-agree">
+                                            <input type="checkbox" class="form-check-input" id="agree" />
+                                            <label class="form-check-label" for="agree">By clicking the button you agree to our <a href="term-conditions.html">Terms & Conditions</a></label>
+                                        </div>
+                                        <button id="card-button-container" class="checkout-btn form-btn">Place Order</button>
+                                        <script>
+                                            document.getElementById('card-button-container').addEventListener('click', function() {
+                                                document.getElementById('billing-form').submit();
+                                        </script>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="paypal-button-container" class="paypal-checkout-btn paypal-form-btn"></div>
+                            {% comment %} <style>
+                                /* Media query for mobile viewport */
+                                @media screen and (max-width: 400px) {
+                                    #paypal-button-container {
+                                        width: 100%;
+                                    }
+                                }
+                                
+                                /* Media query for desktop viewport */
+                                @media screen and (min-width: 400px) {
+                                    #paypal-button-container {
+                                        width: 250px;
+                                    }
+                                }
+                            </style> {% endcomment %}
+                            <script src="https://www.paypal.com/sdk/js?client-id=AQie0MKam6S2eIHkiYZTtoNxIJlNdVcD7pJN2aCp5wW-IRurKrBhsWDZ1Jmgnq_aNfyBCzg4FdS9uG5l"></script>
+                            <script>
+                                // Listen or changes to the radio fields
+
+                                
+
+                                {% comment %} docReady(function {
+                                    const paypal = document.getElementById('paypal-button-container');
+                                    const stripe = document.getElementById('card-button-container');
+                                    paypal.style.display = 'none';
+                                    stripe.style.display = 'block'
+                                }) {% endcomment %}
+
+                                document.querySelectorAll('input[name=payment_option]').forEach(function(el) {
+                                    el.addEventListener('change', function(event) {
+                        
+                                        // If PayPal is selected, show the PayPal button
+                                        if (event.target.value === 'P') {
+                                            document.querySelector('#card-button-container').style.display = 'none';
+                                            document.querySelector('#paypal-button-container').style.display = 'inline-block';
+                                            document.getElementById('BillingAddressForm').style.display = 'none';
+                                        }
+                        
+                                        // If Card is selected, show the standard continue button
+                                        if (event.target.value === 'S') {
+                                            document.querySelector('#card-button-container').style.display = 'inline-block';
+                                            document.querySelector('#paypal-button-container').style.display = 'none';
+                                            document.getElementById('BillingAddressForm').style.display = 'flex';
+                                        }
+                                    });
+                                });
+
+                                document.querySelector('#card-button-container').style.display = 'none';
+                                document.querySelector('#paypal-button-container').style.display = 'none';
+                                
+                        
+                                function getCookie(name) {
+                                    var cookieValue = null;
+                                    if (document.cookie && document.cookie !== '') {
+                                      var cookies = document.cookie.split(';');
+                                      for (var i = 0; i < cookies.length; i++) {
+                                        var cookie = cookies[i].trim();
+                                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                          break;
+                                        }
+                                      }
+                                    }
+                                    return cookieValue;
+                                }
+                                var csrftoken = getCookie('csrftoken');
+                        
+                                // Render the PayPal button into #paypal-button-container
+                                function initPayPalButton() {
+                                    paypal.Buttons({
+
+                                        // Set up the transaction
+                                        createOrder: function(data, actions) {
+                                            return actions.order.create({
+                                                purchase_units: [{
+                                                    amount: {
+                                                        value: {{ order.get_total }}
+                                                    }
+                                                }]
+                                            });
+                                        },
+                            
+                                        // Finalize the transaction
+                                        onApprove: function(data) {
+                                            var url = "{% url 'core:payment-complete' %}"
+                                            return fetch(url, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'content-type': 'application/json',
+                                                    'X-CSRFToken': csrftoken,
+                                                },
+                                                body: JSON.stringify({
+                                                    orderID: data.orderID
+                                                })
+                                            }).then(function () {
+                                                window.location.href = '{% url 'core:home-page' %}';
+                                            })
+                                        },
+                            
+                            
+                                    }).render('#paypal-button-container');
+                                }
+                                initPayPalButton()
+                            </script>
+                        </form>
+                            
+                            
+                            
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="cart-summary">
+                        <div class="summary-top d-flex">
+                            <h2>Cart Summary</h2>
+                            <a class="edite-btn" href="cart.html">Edit</a>
+                        </div>
+                        <ul class="cart-product-list">
+                            {% for order_item in object %}
+                            <li class="single-cart-product d-flex justify-content-between">
+                                <div class="product-info">
+                                    <h3>{{ order_item.quantity }}x of {{ order_item.item.name }}</h3>
+                                    <p>{{ order_item.item.description }}</p>
+            
+                                </div>
+                                <div class="price-area">
+                                    {% if order_item.item.discount_price %}
+                                    <h3 class="price">${{ order_item.item.discount_price }}</h3>
+                                    {% else %}
+                                    <h3 class="price">${{ order_item.get_final_price }}</h3>
+                                    {% endif %}
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <ul class="summary-list">
+                            {% if order.get_total %}
+                            <li>Subtotal <span>${{ order.get_total }}</span></li>
+                            <li>Shipping Cost <span>$15.50</span></li>
+                            <li>VAT/Tax 15% <span>$20.00</span></li>
+                            {% endif %}
+                        </ul>
+                        {% if order.get_total %}
+                        <div class="total-amount" id="total-div" style="margin-bottom:30px;">
+                            <h3>Total Cost <span class="float-right">${{ order.apply_discount }}</span></h3>
+                            {% comment %} <h3>{{ order.apply_discount|10 }}</h3> {% endcomment %}
+                        </div>
+                        
+                        <div id="review-div" class="single-review">
+                            <div class="checkout">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="checkout-form">
+                                                <form method="POST" id="coupon-form">
+                                                {% csrf_token %}
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control" name="coupon_code" id="coupon-code" placeholder="Coupon Code">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="review-top" style="border-bottom: none !important; ">
+                                                                <div class="review-top-right">
+                                                                    <button class="write-review-btn shadow-none" id="coupon-submit" type="submit" style="outline:none; border-style:none;"><div>Apply</div></button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <script>
+
+                                                </script>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       
+                        
+                        
+                        {% endif %}
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{% static 'assets/js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
+<script language="Javascript">
+    var apply_coupon = {% url 'core:apply-coupon' %}
+ </script>
+{% endblock content %}

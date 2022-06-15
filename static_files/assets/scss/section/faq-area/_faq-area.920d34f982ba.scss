@@ -1,0 +1,68 @@
+/*-------------------------------
+#.faq-area
+--------------------------------*/
+.faq-area {
+    border: 1px solid #E9E9E9;
+    .accordion-item {
+        border-radius: 0;
+        .accordion-header {
+            .accordion-button {
+                padding: 3.5rem 4rem;
+                font-family: $bodyFont;
+                font-size: 2rem;
+                font-weight: 500;
+                text-transform: capitalize;
+                background-color: transparent;
+                color: var(--black);
+                border-bottom: 1px solid transparent;
+                box-shadow: none;
+                &:focus {
+                    box-shadow: none;
+                }
+                &:not(.collapsed) {
+                    color: var(--black);
+                    background-color: transparent;
+                    border-bottom: 1px solid #E9E9E9;
+                    box-shadow: none;
+                    &:after {
+                        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+                    }
+                }
+            }
+        }
+        .accordion-body {
+            padding: 3rem 4rem;
+            .faq-text {
+                font-size: 2rem;
+                line-height: 3rem;
+                font-weight: 400;
+                color: #777777;
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+}
+@media (max-width: 1199px) {
+    .faq-area .accordion-item .accordion-header .accordion-button {
+        padding: 1.5rem 2.5rem;
+        font-family: "Jost", sans-serif;
+        font-size: 1.6rem;
+    }
+    .faq-area .accordion-item .accordion-body {
+        padding: 2rem 2.5rem;
+    }
+    .faq-area .accordion-item .accordion-body .faq-text {
+        font-size: 1.6rem;
+        line-height: 2.6rem;
+    }
+}
+@media (max-width: 575px) {
+    .faq-area .accordion-item .accordion-header .accordion-button {
+        padding: 1.5rem 1.5rem;
+    }
+    .faq-area .accordion-item .accordion-body {
+        padding: 2rem 1.5rem;
+    }
+}

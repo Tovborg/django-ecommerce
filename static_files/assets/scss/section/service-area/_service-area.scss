@@ -1,0 +1,61 @@
+/*-------------------------------
+#.service-area
+--------------------------------*/
+.service-area {
+    overflow: hidden;
+    .service-left {
+        background-image: url('../images/service-image.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        width: 100%;
+        height: 560px;
+    }
+    .service-lsit {
+        padding: 6.5rem 7rem 3rem 7rem;
+        .single-service {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3.5rem;
+            .service-icon {
+                width: 4.6rem;
+                margin-right: 2rem;
+            }
+            .service-info {
+                flex: 1;
+                .service-title {
+                    margin-bottom: 1rem;
+                    font-size: 2rem;
+                    font-weight: 600;
+                    text-transform: capitalize;
+                    color: var(--black);
+                }
+                .service-content {
+                    margin: 0;
+                    font-size: 1.6rem;
+                    line-height: 2.6rem;
+                    font-weight: 400;
+                    color: #555555;
+                }
+            }
+        }
+    }
+}
+@media (max-width: 1367px) {
+    .service-area .service-lsit {
+        padding: 3rem;
+    }
+}
+@media (max-width: 991px) {
+    .service-area .service-lsit {
+        padding-top: 6.5rem;
+    }
+}
+@media (max-width: 575px) {
+    .service-area .service-left {
+        height: 400px;
+    }
+    .service-area .service-lsit .single-service .service-icon {
+        margin-right: 1.5rem;
+    }
+}

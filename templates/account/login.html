@@ -1,0 +1,65 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<main>
+  <div id="preloader">
+    <div id="status">
+        <img src="{% static 'assets/images/preloader.svg' %} " alt="img" />
+    </div>
+  </div>
+  <div class="sign-in-page sign-up-page section">
+      <div class="container">
+          <div class="row align-items-center justify-content-center">
+              <div class="col-12 col-lg-5">
+                  <div class="login-wrap">
+                      <div class="icon d-flex align-items-center justify-content-center">
+                          <span class="far fa-user"></span>
+                      </div>
+                      <h1 class="text-center mb-4">Sign In</h1>
+                      <form class="login-form" id="signup_form" method="post" action="{% url 'account_login' %}">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        {% if redirect_field_value %}
+                        <div class="form-group">
+                          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                        </div>
+                        {% endif %}
+                        <script></script>
+                        <div class="form-group">
+                          <button type="submit" class="form-control btn btn-primary rounded submit px-3 primary-btn">{% trans "Sign In" %}</button>
+                        </div>
+                        <div class="remember-box form-group d-md-flex justify-content-between mb-0">
+                          <div>
+                              <label class="checkbox-wrap">Remember Me
+                                  <input type="checkbox" name="remember" class="checkboxinput form-check-input" id="id_remember">
+                                  <span class="checkmark"></span>
+                              </label>
+                          </div>
+                          <div class="text-md-end text-lg-end">
+                              <a href="javascript:void(0)" class="forget-password-link">Forgot Password?</a>
+                              <br>
+                              <a href="{% url 'account_signup' %}" class="forget-password-link">Don't have an account?</a>
+                          </div>
+                        </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</main>
+<script>
+  const remember_me = document.getElementById('div_id_remember');
+  function hideElement(element) {
+    element.style.display = 'none';
+  }
+  hideElement(remember_me);
+</script>
+{% endblock content %}
+

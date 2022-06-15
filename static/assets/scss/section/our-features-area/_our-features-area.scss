@@ -1,0 +1,37 @@
+/*-------------------------------
+#.our-features-area
+--------------------------------*/
+.our-features-area {
+    .single-features {
+        margin-bottom: 3rem;
+        .features-icon {
+            @include flex-position(flex, center, center);
+            margin: 0 auto;
+            margin-bottom: 3.5rem;
+            width: 11rem;
+            height: 11rem;
+            border-radius: 50%;
+            border: 1px solid #C1C1C1;
+        }
+        .features-title {
+            margin-bottom: 1.5rem;
+            font-size: 2.4rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            color: var(--black);
+        }
+        .features-content {
+            margin-bottom: 0;
+        }
+    }
+}
+@media (max-width:575px) {
+    .our-features-area .single-features {
+        max-width: 300px;
+        margin: 0 auto;
+        margin-bottom: 3rem;
+    }
+    .our-features-area .single-features .features-icon {
+        margin-bottom: 2rem;
+    }
+}

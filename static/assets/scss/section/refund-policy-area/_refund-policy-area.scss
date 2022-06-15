@@ -1,0 +1,44 @@
+/*-------------------------------
+#.refund-policy-area
+--------------------------------*/
+.refund-policy-area {
+    .single-refund-policy {
+        margin-bottom: 3.5rem;
+        .refund-policy-title {
+            margin-bottom: 2rem;
+            font-family: $bodyFont;
+            font-size: 2.4rem;
+            line-height: 3.4rem;
+            font-weight: 600;
+            text-transform: capitalize;
+            color: var(--black);
+        }
+        .refund-policy-text {
+            margin-bottom: 3rem;
+            font-size: 1.6rem;
+            line-height: 2.6rem;
+            font-weight: 400;
+            color: #777777;
+            .refund-policy-link {
+                color: #777777;
+                font-weight: 500;
+                transition: $transition;
+                &:hover {
+                    color: var(--primary-color);
+                }
+            }
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+@media (max-width: 375px) {
+    .refund-policy-area .single-refund-policy .refund-policy-title {
+        font-size: 2rem;
+        font-weight: 500;
+    }
+}

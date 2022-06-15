@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+  <div class="card w-25 shadow" >      
+        <div class="card-body">
+            <div class="card-title">
+                <h2>{{course.name}}</h2>
+            </div>
+            <div class="card-text">
+                <p class="text-muted">{{course.description}}</p><br>
+                <div class="h4">Price: <strong>{{course.price}}</strong></div>
+            </div>
+
+        </div>
+        <div class="card-footer bg-white"> 
+            <input id="course-id"  value={{item.slug}} hidden/>         
+            <div id="paypal-button-container"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extrascript %}
+    <script src="https://www.paypal.com/sdk/js?client-id={{client_id}}&disable-funding=credit,card" > </script> 
+    <script src="{% static  'assets/js/paypal.js' %}" ></script>
+{% endblock %}

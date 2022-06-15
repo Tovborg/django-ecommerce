@@ -1,0 +1,95 @@
+/*-------------------------------
+#.product-area
+--------------------------------*/
+.product-area {
+    .product-section-top {
+        margin-bottom: 2.4rem;
+        .product-section-top-left {
+            display: flex;
+            align-items: center;
+            .filter-btn {
+                border: none;
+                background-color: transparent;
+                padding: 0;
+                font-size: 1.6rem;
+                font-weight: 400;
+                text-transform: capitalize;
+                color: #333333;
+                margin-right: 1.5rem;
+            }
+            .sidebar-filter {
+                border: none;
+                background-color: transparent;
+                padding: 0;
+                font-size: 1.6rem;
+                font-weight: 400;
+                text-transform: capitalize;
+                color: #333333;
+                margin-right: 1.5rem;
+            }
+        }
+        .list-grid-view {
+            display: flex;
+            align-items: center;
+            .view-btn {
+                display: inline-block;
+                margin-right: 2rem;
+                &:last-child {
+                    margin-right: 0;
+                }
+                &.active {
+                    .view-icon {
+                        filter: invert(0%) sepia(5%) saturate(19%) hue-rotate(57deg) brightness(5%) contrast(102%);
+                    }
+                }
+            }
+        }
+        .product-filter {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            .shoing-result {
+                margin: 0;
+                margin-right: 2rem;
+                font-size: 1.6rem;
+                line-height: 2.6rem;
+                color: #333333;
+            }
+            .form-select {
+                width: 26rem;
+                height: 5.2rem;
+                border-radius: 0;
+                border: 1px solid #C4C4C4;
+                font-family: $bodyFont;
+                font-size: 1.6rem;
+                font-weight: 400;
+                color: #333333;
+                &:focus {
+                    outline: none;
+                    box-shadow: none;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .product-area .product-section-top .product-section-top-left {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+    .product-area .product-section-top .product-filter {
+        justify-content: center;
+    }
+}
+@media (max-width: 480px) {
+    .product-area .product-section-top .product-filter {
+        flex-flow: row wrap;
+    }
+    .product-area .product-section-top .product-filter .shoing-result {
+        order: 1;
+        margin-top: 1rem;
+        width: 100%;
+        text-align: center;
+    }
+}

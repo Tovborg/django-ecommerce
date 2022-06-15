@@ -1,0 +1,161 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- Preloader Area Start -->
+{% if order %}
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvasSidebar" aria-labelledby="cartOffcanvasSidebarLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="cartOffcanvasSidebarLabel">Shopping Cart</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="cart-product-list">
+
+            <!-- Product item start -->
+            {% for item in products %}
+            <div class="product-item cart-product-item">
+                <div class="single-grid-product">
+                    <div class="product-top">
+                        <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name-part">
+                            <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.item.name }}</a></h3>
+
+                            <div class="cart-quantity input-group">
+                                <a href="{% url 'core:remove_single_item_from_cart' item.item.slug %}"><div class="increase-btn dec qtybutton btn">-</div></a>
+                                <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="{{ item.quantity }}" readonly />
+                                <a href="{% url 'core:add-to-cart' item.item.slug %}"><div class="increase-btn inc qtybutton btn">+</div></a>
+                            </div>
+
+                            <button class="cart-remove-btn"><a href="{{ item.item.get_remove_from_cart_url }}">Remove</a></button>
+                        </div>
+                        <div class="product-price">
+                            {% if item.item.discount_price %}
+                            <span class="regular-price">${{ item.item.price }}</span>
+                            <span class="price">${{ item.item.discount_price }}</span>
+                            {% else %}
+                            <span class="price">${{ item.get_total_item_price }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- Product item end -->
+
+            <!-- Product item start -->
+            
+            <!-- Product item end -->
+        </div>
+
+        <div class="total-bottom-part">
+            <div class="total-count d-flex">
+                <h3>Total</h3>
+                <h4>${{ order.get_total }}</h4>
+            </div>
+            <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
+                Proceed To Checkout
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endif %}
+<div id="preloader">
+    <div id="status">
+        <img src="{% static 'assets/images/preloader.svg' %} " alt="img" />
+    </div>
+</div>
+<!-- Preloader Area End -->
+
+
+<!-- mobile-header-area area end here  -->
+
+<!-- mobile-menu-area area start here  --
+<!-- mobile-menu-area area end here  -->
+
+<!-- Cart Offcanvas Sidebar Menu area Start here  -->
+
+<!-- Cart Offcanvas Sidebar Menu area end here  -->
+
+<!-- breadcrumb area start here  -->
+<div class="breadcrumb-area">
+    <div class="container">
+        <div class="breadcrumb-wrap text-center">
+            <h2 class="page-title">Contact Us</h2>
+            <ul class="breadcrumb-pages">
+                <li class="page-item"><a class="page-item-link" href="{% url 'core:home-page' %}">Home</a></li>
+                <li class="page-item">Contact Us</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb area end here  -->
+
+<!-- contact us area start here  -->
+<div class="contact-us-area section-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-10 offset-lg-1">
+                        <div class="contact-us-top">
+                            <div class="row">
+
+
+                            </div>
+
+                        </div>
+
+                        <div class="contact-form-area">
+                            <div class="contct-form-top text-center">
+                                <h2 class="form-title">Got any questions?</h2>
+                                <p class="form-subtitle">Use the form below to get in touch with the sales team</p>
+                            </div>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="FirstName" name="FirstName" placeholder="First Name" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="LastName" name="LastName" placeholder="Last Name" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="email" class="form-control" id="EmilAddress" name="EmailAddress" placeholder="Emil Address" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="ContactNumber" name="ContactNumber" placeholder="Contact Number" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <textarea class="form-control message-box" id="message" name="message" rows="3" placeholder="Type Message Here...."></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="primary-btn col-md-12">Send Message</button>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock content %}
+<!-- contact us area end here  -->
+
+<!-- shop map area start here  -->
+
+
+

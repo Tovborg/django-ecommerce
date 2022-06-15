@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% if order %}
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvasSidebar" aria-labelledby="cartOffcanvasSidebarLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="cartOffcanvasSidebarLabel">Shopping Cart</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+
+        <div class="cart-product-list">
+
+            <!-- Product item start -->
+            {% for item in products %}
+            <div class="product-item cart-product-item">
+                <div class="single-grid-product">
+                    <div class="product-top">
+                        <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name-part">
+                            <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.item.name }}</a></h3>
+
+                            <div class="cart-quantity input-group">
+                                <a href="{% url 'core:remove_single_item_from_cart' item.item.slug %}"><div class="increase-btn dec qtybutton btn">-</div></a>
+                                <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="{{ item.quantity }}" readonly />
+                                <a href="{% url 'core:add-to-cart' item.item.slug %}"><div class="increase-btn inc qtybutton btn">+</div></a>
+                            </div>
+
+                            <button class="cart-remove-btn"><a href="{{ item.item.get_remove_from_cart_url }}">Remove</a></button>
+                        </div>
+                        <div class="product-price">
+                            {% if item.item.discount_price %}
+                            <span class="regular-price">${{ item.item.price }}</span>
+                            <span class="price">${{ item.item.discount_price }}</span>
+                            {% else %}
+                            <span class="price">${{ item.get_total_item_price }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- Product item end -->
+
+            <!-- Product item start -->
+            
+            <!-- Product item end -->
+        </div>
+
+        <div class="total-bottom-part">
+            <div class="total-count d-flex">
+                <h3>Total</h3>
+                <h4>${{ order.get_total }}</h4>
+            </div>
+            <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
+                Proceed To Checkout
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endif %}
+<div class="breadcrumb-area">
+    <div class="container">
+        <div class="breadcrumb-wrap text-center">
+            <h2 class="page-title">Womens Jewelry</h2>
+            <ul class="breadcrumb-pages">
+                <li class="page-item"><a class="page-item-link" href="{% url 'core:home-page' %}">Home</a></li>
+                <li class="page-item">Womens Jewelry</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="product-area section">
+    <div class="container">
+        <div class="product-list">
+            <div class="row">
+                {% for item in page_obj %}
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="single-grid-product">
+                        <div class="product-top">
+                            {% if item.shop_grid_image %}
+                            <a href="{{ item.get_absolute_url }}"><img class="product-thumbnal" src="{{ item.shop_grid_image.url }}" alt="product" /></a>
+                            {% else %}
+                            <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/product-image-1.png' %}" alt="product" /></a>
+                            {% endif %}
+                            
+                            <ul class="prdouct-btn-wrapper">
+                                <li class="single-product-btn">
+                                    <a class="addCompare product-btn" href="{{ item.get_add_to_wishlist_url }}" title="Add to wishlist"><i class="icon flaticon-like"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="product-info text-center">
+                            <h4 class="product-catagory">{{ item.get_category_display }}</h4>
+                            <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.name }}</a></h3>
+                            <ul class="product-review">
+                                
+                                <li class="review-item active"><i class="flaticon-star"></i></li>
+                                <li class="review-item active"><i class="flaticon-star"></i></li>
+                                <li class="review-item active"><i class="flaticon-star"></i></li>
+                                <li class="review-item"><i class="flaticon-star"></i></li>
+                                <li class="review-item"><i class="flaticon-star"></i></li>
+                            </ul>
+                            <div class="product-price">
+                                {% if item.discount_price %}
+                                <span class="regular-price">${{ item.price }}</span>
+                                <span class="price">${{ item.discount_price }}</span>
+                                {% else %}
+                                <span class="price">${{ item.price }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="variable-single-item color-switch">
+                                <div class="product-variable-color">
+                                    {% for color in item.color.all %}
+                                    <label>
+                                        
+                                        <input name="modal-product-color"
+                                            class="color-select" type="radio">
+                                        <span class="product-color-tomato" style="background: {{ color.code }} !important;"></span>
+                                        
+                                    </label>
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+
+                            <ul class="size-switch">
+                                <li class="single-size active">XL</li>
+                                <li class="single-size">LARGE</li>
+                                <li class="single-size">SMALL</li>
+                            </ul>
+                            
+                            <a href="{{ item.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="pagination-area mt-30">
+                <ul class="paginations text-center">
+                    {% if page_obj.has_previous %}
+                    <li class="pagination-page"><a href="?page={{ page_obj.previous_page_number }}" class="pagination-link"><i class="fas fa-angle-double-left"></i></a></li>
+                    {% endif %}
+                    {% for page in page_obj.paginator.page_range %}
+                    <li class="pagination-page active"><a href="?page={{page}}" class="pagination-link">{{ page }}</a></li>
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                    <li class="pagination-page"><a href="?page={{ page_obj.next_page_number }}" class="pagination-link"><i class="fas fa-angle-double-right"></i></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock content %}

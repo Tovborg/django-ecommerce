@@ -1,0 +1,178 @@
+/*-------------------------
+#.footer-area-v3
+--------------------------*/
+.footer-area-v3 {
+    background-color: var(--black);
+    .footer-widget-area {
+        padding: 12rem 0 9rem 0;
+        .single-widget {
+            margin-bottom: 3rem;
+            .widget-title {
+                margin-bottom: 3rem;
+                font-size: 1.8rem;
+                font-weight: 600;
+                text-transform: capitalize;
+                color: var(--white);
+            }
+        }
+        .footer-brand-logo {
+            display: inline-block;
+            img {
+                max-width: 130px;
+            }
+        }
+        .about-widget {
+            .address-text {
+                margin-bottom: 1.5rem;
+                font-size: 1.5rem;
+                line-height: 2.5rem;
+                font-weight: 400;
+                color: #ABABAB;
+            }
+        }
+        .block-content {
+            .contact {
+                margin-bottom: 0;
+                font-size: 1.5rem;
+                line-height: 2.5rem;
+                font-weight: 400;
+                color: #ABABAB;
+            }
+        }
+        .social-media {
+            margin: 0;
+            padding: 0;
+            li {
+                display: inline-block;
+                list-style: none;
+                margin-right: 1rem;
+                &:last-child {
+                    margin-right: 0
+                }
+                a {
+                    @include flex-position(flex, center, center);
+                    width: 4rem;
+                    height: 4rem;
+                    border-radius: 50%;
+                    border: 1px solid var(--white);
+                    color: var(--white);
+                    transition: $transition;
+                    &:hover {
+                        color: var(--primary-color);
+                        border-color: var(--primary-color);
+                    }
+                }
+            }
+        }
+        .widget-menu {
+            margin: 0;
+            padding: 0;
+            .meni-item {
+                display: block;
+                list-style: none;
+                margin-bottom: 1.5rem;
+                .menu-link {
+                    display: block;
+                    font-size: 1.5rem;
+                    font-weight: 400;
+                    text-transform: capitalize;
+                    color: #ABABAB;
+                    transition: $transition;
+                    &:hover {
+                        color: var(--primary-color);
+                        padding-left: .5rem;
+                    }
+                }
+            }
+        }
+        .newsletter-widget {
+            .newsletter-text {
+                margin-bottom: 2rem;
+                font-size: 1.5rem;
+                font-weight: 400;
+                color: #ABABAB;
+            }
+            .newsletter-form {
+                .form-group {
+                    display: flex;
+                    .form-control {
+                        width: 100%;
+                        height: 5.6rem;
+                        border: none;
+                        border-radius: 0;
+                        background: #555555;
+                        padding: 0 2rem;
+                        font-size: 1.6rem;
+                        font-weight: 500;
+                        color: #ABABAB;
+                    }
+                    .subscribe-btn {
+                        width: 16rem;
+                        height: 5.6rem;
+                        margin-left: 1rem;
+                        border: none;
+                        box-shadow: none;
+                        padding: 0;
+                        background-color: #FCA610;
+                        
+                        font-size: 1.6rem;
+                        font-weight: 700;
+                        text-transform: capitalize;
+                        color: var(--white);
+                        transition: $transition;
+                        &:hover {
+                            color: var(--white);
+                            background-color: var(--primary-color);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .footer-bottom {
+        padding: 3.5rem 0;
+        border-top: 1px solid #333333;
+        text-align: center;
+        .copyright-text {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--bColor);
+            text-align: left;
+            .brand-name {
+                color: var(--bColor);
+                transition: $transition;
+                &:hover {
+                    color: var(--primary-color);
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 991px) {
+    .footer-area-v3 .footer-widget-area {
+        padding: 6rem 0 3rem 0;
+    }
+    .footer-area .footer-bottom {
+        padding: 2.5rem 0;
+    }
+    .footer-area-v3 .footer-widget-area .social-media li {
+        margin-right: .5rem;
+    }
+    .footer-area-v3 .footer-bottom .copyright-text {
+        margin: 0;
+        margin-bottom: 1.5rem;
+    }
+}
+@media (max-width: 767px) {
+    .footer-area-v3 .footer-widget-area .social-media li {
+        margin-right: 5px;
+    }
+    .footer-area-v3 .footer-widget-area {
+        padding: 5rem 0 2rem 0;
+    }
+    .footer-area-v3 .footer-bottom {
+        padding: 2rem 0;
+    }
+}

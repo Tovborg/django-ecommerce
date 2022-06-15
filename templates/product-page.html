@@ -1,0 +1,593 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load cart_template_tags %}
+
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.5.1.js" 
+integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" 
+crossorigin="anonymous"></script>
+<div id="preloader">
+  <div id="status">
+      <img src="{% static 'assets/images/preloader.svg' %} " alt="img" />
+  </div>
+</div>
+<div class="product-single-area-v2 section-top">
+  <div class="container">
+      <div class="product-single-details">
+          <div class="row">
+
+              <div class="col-lg-6 col-md-6">
+                  <div class="product-single-left">
+                      <div class="product-slier-big-image">
+                          <div class="product-priview-slide-v2">
+                              <div class="single-slide">
+                                  {% if object.home_page_image %}
+                                  <img class="slide-image" src="{{ object.home_page_image.url }}" alt="img">
+                                  {% else %}
+                                  <img class="slide-image" src="{% static 'assets/images/home-two-product-image-2.png' %} " alt="product" />
+                                  {% endif %}
+                                  
+                              </div>
+                              <div class="single-slide">
+                                {% if object.home_page_image %}
+                                <img class="slide-image" src="{{ object.home_page_image.url }}" alt="img">
+                                {% else %}
+                                <img class="slide-image" src="{% static 'assets/images/home-two-product-image-2.png' %} " alt="product" />
+                                {% endif %}
+                              </div>
+                              <div class="single-slide">
+                                {% if object.home_page_image %}
+                                <img class="slide-image" src="{{ object.home_page_image.url }}" alt="img">
+                                {% else %}
+                                <img class="slide-image" src="{% static 'assets/images/home-two-product-image-2.png' %} " alt="product" />
+                                {% endif %}
+                              </div>
+                              <div class="single-slide">
+                                {% if object.home_page_image %}
+                                <img class="slide-image" src="{{ object.home_page_image.url }}" alt="img">
+                                {% else %}
+                                <img class="slide-image" src="{% static 'assets/images/home-two-product-image-2.png' %} " alt="product" />
+                                {% endif %}
+                              </div>
+                          </div>
+                      </div>
+                      <div class="product-thumbnail-image">
+                          <ul class="product-thumb-silide-v2">
+                              {% if object.shop_grid_image %}
+                              <li class="single-item"><img class="single-item-image" src="{{ object.shop_grid_image.url }}" alt="img"></li>
+                              {% else %}
+                              <li class="single-item"><img class="single-item-image" src="{% static 'assets/images/home-two-product-image-3.png' %} " alt="product" /></li>
+                              {% endif %}
+                              {% if object.shop_grid_image %}
+                              <li class="single-item"><img class="single-item-image" src="{{ object.shop_grid_image.url }}" alt="img"></li>
+                              {% else %}
+                              <li class="single-item"><img class="single-item-image" src="{% static 'assets/images/home-two-product-image-3.png' %} " alt="product" /></li>
+                              {% endif %}
+                              {% if object.shop_grid_image %}
+                              <li class="single-item"><img class="single-item-image" src="{{ object.shop_grid_image.url }}" alt="img"></li>
+                              {% else %}
+                              <li class="single-item"><img class="single-item-image" src="{% static 'assets/images/home-two-product-image-3.png' %} " alt="product" /></li>
+                              {% endif %}
+                              {% if object.shop_grid_image %}
+                              <li class="single-item"><img class="single-item-image" src="{{ object.shop_grid_image.url }}" alt="img"></li>
+                              {% else %}
+                              <li class="single-item"><img class="single-item-image" src="{% static 'assets/images/home-two-product-image-3.png' %} " alt="product" /></li>
+                              {% endif %}
+            
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="col-lg-6 col-md-6">
+                  <div class="product-single-right">
+                      <div class="product-info">
+                          <div class="product-info-top">
+                              <h4 class="product-catagory">{{ object.get_category_display }}</h4>
+                              <ul class="product-review">
+                                  <li class="review-item active"><i class="flaticon-star"></i></li>
+                                  <li class="review-item active"><i class="flaticon-star"></i></li>
+                                  <li class="review-item active"><i class="flaticon-star"></i></li>
+                                  <li class="review-item"><i class="flaticon-star"></i></li>
+                                  <li class="review-item"><i class="flaticon-star"></i></li>
+                              </ul>
+                          </div>
+                          <h3 class="product-name">{{ object.name }}</h3>
+                          <p class="note-text">{{ object.description }}</p>
+                          <div class="product-price">
+                              {% if object.discount_price %}
+                              <span class="price">${{ object.discount_price }}</span>
+                              <span class="regular-price">${{ object.price }}</span>
+                              {% else %}
+                              <span class="price">${{ object.price }}</span>
+                              {% endif %}
+                              
+                          </div>
+                          <div class="product-size-area">
+                              <h4 class="size-title">SIZE : XL</h4>
+                              <ul class="size-switch">
+                                  <li class="single-size active">XL</li>
+                                  <li class="single-size">LARGE</li>
+                                  <li class="single-size">SMALL</li>
+                              </ul>
+                          </div>
+                          <div class="product-color-area">
+                              <h4 class="color-title" id="current_color">COLOR: WHITE</h4>
+                                                              <div class="variable-single-item color-switch">
+                          <div class="product-variable-color">
+                              {% for color in object.color.all %}
+                              <label>
+                                  <input name="modal-product-color"
+                                      class="color-select" type="radio" onchange="changeColor({{ color.name }})">
+                                  <span class="product-color-gray" style="background: {{color.code}} !important;"></span>
+                              </label>
+                              {% endfor %}
+                          </div>
+                          <script>
+                              let current_color = document.getElementById('current_color');
+                              function changeColor(color) {
+                                  current_color.innerHTML = 'COLOR: ' + color;
+                              }
+                          </script>
+                      </div>
+                          </div>
+                          <div class="prdouct-btn-wrapper d-flex align-items-center">
+                              <div class="cart-plus-minus">
+                                <a href="{{ object.get_remove_from_cart_url }}"><div class="dec qtybutton btn">-</div></a>
+                                  <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" readonly />
+                                  <a href="{{ object.get_add_to_cart_url }}"><div class="inc qtybutton btn">+</div></a>
+                              </div>
+                              <a href="{{ object.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
+                          </div>
+                          <div class="product-bottom-button d-flex">
+                              <a href="checkout.html" class="primary-btn">Buy Now</a>
+                              <a class="addCompare product-btn" href="wish-list.html" title="Add to wishlist"><i class="icon flaticon-like"></i></a>
+                              <a class="addToWishlist product-btn" href="compare.html" title="Add to compare"><i class="icon flaticon-bar-chart"></i></a>
+                          </div>
+                      </div>
+                      <div class="product-right-bottom">
+                          <ul class="features">
+                              <li class="single-feature"><img class="icon" src="{% static 'assets/images/delivery-van-icon.svg' %} " alt="icon" /><strong class="feature-title">Estimated Delivery:</strong><span class="feature-text">Sep 13 - Sep 17</span></li>
+                              <li class="single-feature"><img class="icon" src="{% static 'assets/images/shipping-return.svg' %} " alt="icon" /><strong class="feature-title">Free Shipping & Returns:</strong><span class="feature-text">On all orders over $75</span></li>
+                          </ul>
+                          <div class="guarantee-checkout-area">
+                              <img src="{% static 'assets/images/payment-method-image.png' %} " alt="payment-method-image" />
+                          </div>
+                          <div class="share-area d-flex align-items-center mt-30">
+                              <h3 class="share-title">SHARE:</h3>
+                              <ul class="social-media">
+                                  <li class="media-item"><a class="media-link facebook" href="javascript:void(0)"><i class="fab fa-facebook-f"></i></a></li>
+                                  <li class="media-item"><a class="media-link twitter" href="javascript:void(0)"><i class="fab fa-twitter"></i></a></li>
+                                  <li class="media-item"><a class="media-link linkedin" href="javascript:void(0)"><i class="fab fa-linkedin-in"></i></a></li>
+                                  <li class="media-item"><a class="media-link pinterest" href="javascript:void(0)"><i class="fab fa-pinterest-p"></i></a></li>
+                              </ul>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+          </div>
+      </div>
+
+      <div class="product-bottom-info mt-50">
+          <div class="nav-tabs-menu">
+              <ul class="nav nav-tabs" id="ProductTab" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="Description-tab" data-bs-toggle="tab" data-bs-target="#Description" type="button" role="tab" aria-controls="Description" aria-selected="true">Description</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="Reviews-tab" data-bs-toggle="tab" data-bs-target="#Reviews" type="button" role="tab" aria-controls="Reviews" aria-selected="false">Reviews</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="Shipping-Return-tab" data-bs-toggle="tab" data-bs-target="#Shipping-Return" type="button" role="tab" aria-controls="Shipping-Return" aria-selected="false">Shipping & Return</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="Additional-Information-tab" data-bs-toggle="tab" data-bs-target="#Additional-Information" type="button" role="tab" aria-controls="Additional-Information" aria-selected="false">Additional Information</button>
+                  </li>
+              </ul>
+          </div>
+
+          <div class="tab-content" id="ProductTabContent">
+
+              <div class="tab-pane fade show active" id="Description" role="tabpanel" aria-labelledby="Description-tab">
+                  <div class="product-description">
+                      <p class="description-text">{{ object.description }}</p>
+                      <div class="feature-area mb-35">
+                          
+                      </div>
+                      <div class="feature-area">
+                          <h3 class="feature-title">Sample Ordered List</h3>
+                          <ol class="ordered-lsit mb-0">
+                              <li class="list-item">Comodous in tempor ullamcorper miaculis.</li>
+                              <li class="list-item">Pellentesque vitae neque mollis urna mattis laoreet.</li>
+                              <li class="list-item">Divamus sit amet purus justo.</li>
+                              <li class="list-item">Proin molestie egestas orci ac suscipit risus posuere loremous.</li>
+                          </ol>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="tab-pane fade" id="Reviews" role="tabpanel" aria-labelledby="Reviews-tab">
+                  <div class="product-reviews">
+                      <div class="review-top">
+                          <div class="review-top-left">
+                              <h3 class="review-title">Customer Reviews </h3>
+                              <div class="review-start-point">
+                                  <ul class="review-list">
+                                      <li class="review-item active"><i class="flaticon-star"></i></li>
+                                      <li class="review-item active"><i class="flaticon-star"></i></li>
+                                      <li class="review-item active"><i class="flaticon-star"></i></li>
+                                      <li class="review-item active"><i class="flaticon-star"></i></li>
+                                      <li class="review-item"><i class="flaticon-star"></i></li>
+                                  </ul>
+                                  <span class="review-count">Based on ({{ reviews.count }}) Reviews </span>
+                              </div>
+                          </div>
+                          <div class="review-top-right">
+                              <button onclick="openCloseDiv()" class="write-review-btn shadow-none" id="review-button" style="outline:none; border-style:none;"><div>Write A Review</div></button>
+                          </div>
+                      </div>
+                    
+                      <div class="reviews-list">
+                        <div id="review-div" class="single-review" style="display:none;">
+                            <div class="checkout">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="checkout-form">
+                                                <form method="POST" id="review-form">
+                                                {% csrf_token %}
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <h2 class="checkout-title">Write A Review</h2>
+                                                        </div>
+                                                        <div class="col-lg-12">
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control" id="reviewer" name="reviewer" placeholder="Your Name Here" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12">
+                                                            <div class="form-group">
+                                                                <textarea class="form-control" id="review_text" name="review_text" placeholder="write review here" required></textarea>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group">
+                                                                <input type="number" class="form-control" id="stars" name="stars" placeholder="Stars 1-5" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="review-top" style="border-bottom: none !important; ">
+                                                                <div class="review-top-right">
+                                                                    <button type="submit" class="write-review-btn shadow-none" id="review-button-submit" style="outline:none; border-style:none;"><div>Write A Review</div></button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <script>
+                                                    $(document).on('submit','#review-form',function(e){
+                                                        e.preventDefault();
+                                                        $.ajax({
+                                                            type:'POST',
+                                                            url:'{{ object.get_absolute_url }}',
+                                                            data:
+                                                            {
+                                                                reviewer:$("#reviewer").val(),
+                                                                review_text:$("#review_text").val(),
+                                                                stars:$("#stars").val(),
+                                                                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                                                            },
+                                                            success:function(){
+                                                                  console.log('it works')
+                                                                  div = document.getElementById('review-div');
+                                                                  div.style.display = 'none'
+                                                                  $("#review-form").reset();
+                                                                  live_update()
+                                                                  alert('Saved');
+                                                                    }
+                                                                  
+                                                                    
+                                                            })
+                                                        });
+                                                    function live_update() {
+                                                        $.ajax({
+                                                            type: "get",
+                                                            url: "{{ object.get_absolute_url }}",
+                                                            contentType: 'application/json',
+                                                            success: function(data){
+                                                                alert('success');
+                                                            },
+                                                            error: function(){
+                                                                alert("error");
+                                                            }
+                                                        });
+                                                    }
+                                                    
+                                                    
+                                                </script>
+                                                
+                                                
+                                                <!-- Include the PayPal JavaScript SDK -->
+                                                    
+                                                    
+                                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                          {% for review in reviews %}
+                          <div class="single-review">
+                              <div class="reviewer">
+                                  <div class="reviewer-wrap">
+                                      <img class="reviewer-image" src="{% static 'assets/images/reviewer-v2-image-1.png' %} " alt="reviewer-image" />
+                                      <div class="reviewer-info">
+                                          <h4 class="reviewer-name">{{ review.reviewer }}</h4>
+                                          <h4 class="review-meta"><span class="time">{{ review.review_date }}</span> by <a class="author" href="javascript:void(0)">{{ review.user }}</a></h4>
+                                      </div>
+                                  </div>
+                                  <ul class="review-list">
+                                      {% for star in review.stars|times %}
+                                      <li class="review-item active"><i class="flaticon-star"></i></li>
+                                      {% endfor %}
+                                  </ul>
+                              </div>
+                              <p class="review-text">{{ review.review_text }}</p>
+                          </div>
+                          {% endfor %}
+                      </div>
+                  </div>
+              </div>
+
+              <div class="tab-pane fade" id="Shipping-Return" role="tabpanel" aria-labelledby="Shipping-Return-tab">
+                  <div class="shipping-return-area">
+                      <div class="single-return-policy">
+                          <h3 class="return-title">RETURNS POLICY</h3>
+                          <p class="return-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ut blandit risus. Donec mollis nec tellus et rutrum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut consequat quam a purus faucibus scelerisque. Mauris ac dui ante. Pellentesque congue porttitor tempus. Donec sodales dapibus urna sed dictum. Duis congue posuere libero, a aliquam est porta quis.</p>
+                          <p class="return-text">Donec ullamcorper magna enim, vitae fermentum turpis elementum quis. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
+                          <p class="return-text">Curabitur vel sem mi. Proin in lobortis ipsum. Aliquam rutrum tempor ex ac rutrum. Maecenas nunc nulla, placerat at eleifend in, viverra etos sem. Nam sagittis lacus metus, dignissim blandit magna euismod eget. Suspendisse a nisl lacus. Phasellus eget augue tincidunt, sollicitudin lectus sed, convallis desto. Pellentesque vitae dui lacinia, venenatis erat sit amet, fringilla felis. Nullam maximus nisi nec mi facilisis.</p>
+                      </div>
+                      <div class="single-return-policy">
+                          <h3 class="return-title">SHIPPING</h3>
+                          <p class="return-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ut blandit risus. Donec mollis nec tellus et rutrum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut consequat quam a purus faucibus scelerisque. Mauris ac dui ante. Pellentesque congue porttitor tempus. Donec sodales dapibus urna sed dictum. Duis congue posuere libero, a aliquam est porta quis.</p>
+                          <p class="return-text">Donec ullamcorper magna enim, vitae fermentum turpis elementum quis. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
+                          <p class="return-text">Curabitur vel sem mi. Proin in lobortis ipsum. Aliquam rutrum tempor ex ac rutrum. Maecenas nunc nulla, placerat at eleifend in, viverra etos sem. Nam sagittis lacus metus, dignissim blandit magna euismod eget. Suspendisse a nisl lacus. Phasellus eget augue tincidunt, sollicitudin lectus sed, convallis desto. Pellentesque vitae dui lacinia, venenatis erat sit amet, fringilla felis. Nullam maximus nisi nec mi facilisis.</p>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="tab-pane fade" id="Additional-Information" role="tabpanel" aria-labelledby="Additional-Information-tab">
+                  <div class="additional-information-area">
+                      <p class="additional-information-text">Quisque velit nisi, pretium ut lacinia in, elementum id enim. Pellentesque in ipsum id orci porta dapibus. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Curabitur aliquet quam id dui posuere blandit. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Donec sollicitudin molestie malesuada. Nulla quis lorem ut libero malesuada feugiat. Nulla quis lorem ut libero malesuada feugiat. Cras ultricies ligula sed magna dictum porta. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Sed porttitor lectus nibh. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Nulla quis lorem ut libero malesuada feugiat. </p>
+                      <ul class="additional-feature">
+                          <li class="single-feature">
+                              <h3 class="feature-title">Comodous:</h3>
+                              <p class="feature-text">Comodous in tempor ullamcorper miaculis</p>
+                          </li>
+                          <li class="single-feature">
+                              <h3 class="feature-title">Mattis laoreet:</h3>
+                              <p class="feature-text">Pellentesque vitae neque mollis urna mattis laoreet.</p>
+                          </li>
+                          <li class="single-feature">
+                              <h3 class="feature-title">Divamus de ametos:</h3>
+                              <p class="feature-text">Divamus sit amet purus justo</p>
+                          </li>
+                          <li class="single-feature">
+                              <h3 class="feature-title">Molestie:</h3>
+                              <p class="feature-text">Proin molestie egestas orci ac suscipit risus posuere loremous</p>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+
+          </div>
+      </div>
+
+  </div>
+</div>
+<div class="featured-products-area-v2 section-top pb-100"></div>
+{% comment %} <div class="featured-products-area-v2 section-top pb-100">
+  <div class="container">
+      <div class="section-header-two text-center">
+          <h2 class="section-title">Releted Products</h2>
+      </div>
+      <div class="row">
+          <div class="col-lg-4 col-md-6 col-sm-6">
+              <div class="single-grid-product-v2">
+                  <div class="product-top">
+                      <a href="single-product-v2.html"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-1.png' %} " alt="product" /></a>
+                      <div class="product-flags">
+                          <span class="product-flag sale">SALE</span>
+                          <span class="product-flag discount">-15%</span>
+                      </div>
+                      <ul class="prdouct-btn-wrapper">
+                          <li class="single-product-btn">
+                              <a class="addToWishlist product-btn" href="compare.html" title="Add to compare"><i class="icon flaticon-bar-chart"></i></a>
+                          </li>
+                          <li class="single-product-btn">
+                              <a class="addCompare product-btn" href="wish-list.html" title="Add to wishlist"><i class="icon flaticon-like"></i></a>
+                          </li>
+                      </ul>
+                  </div>
+                  <div class="product-info text-center">
+                      <h4 class="product-catagory">ELLA - HALOTHEMES</h4>
+                      <h3 class="product-name"><a class="product-link" href="single-product-v2.html">Rosmo Namino Milancelos</a></h3>
+                      <ul class="product-review">
+                          <li class="review-item active"><i class="flaticon-star"></i></li>
+                          <li class="review-item active"><i class="flaticon-star"></i></li>
+                          <li class="review-item active"><i class="flaticon-star"></i></li>
+                          <li class="review-item"><i class="flaticon-star"></i></li>
+                          <li class="review-item"><i class="flaticon-star"></i></li>
+                      </ul>
+                      <div class="product-price">
+                          <span class="regular-price">$770.18</span>
+                          <span class="price">$700.08</span>
+                      </div>
+                      <div class="variable-single-item color-switch">
+                          <div class="product-variable-color">
+                              <label>
+                                  <input name="modal-product-color"
+                                      class="color-select" type="radio" checked="">
+                                  <span class="product-color-black"></span>
+                              </label>
+                              <label>
+                                  <input name="modal-product-color"
+                                      class="color-select" type="radio">
+                                  <span class="product-color-tomato"></span>
+                              </label>
+
+                              <label>
+                                  <input name="modal-product-color"
+                                      class="color-select" type="radio">
+                                  <span class="product-color-gray"></span>
+                              </label>
+                          </div>
+                      </div>
+                      <ul class="size-switch">
+                          <li class="single-size active">XL</li>
+                          <li class="single-size">LARGE</li>
+                          <li class="single-size">SMALL</li>
+                      </ul>
+                      <a href="cart.html" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-6">
+              <div class="single-grid-product-v2">
+                  <div class="product-top">
+                      <a href="single-product-v2.html"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-2.png' %} " alt="product" /></a>
+                      <div class="product-flags">
+                          <span class="product-flag sale">SALE</span>
+                          <span class="product-flag discount">-15%</span>
+                      </div>
+                      <ul class="prdouct-btn-wrapper">
+                          <li class="single-product-btn">
+                              <a class="addToWishlist product-btn" href="compare.html" title="Add to compare"><i class="icon flaticon-bar-chart"></i></a>
+                          </li>
+                          <li class="single-product-btn">
+                              <a class="addCompare product-btn" href="wish-list.html" title="Add to wishlist"><i class="icon flaticon-like"></i></a>
+                          </li>
+                      </ul>
+                  </div>
+                  <div class="product-info text-center">
+                      <h4 class="product-catagory">Product - Collection</h4>
+                      <h3 class="product-name"><a class="product-link" href="single-product-v2.html">Midi Dress</a></h3>
+                      <ul class="product-review">
+                          <li class="review-item active"><i class="flaticon-star"></i></li>
+                          <li class="review-item active"><i class="flaticon-star"></i></li>
+                          <li class="review-item active"><i class="flaticon-star"></i></li>
+                          <li class="review-item"><i class="flaticon-star"></i></li>
+                          <li class="review-item"><i class="flaticon-star"></i></li>
+                      </ul>
+                      <div class="product-price">
+                          <span class="regular-price">$770.18</span>
+                          <span class="price">$700.08</span>
+                      </div>
+                      <div class="variable-single-item color-switch">
+                          <div class="product-variable-color">
+                              <label>
+                                  <input name="modal-product-color"
+                                      class="color-select" type="radio" checked="">
+                                  <span class="product-color-black"></span>
+                              </label>
+                              <label>
+                                  <input name="modal-product-color"
+                                      class="color-select" type="radio">
+                                  <span class="product-color-tomato"></span>
+                              </label>
+
+                              <label>
+                                  <input name="modal-product-color"
+                                      class="color-select" type="radio">
+                                  <span class="product-color-gray"></span>
+                              </label>
+                          </div>
+                      </div>
+                      <ul class="size-switch">
+                          <li class="single-size active">XL</li>
+                          <li class="single-size">LARGE</li>
+                          <li class="single-size">SMALL</li>
+                      </ul>
+                      <a href="cart.html" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-6">
+              <div class="single-grid-product-v2">
+                  <div class="product-top">
+                      <a href="single-product-v2.html"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-3.png' %} " alt="product" /></a>
+                      <div class="product-flags">
+                          <span class="product-flag sale">SALE</span>
+                          <span class="product-flag discount">-15%</span>
+                      </div>
+                      <ul class="prdouct-btn-wrapper">
+                          <li class="single-product-btn">
+                              <a class="addToWishlist product-btn" href="compare.html" title="Add to compare"><i class="icon flaticon-bar-chart"></i></a>
+                          </li>
+                          <li class="single-product-btn">
+                              <a class="addCompare product-btn" href="wish-list.html" title="Add to wishlist"><i class="icon flaticon-like"></i></a>
+                          </li>
+                      </ul>
+                  </div>
+                  <div class="product-info text-center">
+                      <h4 class="product-catagory">Hot - Collection</h4>
+                      <h3 class="product-name"><a class="product-link" href="single-product-v2.html">Fit-Flare Dress</a></h3>
+                      <ul class="product-review">
+                          <li class="review-item active"><i class="flaticon-star"></i></li>
+                          <li class="review-item active"><i class="flaticon-star"></i></li>
+                          <li class="review-item active"><i class="flaticon-star"></i></li>
+                          <li class="review-item"><i class="flaticon-star"></i></li>
+                          <li class="review-item"><i class="flaticon-star"></i></li>
+                      </ul>
+                      <div class="product-price">
+                          <span class="regular-price">$770.18</span>
+                          <span class="price">$700.08</span>
+                      </div>
+                      <div class="variable-single-item color-switch">
+                          <div class="product-variable-color">
+                              <label>
+                                  <input name="modal-product-color"
+                                      class="color-select" type="radio" checked="">
+                                  <span class="product-color-black"></span>
+                              </label>
+                              <label>
+                                  <input name="modal-product-color"
+                                      class="color-select" type="radio">
+                                  <span class="product-color-tomato"></span>
+                              </label>
+
+                              <label>
+                                  <input name="modal-product-color"
+                                      class="color-select" type="radio">
+                                  <span class="product-color-gray"></span>
+                              </label>
+                          </div>
+                      </div>
+                      <ul class="size-switch">
+                          <li class="single-size active">XL</li>
+                          <li class="single-size">LARGE</li>
+                          <li class="single-size">SMALL</li>
+                      </ul>
+                      <a href="cart.html" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div> {% endcomment %}
+<script>
+    reviewSection = document.getElementById('review-div')
+    function openCloseDiv() {
+        if (reviewSection.style.display === "none") {
+            reviewSection.style.display = "block"
+        } else {
+            reviewSection.style.display = "none"
+        }
+    }
+</script>
+
+{% endblock content %}
+

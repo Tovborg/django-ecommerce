@@ -1,0 +1,63 @@
+/*-------------------------------
+ #.product-about-area
+--------------------------------*/
+.product-about-area {
+    position: relative;
+    z-index: 1;
+    &::before {
+        position: absolute;
+        content: '';
+        width: 70%;
+        height: 100%;
+        background-color: #F9F9F9;
+        border-radius: 0 30px 30px 0;
+        left: 0;
+        top: 0;
+        z-index: -1;
+    }
+    &.right-shape {
+        &::before {
+            right: 0;
+            left: auto;
+            border-radius: 30px 0 0 30px;
+        }
+    }
+    .product-about-content {
+        padding: 5rem 4rem;
+        background: #FFFFFF;
+        box-shadow: 0px 5px 65px 2px rgba(0, 0, 0, 0.06);
+        border-radius: 15px;
+    }
+}
+@media (max-width: 1399px) {
+    .product-about-area  .section-header-three .section-title {
+        font-size: 3.6rem;
+        line-height: 4.6rem;
+    }
+}
+@media (max-width: 1199px) {
+    .product-about-area  .section-header-three .section-title {
+        font-size: 3.2rem;
+        line-height: 4.2rem;
+    }
+}
+@media (max-width: 767px) {
+    .product-about-image {
+        margin-bottom: 3rem;
+    }
+}
+@media (max-width: 480px) {
+    .product-about-area  .section-header-three .section-title {
+        font-size: 2.6rem;
+        line-height: 3.6rem;
+    }
+    .product-about-area .product-about-content {
+        padding: 3rem 2.5rem;
+    }
+    .product-about-area  .section-header-three .section-sub-title {
+        margin-bottom: 1.5rem;
+    }
+    .product-about-area  .section-header-three .section-title {
+        margin-bottom: 1rem;
+    }
+}

@@ -1,0 +1,85 @@
+/*-------------------------
+#.popular-categories-area
+--------------------------*/
+.popular-categories-area {
+    .single-categorie {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        padding: 0 3.5rem 0 0;
+        height: 11rem;
+        margin-bottom: 3rem;
+        z-index: 1;
+        &:before {
+            position: absolute;
+            content: '';
+            width: calc(100% - 28px);
+            height: 100%;
+            top: 0;
+            right: 0;
+            background-color: var(--white);
+            z-index: -1;
+            transition: $transition;
+        }
+        .categorie-wrap {
+            display: flex;
+            align-items: center;
+            .categorie-icon {
+                @include flex-position(flex, center, center);
+                margin-right: 2rem;
+                width: 5.6rem;
+                height: 5.6rem;
+                .icon {
+                    font-size: 5rem;
+                    font-weight: 700;
+                    color: var(--black);
+                }
+            }
+            .categorie-info {
+                flex: 1;
+                .categorie-name {
+                    margin-bottom: .7rem;
+                    font-size: 2rem;
+                    font-weight: 500;
+                    text-transform: capitalize;
+                    color: var(--black);
+                }
+                .categorie-subtitle {
+                    margin: 0;
+                    font-size: 1.6rem;
+                    line-height: 2.6rem;
+                    font-weight: 400;
+                    text-transform: capitalize;
+                    color: var(--black);
+                }
+            }
+        }
+        .arrow {
+            font-size: 2.5rem;
+            color: var(--black);
+            font-weight: 900;
+            transition: $transition;
+        }
+        &:hover {
+            .arrow {
+                color: var(--primary-color);
+                transform: translateX(5px);
+            }
+        }
+    }
+}
+@media (max-width:1199px) {
+    .popular-categories-area .single-categorie .categorie-wrap .categorie-info .categorie-name {
+        font-size: 1.8rem;
+    }
+    .popular-categories-area .single-categorie .categorie-wrap .categorie-info .categorie-subtitle {
+        font-size: 1.4rem;
+    }
+    .popular-categories-area .single-categorie {
+        padding: 0px 2rem 0px 0px;
+    }
+    .popular-categories-area .single-categorie .categorie-wrap .categorie-icon {
+        margin-right: 1rem;
+    }
+}

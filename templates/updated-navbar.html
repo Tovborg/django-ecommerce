@@ -1,0 +1,188 @@
+{% load static %}
+{% load i18n %}
+
+<header class="header-area-v2 d-none d-lg-block">
+    <div class="header-middle">
+        <div class="header-wrap">
+            <div class="search-area">
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="search" name="search" placeholder="Search Here" />
+                        <button type="button" class="search-btn"><i class="flaticon-search"></i></button>
+                    </div>
+                </form>
+            </div>
+            <div class="brand-logo-area">
+                <a href="{% url 'core:home-page' %}"><h1 style="color: #0D7862; font-size: 40px;" class="brand-logo" >Tovborg</h1></a>
+                {% comment %} <a href="{% url 'core:home-page' %}" class="brand-logo"><img class="brand-image" src="{% static 'assets/images/zairito-home-two.png' %}" alt="zairito-home-two" /></a> {% endcomment %}
+            </div>
+            <div class="header-right">
+                <ul class="btn-list">
+                    <li class="single-item wishlist-area"><a class="single-btn wishlist-btn" href="{% url 'core:wishlist' %}"><i class="btn-icon flaticon-like"></i></a></li>
+                    <li class="single-item cart-area"><a class="single-btn cart-btn" data-bs-toggle="offcanvas" href="#cartOffcanvasSidebar" role="button" aria-controls="cartOffcanvasSidebar"><i class="btn-icon flaticon-shopping-bag"></i></a></li>
+                    {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'account_logout' %}" id="account-logout-form">
+                        {% csrf_token %}
+                        {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                        {% endif %}
+                       
+                    </form>
+                    <li class="single-item user-area"><a class="single-btn user-btn" onclick="formSubmit()"><i class="btn-icon flaticon-user"></i></a></li>
+                    <script>
+                        function formSubmit() {
+                            document.getElementById("account-logout-form").submit();
+                        }
+                    </script>
+                    
+                    
+                    {% else %}
+                    <li class="single-item user-area"><a class="single-btn user-btn" href="{% url 'account_login' %}"><i class="btn-icon flaticon-user"></i></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="header-bottom">
+        <nav class="menu-area">
+            <ul class="main-menu">
+                <li class="menu-item mega-menu-parent">
+                    <a class="menu-link" href="#">Shop <i class="arrow-icon fas fa-angle-down"></i></a>
+                    <div class="mega-menu-area">
+                        <div class="container">
+                            <ul class="mega-menu">
+                                <li class="mega-menu-item">
+                                    <a class="mega-menu-title" href="#">Shop Categories</a>
+                                    <ul class="menu-items">
+                                        <li class="mega-menu-items"><a class="mega-menu-link" href="{% url 'core:shop-grid' %}">All items {% comment %}<span class="menu-item-badge new">New</span>{% endcomment %}</a></li>
+                                        {% comment %} <li class="mega-menu-items"><a class="mega-menu-link" href="shop-grid-right-sidebar.html">Categories</a></li> {% endcomment %}
+                                        <li class="mega-menu-items"><a class="mega-menu-link" href="{% url 'core:womens' %}">Womens Jewelry<span class="menu-item-badge trending">Trending</span></a></li>
+                                        <li class="mega-menu-items"><a class="mega-menu-link" href="{% url 'core:mens' %}">Mens Jewelry</a></li>
+                                        {% comment %} <li class="mega-menu-items"><a class="mega-menu-link" href="shop-list-right-sidebar.html">Accesories</a></li> {% endcomment %}
+                                        {% comment %} <li class="mega-menu-items"><a class="mega-menu-link" href="shop-list.html">Custom Jewelry</a></li> {% endcomment %}
+                                    </ul>
+                                </li>
+                                <li class="mega-menu-item">
+                                    <a class="mega-menu-title" href="#">Others</a>
+                                    <ul class="menu-items">
+
+                                        <li class="mega-menu-items"><a class="mega-menu-link" href="{% url 'core:checkout-page' %}">Checkout Page</a></li>
+                                        {% comment %} <li class="mega-menu-items"><a class="mega-menu-link" href="compare.html">Compare</a></li> {% endcomment %}
+                                        <li class="mega-menu-items"><a class="mega-menu-link" href="{% url 'core:wishlist' %}">Wishlist</a></li>
+                                        {% comment %} <li class="mega-menu-items"><a class="mega-menu-link" href="empty-wish-list.html">Empty Wishlist</a></li> {% endcomment %}
+                                    </ul>
+                                </li>
+                                <li class="mega-menu-item">
+                                    <a  class="mega-menu-banner" href="#">
+                                        <img class="menu-banner-image" src="{% static 'assets/images/mega-menu-banner.png' %}" alt="mega-menu-banner" />
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                
+            
+
+
+                <li class="menu-item"><a class="menu-link" href="{% url 'core:contact' %}">Contact</a></li>
+                
+            </ul>
+        </nav>
+    </div>
+    
+</header>
+<div class="mobile-header-area d-block d-lg-none">
+    <div class="container">
+        <div class="menu-wrap">
+            <div class="header-left">
+                <a class="brand-logo" href="{% url 'core:home-page' %}"><h1 style="color: #0D7862; font-size: 35px;" class="brand-logo">Tovborg</h1></a>
+            </div>
+            <div class="header-right">
+                <ul class="btn-list">
+                    <li class="single-item wishlist-area"><a class="single-btn wishlist-btn" href="{% url 'core:wishlist' %}"><i class="btn-icon flaticon-like"></i></a></li>
+                    <li class="single-item cart-area"><a class="single-btn cart-btn" data-bs-toggle="offcanvas" href="#cartOffcanvasSidebar" role="button" aria-controls="cartOffcanvasSidebar"><i class="btn-icon flaticon-shopping-bag"></i></a></li>
+                    {% comment %} <li class="single-item cart-area"><a class="single-btn cart-btn" data-bs-toggle="offcanvas" href="{% url 'core:checkout-page' %}" role="button" aria-controls="cartOffcanvasSidebar"><i class="btn-icon flaticon-shopping-bag"></i></a></li> {% endcomment %}
+                    <li class="single-item user-area"><a class="single-btn user-btn" href="sign-in.html"><i class="btn-icon flaticon-user"></i></a></li>
+                </ul>
+                <button class="menu-bar" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMobileMenu" aria-controls="offcanvasMobileMenu"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="offcanvas offcanvas-start menu-offcanvas" tabindex="-1" id="offcanvasMobileMenu">
+    <div class="mobile-menu-area">
+        <div class="offcanvas-header">
+            <a class="brand-logo" href="{% url 'core:home-page' %}"><h1 style="color: #0D7862; font-size: 40px;" class="brand-logo" >Tovborg</h1></a>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        
+        <nav class="main-menu">
+            <ul class="menu-list">
+                <li class="menu-item">
+                    <span class="menu-expand"></span>
+                    <a class="menu-link" href="#">Shop</a>
+                    <ul class="sub-menu">
+                        <li class="sub-menu-item"><a class="sub-menu-title" href="#">Shop Categories</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="{% url 'core:shop-grid' %}">All Items</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="{% url 'core:womens' %}">Womens Jewelry</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="{% url 'core:mens' %}">Mens Jewelry</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-title" href="#">Others</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="{% url 'core:checkout-page' %}">Checkout Page</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="{% url 'core:wishlist' %}">Wishlist</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <span class="menu-expand"></span>
+                    <a class="menu-link" href="#">Pages</a>
+                    <ul class="sub-menu">
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="term-conditions.html">Term & Conditions </a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="privacy-policy.html">Privacy Policy</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="shipping-return.html">Shipping & Return</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="faq.html">Frequently Asked Questions</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="refund-policy.html">Refund policy</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="error.html">Error Page</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="sign-in.html">Sign In</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="sign-up.html">Sign Up</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item"><a class="menu-link" href="about-us.html">about us</a></li>
+                
+                <li class="menu-item">
+                    <span class="menu-expand"></span>
+                    <a class="menu-link" href="#">Blog</a>
+                    <ul class="sub-menu">
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="blog.html">Blog Grid</a></li>
+                        <li class="sub-menu-item"><a class="sub-menu-link" href="single-blog.html">Blog Single</a></li>
+                    </ul>
+                </li>
+                <li class="menu-item"><a class="menu-link" href="contact.html">Contact</a></li>
+                
+            </ul>
+        </nav>
+        <div class="menu-bottom">
+            <div class="switcher-lang-currency">
+                <div class="currency-switcher">
+                    <a href="#" class="currency">Usd <i class="fas fa-angle-down"></i></a>
+                    <ul class="currency-list">
+                        <li class="single-currency"><a class="currency-text" href="#">Usd</a></li>
+                        <li class="single-currency"><a class="currency-text" href="#">Rupi</a></li>
+                    </ul>
+                </div>
+                <div class="lang-switcher">
+                    
+                    <a href="#" class="lang">Eng <i class="fas fa-angle-down"></i></a>
+                    <ul class="lang-list">
+                        <li class="single-lang"><a class="lang-text" href="#">Eng</a></li>
+                        <li class="single-lang"><a class="lang-text" href="#">Hin</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Js file  -->
+
+

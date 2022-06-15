@@ -1,0 +1,95 @@
+/*--------------------------------
+    Page Popup Modal
+-----------------------------------*/
+.theme-modal {
+    .modal-dialog {
+        .modal-content {
+            .modal-body {
+                background-color: #e5e5e7;
+                padding: 0px;
+
+                .offer_modal_img {
+                    height: 100%;
+                    align-items: flex-end;
+                }
+                .offer_modal_left {
+                    // padding-left: 80px;
+                    // padding-top: 30px;
+                    padding: 50px;
+                    img {
+                        height: 34px;
+                    }
+                    h3 {
+                        font-size: 18px;
+                        font-weight: 700;
+                        padding-top: 25px;
+                        color: #000;
+                    }
+                    p {
+                        font-size: 16px;
+                        line-height: 24px;
+                        padding-top: 15px;
+                        font-weight: 500;
+                        padding-bottom: 22px;
+                    }
+                    form {
+                        input {
+                            border: none;
+                            border-top-left-radius: 25px;
+                            border-bottom-left-radius: 25px;
+                            height: 50px;
+                            font-size: 16px;
+                            padding: 12px 20px;
+                        }
+                        label {
+                            font-size: 14px;
+                        }
+                        button {
+                            border-top-right-radius: 25px;
+                            border-bottom-right-radius: 25px;
+                            height: 50px;
+                            padding: 10px 20px;
+                            font-weight: 500;
+                            background-color: var(--primary-color);
+                            color: #fff;
+                            transition: 1s ease all;
+                            &:hover {
+                                background-color: var(--hover-color);
+                            }
+                        }
+                        .check_boxed_modal {
+                            display: flex;
+                            align-items: center;
+                            input {
+                                margin-right: 10px;
+                                height: 30px;
+                            }
+                        }
+                    }
+                }
+                .btn-close {
+                    position: absolute;
+                    right: 14px;
+                    top: 10px;
+                    font-size: 15px;
+                    cursor: pointer;
+                    z-index: 999;
+                    border: 0;
+                    border-radius: 50%;
+                    width: 40px;
+                    height: 40px;
+                    padding-bottom: 5px;
+                    &:focus {
+                        box-shadow: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (min-width:320px) and (max-width:400px) {
+    .theme-modal .modal-dialog .modal-content .modal-body .offer_modal_left {
+        padding: 23px;
+    }
+}

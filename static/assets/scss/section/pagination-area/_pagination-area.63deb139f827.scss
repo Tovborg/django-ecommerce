@@ -1,0 +1,50 @@
+/*-------------------------------
+#.pagination-area
+--------------------------------*/
+.pagination-area {
+    text-align: right;
+    .paginations {
+        .pagination-page {
+            display: inline-block;
+            margin-right: 1rem;
+            .pagination-link {
+                @include flex-position(flex, center, center);
+                width: 5.2rem;
+                height: 5.2rem;
+                border: 1px solid #C4C4C4;
+                font-size: 2.4rem;
+                font-weight: 400;
+                color: var(--black);
+                transition: $transition;
+                &:hover {
+                    background-color: var(--primary-color-two);
+                    border-color: var(--primary-color-two);
+                    color: var(--white);
+                }
+            }
+            &.active {
+                .pagination-link {
+                    background-color: var(--primary-color-two);
+                    border-color: var(--primary-color-two);
+                    color: var(--white);
+                }
+            }
+            
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+}
+@media (max-width: 767px) {
+    .pagination-area .paginations .pagination-page .pagination-link {
+        width: 3.5rem;
+        height: 3.5rem;
+        font-size: 1.6rem;
+    }
+}
+@media (max-width: 480px) {
+    .pagination-area .paginations .pagination-page {
+        margin-right: .5rem;
+    }
+}

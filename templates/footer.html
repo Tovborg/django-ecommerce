@@ -1,0 +1,60 @@
+{% load static %}
+<footer class="footer-area-v2">
+  <div class="footer-widget-area">
+      <div class="container">
+          <div class="row">
+              <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="single-widget about-widget">
+                      <a href="index.html" class="footer-brand-logo mb-25"><img src="{% static 'assets/images/logo_transparent.png' %} " alt="footer-logo" /></a>
+                  </div>
+              </div>
+              <div class="col-lg-2 col-md-6 col-sm-6">
+                  <div class="single-widget">
+                      <h3 class="widget-title mobile-dropdown-title">Shop by</h3>
+                      <ul class="widget-menu show">
+                          <li class="meni-item"><a class="menu-link" href="{% url 'core:shop-grid' %}">All Items</a></li>
+                          <li class="meni-item"><a class="menu-link" href="{% url 'core:womens' %}">Womens Jewelry</a></li>
+                          <li class="meni-item"><a class="menu-link" href="{% url 'core:mens' %}">Mens Jewelry</a></li>
+                      </ul>
+                  </div>
+              </div>
+              <div class="col-lg-2 col-md-6 col-sm-6">
+                  <div class="single-widget">
+                      <h3 class="widget-title mobile-dropdown-title">Information</h3>
+                      <ul class="widget-menu">
+                          <li class="meni-item"><a class="menu-link" href="shop-grid.html">Weekly Deals</a></li>
+                          <li class="meni-item"><a class="menu-link" href="{% url 'account_login' %}">Sign In</a></li>
+                          <li class="meni-item"><a class="menu-link" href="{% url 'account_signup' %}">Sign Up</a></li>
+                      </ul>
+                  </div>
+              </div>
+              
+              <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="single-widget social-media-widget">
+                      <h3 class="widget-title">Social Links</h3>
+                      <ul class="social-media">
+                          <li class="social-media-item"><a class="social-media-link" href="javascript:void(0)"><i class="fab fa-facebook-f"></i></a></li>
+                          <li class="social-media-item"><a class="social-media-link" href="javascript:void(0)"><i class="fab fa-twitter"></i></a></li>
+                          <li class="social-media-item"><a class="social-media-link" href="javascript:void(0)"><i class="fab fa-linkedin-in"></i></a></li>
+                          <li class="social-media-item"><a class="social-media-link" href="javascript:void(0)"><i class="fab fa-instagram"></i></a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="footer-bottom">
+      <div class="container">
+          <div class="footer-bottom-wrap">
+              <div class="row align-items-center">
+                  <div class="col-lg-6">
+                      <p class="copyright-text">Designed And Developed By TovborgWEB</p>
+                  </div>
+                  <div class="col-lg-6 text-lg-end">
+                      <img class="payment-icons" src="{% static 'assets/images/accepts-image.png' %} " alt="accepts-image" />
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</footer>

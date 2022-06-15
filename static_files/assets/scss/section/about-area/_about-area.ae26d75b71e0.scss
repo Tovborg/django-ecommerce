@@ -1,0 +1,137 @@
+/*-------------------------
+#.about-area
+--------------------------*/
+.about-area {
+    background-image: url('../images/about-bg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    .story-box-slide {
+        .slick-slide {
+            margin: 0 12px;
+        }
+        .slick-list {
+            margin: 0 -12px;
+        }
+        .slick-dots {
+            margin-top: 4rem;
+            text-align: center;
+            li {
+                display: inline-block;
+                margin: 0 1rem;
+                font-size: 0;
+                padding: 0;
+                line-height: 1;
+                button {
+                    position: relative;
+                    font-size: 0;
+                    line-height: 1;
+                    padding: 0;
+                    border: none;
+                    width: 1rem;
+                    height: 1rem;
+                    border-radius: 50%;
+                    background-color: var(--black);
+                    &:after {
+                        position: absolute;
+                        content: '';
+                        width: 100%;
+                        height: 100%;
+                        left: 0;
+                        top: 0;
+                        transform: scale(2.2);
+                        border-radius: 50%;
+                        border: 1px solid var(--black);
+                        opacity: 0;
+                        visibility: hidden;
+                        transition: $transition;
+                    }
+                }
+                &.slick-active {
+                    button {
+                        &:after {
+                            opacity: 1;
+                            visibility: visible;
+                        }
+                    }
+                }
+            }
+        }
+        .slick-arrow {
+            @include flex-position(flex, center, center);
+            position: absolute;
+            top: calc(50% - 30px);
+            transform: translateY(-50%);
+            width: 4.8rem;
+            height: 4.8rem;
+            background-color: rgba(0,0,0, .6);
+            border-radius: 50%;
+            color: var(--white);
+            transition: $transition;
+            z-index: 5;
+            cursor: pointer;
+            &:hover {
+                color: var(--white);
+                background-color: var(--black);
+            }
+            &.slick-prev {
+                left: -60px;
+            }
+            &.slick-next {
+                right: -60px;
+            }
+        }
+        .single-story-box {
+            padding: 3.5rem 4rem;
+            background-color: rgba(255, 255, 255, .9);
+            border-radius: 6px;
+            .story-title {
+                margin-bottom: 2rem;
+                font-size: 2rem;
+                font-weight: 600;
+                text-transform: capitalize;
+                color: var(--black);
+                .story-year {
+                    border-bottom: 2px solid var(--primary-color);
+                }
+            }
+            .story-content {
+                margin-bottom: 0;
+                font-size: 2rem;
+                line-height: 3rem;
+                font-weight: 400;
+                color: #555555;
+            }
+        }
+    }
+}
+@media (max-width: 1400px) {
+    .about-area .story-box-slide .slick-arrow.slick-prev {
+        left: 0;
+    }
+    .about-area .story-box-slide .slick-arrow.slick-next {
+        right: 0;
+    }
+}
+@media (max-width: 1199px) {
+    .about-area .story-box-slide .single-story-box {
+        padding: 2.5rem 2rem;
+    }
+}
+@media (max-width: 767px) {
+    .about-area .story-box-slide .slick-dots {
+        margin-top: 2rem;
+    }
+    .about-area .story-box-slide .slick-arrow {
+        opacity: 0;
+        visibility: hidden;
+    }
+    .about-area .story-box-slide:hover .slick-arrow {
+        opacity: 1;
+        visibility: visible;
+    }
+    .about-area .story-box-slide .single-story-box .story-content {
+        font-size: 1.6rem;
+        line-height: 2.6rem;
+    }
+}
