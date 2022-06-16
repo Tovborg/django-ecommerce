@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings
 from django.forms import IntegerField
 from django.shortcuts import reverse
+from core.forms import SHIPPING_CHOICES
 from django_countries import Countries
 from django_countries.fields import CountryField
 from django.core import validators
@@ -28,6 +29,12 @@ FEATURED_PRODUCTS_CHOICES = (
     ('BS', 'Best selling'),
     ('OS', 'On sale'),
     ('FY', 'For you')
+)
+
+SHIPPING_CHOICES = (
+    ('U', 'UPS'),
+    ('F', 'FedEx'),
+    ('D', 'DHL'),
 )
 
 
@@ -159,6 +166,8 @@ class Order(models.Model):
         'BillingAddress', on_delete=models.SET_NULL, blank=True, null=True)
     order_identifier = models.IntegerField(
         default=0, null=True, blank=True)
+    shipping_method = models.CharField(
+        choices=SHIPPING_CHOICES, max_length=3, null=True, blank=True)
 
     def __str__(self):
         return self.username
@@ -168,10 +177,11 @@ class Order(models.Model):
         for order_item in self.items.all():
             total += order_item.get_final_price()
         if self.discount:
-            minus = ( self.discount / 100) * total
-            total = total - minus
+            return (total * self.discount) / 100
+        else:
+            return total
         
-        return total
+
         
 
         

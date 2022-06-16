@@ -10115,6 +10115,20 @@ secendary-tabs
   transition: all 0.3s linear;
 }
 
+.write-coupon-btn {
+  display: inline-block;
+  padding: 1rem 3rem;
+  background-color: #F4F4F4;
+  font-size: 1.6rem;
+  font-weight: 400;
+  text-transform: capitalize;
+  color: #888888;
+  -webkit-transition: all 0.3s linear;
+  transition: all 0.3s linear;
+}
+
+
+
 .product-single-area .product-bottom-info .tab-content .product-reviews .review-top .write-review-btn:hover {
   background-color: var(--primary-color);
   color: var(--white);
@@ -15864,3 +15878,28 @@ secendary-tabs
   color: var(--white);
 }
 
+.write-coupon-btn {
+    display: inline-block;
+    padding: 1rem 3rem;
+    background-color: #000000;
+    font-size: 1.6rem;
+    font-weight: 400;
+    text-transform: capitalize;
+    color: #ffffff;
+    -webkit-transition: all 0.3s linear;
+    transition: all 0.3s linear;
+}
+
+.write-coupon-btn:hover {
+    display: inline-block;
+    padding: 1rem 3rem;
+    background-color: #000000;
+    font-size: 1.6rem;
+    font-weight: 400;
+    text-transform: capitalize;
+    color: #ffffff;
+    -webkit-transition: all 0.3s linear;
+    transition: all 0.3s linear;
+    background-color: rgb(13, 120, 98);
+
+}

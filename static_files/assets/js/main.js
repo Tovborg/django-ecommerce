@@ -638,19 +638,7 @@
 //   });
 
 // });
-function live_update() {
-  $.ajax({
-    type: 'GET',
-    url: apply_coupon,
-    success: function(data) {
-      console.log(data);
-      console.log('coupon applied');
-    },
-    error: function(data) {
-      alert('Error applying coupon');
-    }
-  })
-}
+order_total = 0;
 
 $(document).ready(function(){
   $('#coupon-form').on('submit', function(event) {
@@ -663,11 +651,17 @@ $(document).ready(function(){
         csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value,
         datatype: 'json',
       },
-      success: function(data) {
-        console.log(data);
-        console.log('coupon applied');
-        document.getElementById('total').innerHTML = data.total;
+      success: function(response_data) {
+        $('#total').html('$' + response_data['total_amount']);
         $('#total-div').load(location.href+" #total-div>*","");
+        order_total = response_data['total_amount'];
+        console.log(response_data['message']);
+        console.log(response_data['total_amount']);
+        console.log(response_data);
+        // console.log('coupon applied');
+        
+        // console.log(data.total_amount);
+        
       },
       error: function(data) {
         alert('Error applying coupon');
@@ -675,4 +669,8 @@ $(document).ready(function(){
     })
   })
 });
+
+
+
+
 

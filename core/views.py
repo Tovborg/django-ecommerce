@@ -30,7 +30,7 @@ class PayPalClient:
         self.client = PayPalHttpClient(self.environment)
 
 
-YOUR_DOMAIN = 'http://127.0.0.1:8000/'
+YOUR_DOMAIN = 'http://127.0.0.1:11000/'
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
 logger = logging.getLogger(__name__)
 
@@ -126,12 +126,12 @@ class CheckoutView(LoginRequiredMixin, View):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
             if form.is_valid():
-                print('this block was executed')
                 street_address = self.request.POST.get('street_address')
                 apartment_address = self.request.POST.get('apartment_address')
                 country = form.cleaned_data.get('country')
                 zip = self.request.POST.get('zip')
                 payment_option = self.request.POST.get('payment_option')
+                shipping_option = self.request.POST.get('shipping_options')
                 billing_address = BillingAddress(
                     user=self.request.user,
                     street_address=street_address,
@@ -139,6 +139,8 @@ class CheckoutView(LoginRequiredMixin, View):
                     country=country,
                     zip=zip
                 )
+                order.shipping_option = shipping_option
+                order.save()
                 billing_address.save()
                 order.billing_address = billing_address
                 order.save()
@@ -205,8 +207,10 @@ def applyCoupon(request):
                 if coupon_code.active:
                     cart_order.discount = coupon_code.discount
                     cart_order.save()
+                    print(cart_order.discount)
                     response_data['success'] = True
-                    response_data['total'] = cart_order.get_total()
+                    response_data['total_amount'] = cart_order.get_total()
+                    print(cart_order.get_total())
                     response_data['message'] = 'Coupon code applied successfully!'
                     
                 else:

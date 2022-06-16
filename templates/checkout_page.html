@@ -139,6 +139,26 @@
                             <div class="payment-method">
                                 <div class="row">
                                     <div class="col-lg-12">
+                                        <h2 class="checkout-title">Shipping</h2>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        {% for value, name in form.fields.shipping_options.choices %}
+                                        <div class="form-group">
+                                            <div class="form-check card-check">
+                                                <input class="form-check-input" type="radio" name="shipping_options" id="{{ name }}" value="{{ value }}" />
+                                                <label class="form-check-label" for="{{ name }}">{{ name }}</label>
+                                                <div class="input-icon">
+                                                    <img src="{% static 'assets/images/Stripe-blurple-186x42-76b9615.png' %}" width="187" height="30" alt="{{ name }}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}    
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="payment-method">
+                                <div class="row">
+                                    <div class="col-lg-12">
                                         <h2 class="checkout-title">Payment Method</h2>
                                     </div>
                                     <div class="col-lg-12">
@@ -161,6 +181,7 @@
                                         <script>
                                             document.getElementById('card-button-container').addEventListener('click', function() {
                                                 document.getElementById('billing-form').submit();
+                                            });
                                         </script>
                                         
                                     </div>
@@ -182,7 +203,7 @@
                                     }
                                 }
                             </style> {% endcomment %}
-                            <script src="https://www.paypal.com/sdk/js?client-id=AQie0MKam6S2eIHkiYZTtoNxIJlNdVcD7pJN2aCp5wW-IRurKrBhsWDZ1Jmgnq_aNfyBCzg4FdS9uG5l"></script>
+                            <script src="https://www.paypal.com/sdk/js?client-id=AQie0MKam6S2eIHkiYZTtoNxIJlNdVcD7pJN2aCp5wW-IRurKrBhsWDZ1Jmgnq_aNfyBCzg4FdS9uG5l"></script> 
                             <script>
                                 // Listen or changes to the radio fields
 
@@ -218,6 +239,7 @@
                                 document.querySelector('#paypal-button-container').style.display = 'none';
                                 
                         
+                                
                                 function getCookie(name) {
                                     var cookieValue = null;
                                     if (document.cookie && document.cookie !== '') {
@@ -235,6 +257,13 @@
                                 var csrftoken = getCookie('csrftoken');
                         
                                 // Render the PayPal button into #paypal-button-container
+                                function get_order_total() {
+                                    let get_total_id = document.getElementById('total').innerHTML.replaceAll('$', '');
+                                    let total_number = parseFloat(get_total_id);
+                                    return total_number;
+                                }
+                                console.log(get_order_total());
+
                                 function initPayPalButton() {
                                     paypal.Buttons({
 
@@ -243,7 +272,7 @@
                                             return actions.order.create({
                                                 purchase_units: [{
                                                     amount: {
-                                                        value: {{ order.get_total }}
+                                                        value: get_order_total()
                                                     }
                                                 }]
                                             });
@@ -270,7 +299,7 @@
                                     }).render('#paypal-button-container');
                                 }
                                 initPayPalButton()
-                            </script>
+                            </script> 
                         </form>
                             
                             
@@ -310,8 +339,7 @@
                         </ul>
                         {% if order.get_total %}
                         <div class="total-amount" id="total-div" style="margin-bottom:30px;">
-                            <h3>Total Cost <span class="float-right">${{ order.apply_discount }}</span></h3>
-                            {% comment %} <h3>{{ order.apply_discount|10 }}</h3> {% endcomment %}
+                            <h3>Total Cost <span class="float-right" id="total">${{ order.get_total }}</span></h3>
                         </div>
                         
                         <div id="review-div" class="single-review">
@@ -331,7 +359,7 @@
                                                         <div class="col-lg-6">
                                                             <div class="review-top" style="border-bottom: none !important; ">
                                                                 <div class="review-top-right">
-                                                                    <button class="write-review-btn shadow-none" id="coupon-submit" type="submit" style="outline:none; border-style:none;"><div>Apply</div></button>
+                                                                    <button type="submit" class="write-coupon-btn" id="review-button-submit" style="outline:none; border-style:none;"><div>Apply</div></button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -361,6 +389,7 @@
 <script src="{% static 'assets/js/jquery-3.6.0.min.js' %}"></script>
 <script src="{% static 'assets/js/main.js' %}"></script>
 <script language="Javascript">
-    var apply_coupon = {% url 'core:apply-coupon' %}
- </script>
+    var apply_coupon = {% url 'core:apply-coupon' %};
+</script>
+ 
 {% endblock content %}

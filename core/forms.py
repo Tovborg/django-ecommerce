@@ -9,6 +9,12 @@ PAYMENT_CHOICES = (
 
 )
 
+SHIPPING_CHOICES = (
+    ('U', 'UPS'),
+    ('F', 'FedEx'),
+    ('D', 'DHL'),
+)
+
 
 class CheckoutForm(forms.Form):
     street_address = forms.CharField(widget=forms.TextInput(attrs={
@@ -30,6 +36,8 @@ class CheckoutForm(forms.Form):
     save_info = forms.BooleanField(required=False)
     payment_option = forms.ChoiceField(
         widget=forms.RadioSelect, choices=PAYMENT_CHOICES)
+    shipping_options = forms.ChoiceField(
+        widget=forms.RadioSelect, choices=SHIPPING_CHOICES)
 
 
 class ReviewForm(forms.Form):
