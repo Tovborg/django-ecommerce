@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django_countries',
     'paypal.standard.ipn',
     'sequences.apps.SequencesConfig',
+    'sslserver',
 ]
 
 MIDDLEWARE = [

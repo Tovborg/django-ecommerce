@@ -5,6 +5,7 @@
         <!-- Preloader Area Start -->
 {% block extra_head %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link href="{% static 'assets/css/checkout.css' %}" rel="stylesheet">
 {% endblock extra_head %}
 
 {% block content %}
@@ -24,6 +25,7 @@
 <!-- mobile-menu-area area end here  -->
 
 <!-- Cart Offcanvas Sidebar Menu area Start here  -->
+<script src="https://js.stripe.com/v3/"></script>
 <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvasSidebar" aria-labelledby="cartOffcanvasSidebarLabel">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="cartOffcanvasSidebarLabel">Shopping Cart</h5>
@@ -31,39 +33,132 @@
     </div>
     <div class="offcanvas-body">
 
-        <div class="cart-product-list">
+        <div class="cart-product-list" id="offcanvas-cart">
 
             <!-- Product item start -->
-            {% for item in products %}
-            <div class="product-item cart-product-item">
-                <div class="single-grid-product">
-                    <div class="product-top">
-                        <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name-part">
-                            <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.item.name }}</a></h3>
+            <script>
+                function RemoveSingleItemFromCart(event, item_slug) {
+                    event.preventDefault();
+                    console.log('Clicked');
+                    $.ajax({
+                        type: 'POST',
+                        url: "/remove-item-from-cart/12345/".replace(/12345/, item_slug.toString()),
+                        data: {
+                            'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                            'type': 'json',
+                            'slug': item_slug
+                        },
+                        success: function(response_data) {
+                            console.log(response_data);
+                            $('#total-bottom').load(location.href+" #total-bottom>*","");
+                            $('#total-div').load(location.href+" #total-div>*","");
+                            $('#cart-product-list').load(location.href+" #cart-product-list>*","");
+                            $('#price-area').load(location.href+" #price-area>*","");
+                            // make for loop that runs 10 times and logs 'test'
+                            $('#cart-items').load(location.href+" #cart-items>*","");
+                            $('#cart-total').load(location.href+" #cart-total>*","");      
 
-                            <div class="cart-quantity input-group">
-                                <a href="{% url 'core:remove_single_item_from_cart' item.item.slug %}"><div class="increase-btn dec qtybutton btn">-</div></a>
-                                <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="{{ item.quantity }}" readonly />
-                                <a href="{% url 'core:add-to-cart' item.item.slug %}"><div class="increase-btn inc qtybutton btn">+</div></a>
-                            </div>
-
-                            <button class="cart-remove-btn"><a href="{{ item.item.get_remove_from_cart_url }}">Remove</a></button>
+                        },
+                        error: function(data) {
+                            console.log(data)
+                        }
+                        
+                    })
+                };
+                function RemoveItemFromCart(event, item_slug) {
+                    event.preventDefault();
+                    console.log('Default event Prevented')
+                    $.ajax({
+                        type: 'POST',
+                        url: "/remove-from-cart/12345/".replace(/12345/, item_slug.toString()),
+                        data: {
+                            'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                            'type': 'json',
+                            'slug': item_slug
+                        },
+                        success: function(response_data) {
+                            console.log(response_data);
+                            $('#total-bottom').load(location.href+" #total-bottom>*","");
+                            $('#total-div').load(location.href+" #total-div>*","");
+                            $('#cart-product-list').load(location.href+" #cart-product-list>*","");
+                            $('#price-area').load(location.href+" #price-area>*","");
+                            // make for loop that runs 10 times and logs 'test'
+                            $('#cart-items').load(location.href+" #cart-items>*","");
+                            $('#cart-total').load(location.href+" #cart-total>*","");      
+                        },
+                        error: function(data) {
+                            console.log(data)
+                        }
+                    })
+                };
+                function addItemToCart(event, item_slug) {
+                    event.preventDefault()
+                    console.log('Default event Prevented')
+                    $.ajax({
+                        type: 'POST',
+                        url: "/ajax-add-to-cart/12345/".replace(/12345/, item_slug.toString()),
+                        data: {
+                            'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                            'type': 'json',
+                            'slug': item_slug
+                        },
+                        success: function(response_data) {
+                            console.log(response_data);
+                            
+                            $('#total-bottom').load(location.href+" #total-bottom>*","");
+                            $('#total-div').load(location.href+" #total-div>*","");
+                            $('#cart-product-list').load(location.href+" #cart-product-list>*","");
+                            $('#price-area').load(location.href+" #price-area>*","");
+                            // make for loop that runs 10 times and logs 'test'
+                            $('#cart-items').load(location.href+" #cart-items>*","");
+                            $('#cart-total').load(location.href+" #cart-total>*","");
+                            $('#summary-list').load(location.href+" #summary-list>*","");      
+                        },
+                        error: function(data) {
+                            console.log(data)
+                        }
+                    })
+                }
+            </script>
+            <div id="cart-items">
+                {% for item in products %}
+                <div class="product-item cart-product-item">
+                    <div class="single-grid-product">
+                        <div class="product-top">
+                            <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
                         </div>
-                        <div class="product-price">
-                            {% if item.item.discount_price %}
-                            <span class="regular-price">${{ item.item.price }}</span>
-                            <span class="price">${{ item.item.discount_price }}</span>
-                            {% else %}
-                            <span class="price">${{ item.get_total_item_price }}</span>
-                            {% endif %}
+                        <script>
+                            console.log('{{item.item.slug}}');
+                        </script>
+                        <div class="product-info">
+                            <div class="product-name-part">
+                                <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.item.name }}</a></h3>
+
+                                <div class="cart-quantity input-group">
+                                    <a href="javascript:void(0)" id="remove-single-item" onclick="RemoveSingleItemFromCart(event, '{{ item.item.slug }}')"><div class="increase-btn dec qtybutton btn">-</div></a>
+                                    <input id="quantity" class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="{{ item.quantity }}" readonly />
+                                    <a href="javascript:void(0)" onclick="addItemToCart(event, '{{ item.item.slug }}')"><div class="increase-btn inc qtybutton btn">+</div></a>
+                                </div>
+
+                                <button class="cart-remove-btn" id="remove-item" onclick="RemoveItemFromCart(event, '{{ item.item.slug }}')"><a href="{{ item.item.get_remove_from_cart_url }}">Remove</a></button>
+                            </div>
+                            <div class="product-price" id="cart-total">
+                                <span class="price">${{ item.get_total_item_price }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+            
+                <script>
+                    var item_slug = '{{ item.item.slug }}';
+                    var remove_single_item_from_cart_url = "{% url 'core:remove_single_item_from_cart' slug=12345 %}".replace(/12345/, item_slug.toString());
+                    console.log(remove_single_item_from_cart_url);
+                    document.getElementById()
+                </script>
+                {% endfor %}
             </div>
-            {% endfor %}
+            
+            
             <!-- Product item end -->
 
             <!-- Product item start -->
@@ -72,9 +167,11 @@
         </div>
 
         <div class="total-bottom-part">
-            <div class="total-count d-flex">
+            <div class="total-count d-flex" id="total-bottom">
                 <h3>Total</h3>
-                <h4 id="total">${{ order.get_total }}</h4>
+                <h4 id="cart-off-canvas-total">
+                    ${{ order.get_total }}
+                </h4>
             </div>
             <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
                 Proceed To Checkout
@@ -98,6 +195,7 @@
                     <div class="checkout-form">
                         <form method="POST" id="billing-form">
                         {% csrf_token %}
+                            
                             <div class="row" id="BillingAddressForm">
                                 <div class="col-lg-12">
                                     <h2 class="checkout-title">Billing Address</h2>
@@ -109,7 +207,7 @@
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" required />
+                                        <input type="text" class="form-control" id="email" name="email" placeholder="Email Address" required />
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
@@ -136,6 +234,7 @@
                                     {{ form.country }}
                                 </div>
                             </div>
+                            
                             <div class="payment-method">
                                 <div class="row">
                                     <div class="col-lg-12">
@@ -145,7 +244,7 @@
                                         {% for value, name in form.fields.shipping_options.choices %}
                                         <div class="form-group">
                                             <div class="form-check card-check">
-                                                <input class="form-check-input" type="radio" name="shipping_options" id="{{ name }}" value="{{ value }}" />
+                                                <input class="form-check-input" type="radio" name="shipping_options" id="shipping" value="{{ value }}" />
                                                 <label class="form-check-label" for="{{ name }}">{{ name }}</label>
                                                 <div class="input-icon">
                                                     <img src="{% static 'assets/images/Stripe-blurple-186x42-76b9615.png' %}" width="187" height="30" alt="{{ name }}" />
@@ -156,6 +255,8 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                            
                             <div class="payment-method">
                                 <div class="row">
                                     <div class="col-lg-12">
@@ -177,13 +278,7 @@
                                             <input type="checkbox" class="form-check-input" id="agree" />
                                             <label class="form-check-label" for="agree">By clicking the button you agree to our <a href="term-conditions.html">Terms & Conditions</a></label>
                                         </div>
-                                        <button id="card-button-container" class="checkout-btn form-btn">Place Order</button>
-                                        <script>
-                                            document.getElementById('card-button-container').addEventListener('click', function() {
-                                                document.getElementById('billing-form').submit();
-                                            });
-                                        </script>
-                                        
+                                        <button id="card-button-container" form="billing-form" type="submit" class="checkout-btn form-btn">Place Order</button>
                                     </div>
                                 </div>
                             </div>
@@ -301,9 +396,21 @@
                                 initPayPalButton()
                             </script> 
                         </form>
-                            
-                            
-                            
+                        <br>    
+                        <link rel="stylesheet" href="{% static 'assets/css/checkout.css' %}" />
+                        <script src="{% static 'assets/js/checkout.js' %}"></script>
+                        <div id="stripe-div">
+                            <form id="payment-form">
+                                <div id="payment-element">
+                                <!--Stripe.js injects the Payment Element-->
+                                </div>
+                                <button id="submit" class="stripe-submit">
+                                <div class="spinner hidden" id="spinner"></div>
+                                <span id="button-text">Pay now</span>
+                                </button>
+                                <div id="payment-message" class="hidden"></div>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6">
@@ -312,15 +419,15 @@
                             <h2>Cart Summary</h2>
                             <a class="edite-btn" href="cart.html">Edit</a>
                         </div>
-                        <ul class="cart-product-list">
+                        <ul class="cart-product-list" id="cart-product-list">
                             {% for order_item in object %}
                             <li class="single-cart-product d-flex justify-content-between">
-                                <div class="product-info">
+                                <div class="product-info" id="product-info">
                                     <h3>{{ order_item.quantity }}x of {{ order_item.item.name }}</h3>
                                     <p>{{ order_item.item.description }}</p>
             
                                 </div>
-                                <div class="price-area">
+                                <div class="price-area" id="price-area">
                                     {% if order_item.item.discount_price %}
                                     <h3 class="price">${{ order_item.item.discount_price }}</h3>
                                     {% else %}
@@ -330,16 +437,31 @@
                             </li>
                             {% endfor %}
                         </ul>
-                        <ul class="summary-list">
+                        <ul class="summary-list" id="summary-list">
                             {% if order.get_total %}
-                            <li>Subtotal <span>${{ order.get_total }}</span></li>
+                            <li>Subtotal <span>${{ order.get_subtotal }}</span></li>
                             <li>Shipping Cost <span>$15.50</span></li>
-                            <li>VAT/Tax 15% <span>$20.00</span></li>
+                            <li>VAT/Tax 15% <span>${{ order.get_tax }}</span></li>
+                                {% if order.discount %}
+                                <li id="discount-savings">Discount <span id="discount">-- ${{ order.get_discount_savings }}</span></li>
+                                
+                                {% endif %}
                             {% endif %}
                         </ul>
+                        <script>
+                            document.getElementById('discount-savings').addEventListener('click', function() {
+                                if (document.getElementById('discount').innerHTML === '-- ${{ order.get_discount_savings }}') {
+                                    document.getElementById('discount').innerHTML = '-- %{{ order.discount }}'
+                                } else {
+                                    document.getElementById('discount').innerHTML = '-- ${{ order.get_discount_savings }}'
+                                } 
+                            });
+                            
+                            
+                        </script>
                         {% if order.get_total %}
                         <div class="total-amount" id="total-div" style="margin-bottom:30px;">
-                            <h3>Total Cost <span class="float-right" id="total">${{ order.get_total }}</span></h3>
+                            <h3>Total Cost <span class="float-right" id="total"> ${{ order.get_total }}</span></h3>
                         </div>
                         
                         <div id="review-div" class="single-review">
@@ -359,8 +481,9 @@
                                                         <div class="col-lg-6">
                                                             <div class="review-top" style="border-bottom: none !important; ">
                                                                 <div class="review-top-right">
-                                                                    <button type="submit" class="write-coupon-btn" id="review-button-submit" style="outline:none; border-style:none;"><div>Apply</div></button>
+                                                                    <button type="submit" for="coupon-form" class="write-coupon-btn" id="review-button-submit" style="outline:none; border-style:none;"><div>Apply</div></button>
                                                                 </div>
+                                                               
                                                             </div>
                                                         </div>
                                                     </div>
@@ -384,12 +507,13 @@
             </div>
         </div>
     </div>
+
 </section>
-<script src="https://js.stripe.com/v3/"></script>
 <script src="{% static 'assets/js/jquery-3.6.0.min.js' %}"></script>
 <script src="{% static 'assets/js/main.js' %}"></script>
-<script language="Javascript">
-    var apply_coupon = {% url 'core:apply-coupon' %};
+<script>
+    var apply_coupon = "{% url 'core:apply-coupon' %}";
+    var billing_post_url = "{% url 'core:send-billing-form' %}"
 </script>
- 
 {% endblock content %}
+ 

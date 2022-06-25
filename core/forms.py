@@ -27,7 +27,8 @@ class CheckoutForm(forms.Form):
     }))
     country = CountryField(blank_label='(select country)').formfield(
         widget=CountrySelectWidget(attrs={
-            'class': 'form-select'
+            'class': 'form-select',
+            'id': 'country',
         }))
     zip = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control'
@@ -37,7 +38,9 @@ class CheckoutForm(forms.Form):
     payment_option = forms.ChoiceField(
         widget=forms.RadioSelect, choices=PAYMENT_CHOICES)
     shipping_options = forms.ChoiceField(
-        widget=forms.RadioSelect, choices=SHIPPING_CHOICES)
+        widget=forms.RadioSelect(attrs={
+            'name': 'shipping_method'
+        }), choices=SHIPPING_CHOICES)
 
 
 class ReviewForm(forms.Form):

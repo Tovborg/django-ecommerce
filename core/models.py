@@ -8,7 +8,7 @@ from django_countries import Countries
 from django_countries.fields import CountryField
 from django.core import validators
 from stripe import Product
-import uuid
+from django.core.exceptions import ObjectDoesNotExist
 # Create your models here.
 
 CATEGORY_CHOICES = (
@@ -148,11 +148,21 @@ class OrderItem(models.Model):
         return self.get_total_item_price()
 
 
+class CouponCode(models.Model):
+    code = models.CharField(max_length=20)
+    discount = models.IntegerField(default=0)
+    valid_from = models.DateTimeField(auto_now_add=True)
+    valid_to = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.code
+    
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE, null=True, blank=True)
     username = models.CharField(max_length=100)
-    email = models.EmailField(max_length=150)
+    email = models.EmailField(max_length=150, null=True, blank=True)
     amount = models.IntegerField(default=0)
     items = models.ManyToManyField(
         to=OrderItem
@@ -172,7 +182,20 @@ class Order(models.Model):
     def __str__(self):
         return self.username
 
+    def get_subtotal(self):
+        return sum([item.get_final_price() for item in self.items.all()])
+
     def get_total(self):
+        total = 0
+        for order_item in self.items.all():
+            total += order_item.get_final_price()
+        if self.discount:
+            # return total minus discount in percent
+            total = total - (total * self.discount / 100)
+        # return total with 15% tax
+        return int(total + (total * 0.15))
+
+    def get_discount_savings(self):
         total = 0
         for order_item in self.items.all():
             total += order_item.get_final_price()
@@ -180,6 +203,14 @@ class Order(models.Model):
             return (total * self.discount) / 100
         else:
             return total
+
+    def get_tax(self):
+        return int(self.get_total() * 0.085)
+        
+
+    
+        
+
         
 
         
@@ -200,7 +231,7 @@ class BillingAddress(models.Model):
     street_address = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=100)
     country = CountryField(multiple=False)
-    zip = models.CharField(max_length=100)
+    zip = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.user.username
@@ -227,12 +258,3 @@ class Wishlist(models.Model):
     def __str__(self):
         return str(self.user)
 
-class CouponCode(models.Model):
-    code = models.CharField(max_length=20)
-    discount = models.IntegerField(default=0)
-    valid_from = models.DateTimeField(auto_now_add=True)
-    valid_to = models.DateTimeField(auto_now_add=True)
-    active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.code

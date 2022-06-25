@@ -1,3 +1,5 @@
+from locale import currency
+from pipes import Template
 from django.views.generic import ListView, DetailView, View, TemplateView, FormView
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -31,7 +33,7 @@ class PayPalClient:
 
 
 YOUR_DOMAIN = 'http://127.0.0.1:11000/'
-stripe.api_key = settings.STRIPE_PRIVATE_KEY
+stripe.api_key = 'sk_test_51Kw5nlHaBBAjc5DSo1oyLsNtPTw2rFaUU7PdSqaiX4IDryTAqLcVZ4X1utQT6hwCL8urhiQaU18arBedsmAvk2QH00jxEvRxw0'
 logger = logging.getLogger(__name__)
 
 
@@ -111,7 +113,6 @@ class CheckoutView(LoginRequiredMixin, View):
                     order_items = OrderItem.objects.filter(
                         ordered=False, user=self.request.user)
                     context['products'] = order_items
-                    context['order'] = order
             return render(self.request, "checkout_page.html", context)
         except ObjectDoesNotExist:
             messages.error(self.request, "You do not have an active order")
@@ -121,17 +122,18 @@ class CheckoutView(LoginRequiredMixin, View):
 
     def post(self, *args, **kwargs):
         form = CheckoutForm(self.request.POST or None)
-        # add coupon form
-        coupon_form = CouponForm(self.request.POST or None)
         try:
+            print('posting')
             order = Order.objects.get(user=self.request.user, ordered=False)
-            if form.is_valid():
+            print(order)
+            if self.request.method == 'POST':
                 street_address = self.request.POST.get('street_address')
                 apartment_address = self.request.POST.get('apartment_address')
-                country = form.cleaned_data.get('country')
+                country = self.request.POST.get('country')
                 zip = self.request.POST.get('zip')
                 payment_option = self.request.POST.get('payment_option')
-                shipping_option = self.request.POST.get('shipping_options')
+                shipping_option = self.request.POST.get('shipping')
+                email = self.request.POST.get('email')
                 billing_address = BillingAddress(
                     user=self.request.user,
                     street_address=street_address,
@@ -139,13 +141,16 @@ class CheckoutView(LoginRequiredMixin, View):
                     country=country,
                     zip=zip
                 )
-                order.shipping_option = shipping_option
+                order_updated = Order.objects.get(
+                    user=self.request.user, ordered=False).update(
+                    billing_address=billing_address,
+                    email=email,
+                )
+                order_updated.save()
                 order.save()
                 billing_address.save()
                 order.billing_address = billing_address
                 order.save()
-                if payment_option == 'S':
-                    return redirect('core:checkout')
             messages.warning(self.request, 'failed checkout')
             return redirect('core:checkout-page')
         except ObjectDoesNotExist:
@@ -189,18 +194,18 @@ def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 def applyCoupon(request):
-    print('block executed')
+
     cart_order = Order.objects.get(
                 user=request.user, ordered=False)
     response_data = {}
     if request.method == 'POST':
-        print('block executed')
+
         coupon_form = CouponForm(request.POST or None)
         request_getdata = request.POST.get('coupon_code', None)
         print(request_getdata)
 
         try: 
-            print('block executed')
+   
             coupon_qs = CouponCode.objects.filter(code=request_getdata)
             if coupon_qs.exists():
                 coupon_code = coupon_qs.first()
@@ -226,50 +231,77 @@ def applyCoupon(request):
         get_response['total'] = total
         return JsonResponse(get_response)
 
-
+def billing_address(request):
+    cart_order = Order.objects.get(
+                user=request.user, ordered=False)
+    response_data = {}
+    if request.method == 'POST':
+        street_address = request.POST.get('street_address', None)
+        apartment_address = request.POST.get('apartment_address', None)
+        country = request.POST.get('country', None)
+        zip = request.POST.get('zipcode', None)
+        print(zip)
+        email = request.POST.get('email', None)
+        print(email)
+        shipping_method = request.POST.get('shipping_options', None)
+        print(shipping_method)
+        billing_address = BillingAddress(
+            user=request.user,
+            street_address=street_address,
+            apartment_address=apartment_address,
+            country=country,
+            zip=zip
+        )
+        
+        billing_address.save()
+        cart_order.billing_address = billing_address
+        cart_order.save()
+        cart_order.email = email
+        cart_order.save()
+        response_data['success'] = True
+        response_data['message'] = 'Billing address added successfully!'
+        return JsonResponse(response_data)
+    else:
+        return JsonResponse('not a post request')
 # Payments
 
 # STRIPE PAYMENT
 
 # Creates stripe checkout session
-@login_required
-@csrf_exempt
-def create_checkout_session(request):
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    order = order_qs[0]
-    products = order.items.filter(user=request.user, ordered=False)
-    order_items = []
-    if products.count() > 0:
-        for i in range(products.count()):
-            if products[i].item.discount_price:
-                price = products[i].item.discount_price
-            else:
-                price = products[i].item.price
-            order_items.append({
-                'price_data': {
-                    'currency': 'dkk',
-                    'product_data': {
-                        'name': products[i].item.name,
-                    },
-                    'unit_amount': int(price) * 100,
-                },
-                'quantity': products[i].quantity,
-            })
-    print(order_items)
-    session = stripe.checkout.Session.create(
-        client_reference_id=request.user.id if request.user.is_authenticated else None,
-        payment_method_types=['card'],
-        metadata={
-            "user": request.user
-        },
-        line_items=order_items,
-        mode='payment',
-        success_url=YOUR_DOMAIN,
-        cancel_url=YOUR_DOMAIN,
-    )
-    # print(session)
-    return redirect(session.url, code=303)
 
+
+
+
+class checkout(TemplateView):
+    template_name = "checkout.html"
+
+@csrf_exempt    
+def create_payment(request):
+    order = Order.objects.get(user=request.user, ordered=False)
+    amount = order.get_total()
+    print(amount)
+    print('block executed')
+    try:
+        data = json.loads(request.body)
+        print(data)
+        # Create a PaymentIntent with the order amount and currency
+        intent = stripe.PaymentIntent.create(
+            amount=int(amount * 100),
+            currency='eur',
+            automatic_payment_methods={
+                'enabled': True,
+            },
+            metadata={
+                'user': request.user
+            },
+        )
+        print(intent)
+        return JsonResponse({'clientSecret': intent['client_secret']})
+    except Exception as e:
+        return JsonResponse(json.dumps(str(e)), safe=False)
+
+
+    
 
 # Stripe webhook for handling events
 @csrf_exempt
@@ -287,22 +319,43 @@ def webhook(request):
 
     # Handle the event
     if event.type == 'payment_intent.succeeded':
-        payment_intent = event.data.object  # contains a stripe.PaymentIntent
-        print('PaymentIntent was successful!')
+        payment_intent = event.data.object
+        print(payment_intent)
+        session = event['data']['object']
+        price = session['amount'] / 100
+        sessionID = session['id']
+        # print(sessionID)
+        user = session['metadata']['user']
+        # print(user)
+        order_qs = Order.objects.filter(username=user, ordered=False)
+        order_qs.update(amount=price,
+                        description=sessionID, ordered=True)
+        order = Order.objects.get(
+            description=sessionID,
+        )
+        for item in order.items.all():
+            items = item.item
+            items.times_ordered = F('times_ordered') + item.quantity
+            items.save()
+            item.ordered = True
+            item.save()
+
+        
+        
+        
 
     elif event.type == 'payment_method.attached':
         payment_method = event.data.object  # contains a stripe.PaymentMethod
         print('PaymentMethod was attached to a Customer!')
     elif event.type == 'checkout.session.completed':
         print('Checkout session was completed!')
-        session = event['data']['object']
-        price = session['amount_total'] / 100
+        session = event['data']
+        price = session['amount'] / 100
         sessionID = session['id']
         print(session)
-        customer_email = session["customer_details"]["email"]
         user = session['metadata']['user']
         order_qs = Order.objects.filter(username=user, ordered=False)
-        order_qs.update(email=customer_email, amount=price,
+        order_qs.update(amount=price,
                         description=sessionID, ordered=True)
         order = Order.objects.get(
             description=sessionID,
@@ -361,60 +414,115 @@ class PaypalSuccess(TemplateView):
 # Removes the whole items, AKA: sets quantity to zero and removes it
 @login_required
 def remove_from_cart(request, slug):
+    print(slug)
     item = get_object_or_404(Item, slug=slug)
     order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        if order.items.filter(item__slug=item.slug).exists():
-            order_item = OrderItem.objects.filter(
-                item=item,
-                user=request.user,
-                ordered=False
-            )[0]
-            order.items.remove(order_item)
-            order_item.delete()
-            messages.info(request, "This item was removed from your cart")
-            return redirect("core:home-page")
-        else:
-            messages.info(request, "This item was not in your cart")
-            return redirect("core:product-page", slug=slug)
+    response_data = {}
+    if request.method == "POST":
+        if order_qs.exists():
+            order = order_qs[0]
+            if order.items.filter(item__slug=item.slug).exists():
+                order_item = OrderItem.objects.filter(
+                    item=item,
+                    user=request.user,
+                    ordered=False
+                )[0]
+                order.items.remove(order_item)
+                order_item.delete()
+                response_data['Success'] = True
+                response_data['message'] = 'Item removed from cart!'
+                response_data['quantity'] = 0
+                response_data['total'] = order.get_total()
+                messages.info(request, "This item was removed from your cart")
+                return JsonResponse(response_data)
+                
+                
+            else:
+                messages.info(request, "This item was not in your cart")
+                return redirect("core:product-page", slug=slug)
 
+        else:
+            messages.info(request, "You do not have an active order")
+            return redirect("core:product-page", slug=slug)
     else:
-        messages.info(request, "You do not have an active order")
-        return redirect("core:product-page", slug=slug)
+        return JsonResponse("Not a post request", safe=False)
 
 
 # Decreases quantity by one
 @login_required
 def remove_single_item_from_cart(request, slug):
+    print(slug)
     item = get_object_or_404(Item, slug=slug)
     order_qs = Order.objects.filter(username=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        if order.items.filter(item__slug=item.slug).exists():
-            order_item = OrderItem.objects.filter(
-                item=item,
-                user=request.user,
-                ordered=False
-            )[0]
-            if order_item.quantity > 1:
-                order_item.quantity -= 1
-                order_item.save()
+    response_data = {}
+    if request.method == "POST":
+        if order_qs.exists():
+            order = order_qs[0]
+            if order.items.filter(item__slug=item.slug).exists():
+                order_item = OrderItem.objects.filter(
+                    item=item,
+                    user=request.user,
+                    ordered=False
+                )[0]
+                if order_item.quantity > 1:
+                    order_item.quantity -= 1
+                    order_item.save()
+                else:
+                    order.items.remove(order_item)
+                    order_item.delete()
+                    order.save()
+                    messages.info(request, "This item was removed from cart")
+                messages.info(request, "This item quantity was updated")
+                response_data['success'] = True
+                response_data['message'] = "This item quantity was updated"
+                response_data['quantity'] = order_item.quantity
+                response_data['total'] = order.get_total()
+                if order.items.count() == 0:
+                    response_data['empty'] = True
+                else:
+                    response_data['empty'] = False
+                return JsonResponse(response_data)
             else:
-                order.items.remove(order_item)
-                order_item.delete()
-                order.save()
-                messages.info(request, "This item was removed from cart")
-            messages.info(request, "This item quantity was updated")
-            return redirect("core:checkout-page")
+                messages.info(request, "This item was not in your cart")
+                return redirect("core:product-page", slug=slug)
+
         else:
-            messages.info(request, "This item was not in your cart")
+            messages.info(request, "You do not have an active order")
             return redirect("core:product-page", slug=slug)
-
     else:
-        messages.info(request, "You do not have an active order")
-        return redirect("core:product-page", slug=slug)
+        return JsonResponse('Request must be POST.', safe=False)
 
+
+def AjaxAddToCart(request, slug):
+    item = get_object_or_404(Item, slug=slug)
+    order_item, created = OrderItem.objects.get_or_create(
+        item=item,
+        user=request.user,
+        ordered=False
+    )
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    response_data = {}
+    if request.method == "POST":
+        if order_qs.exists():
+            order = order_qs[0]
+            if order.items.filter(item__slug=item.slug).exists():
+                order_item.quantity += 1
+                order_item.save()
+                response_data['success'] = True
+                response_data['message'] = "This item quantity was updated"
+                response_data['quantity'] = order_item.quantity
+                response_data['total'] = order.get_total()
+                response_data['empty'] = False
+                response_data['items'] = order.items.count()
+                return JsonResponse(response_data)
+            else:
+                return JsonResponse("This item was not in your cart", safe=False)
+        else:
+            return JsonResponse("You do not have an active order, please add items via the homepage to create an order", safe=False)
+    else:
+        return JsonResponse("Not a post request", safe=False)
+
+        
 
 @login_required
 def add_to_cart(request, slug):
@@ -424,6 +532,7 @@ def add_to_cart(request, slug):
         user=request.user,
         ordered=False
     )
+
     order_qs = Order.objects.filter(user=request.user, ordered=False)
     if order_qs.exists():
         order = order_qs[0]

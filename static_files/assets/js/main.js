@@ -582,65 +582,9 @@
 
 }(jQuery));
 
-// CSRF Token for ajax request
-// $(function() {
 
-
-//   // This function gets cookie with a given name
-//   function getCookie(name) {
-//       var cookieValue = null;
-//       if (document.cookie && document.cookie != '') {
-//           var cookies = document.cookie.split(';');
-//           for (var i = 0; i < cookies.length; i++) {
-//               var cookie = jQuery.trim(cookies[i]);
-//               // Does this cookie string begin with the name we want?
-//               if (cookie.substring(0, name.length + 1) == (name + '=')) {
-//                   cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-//                   break;
-//               }
-//           }
-//       }
-//       return cookieValue;
-//   }
-//   var csrftoken = getCookie('csrftoken');
-
-//   /*
-//   The functions below will create a header with csrftoken
-//   */
-
-//   function csrfSafeMethod(method) {
-//       // these HTTP methods do not require CSRF protection
-//       return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-//   }
-//   function sameOrigin(url) {
-//       // test that a given url is a same-origin URL
-//       // url could be relative or scheme relative or absolute
-//       var host = document.location.host; // host + port
-//       var protocol = document.location.protocol;
-//       var sr_origin = '//' + host;
-//       var origin = protocol + sr_origin;
-//       // Allow absolute or scheme relative URLs to same origin
-//       return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-//           (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-//           // or any other URL that isn't scheme relative or absolute i.e relative.
-//           !(/^(\/\/|http:|https:).*/.test(url));
-//   }
-
-//   $.ajaxSetup({
-//       beforeSend: function(xhr, settings) {
-//           if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
-//               // Send the token to same-origin, relative URLs only.
-//               // Send the token only if the method warrants CSRF protection
-//               // Using the CSRFToken value acquired earlier
-//               xhr.setRequestHeader("X-CSRFToken", csrftoken);
-//           }
-//       }
-//   });
-
-// });
 order_total = 0;
-
-$(document).ready(function(){
+function couponAjax() {
   $('#coupon-form').on('submit', function(event) {
     event.preventDefault();
     $.ajax({
@@ -654,10 +598,11 @@ $(document).ready(function(){
       success: function(response_data) {
         $('#total').html('$' + response_data['total_amount']);
         $('#total-div').load(location.href+" #total-div>*","");
-        order_total = response_data['total_amount'];
         console.log(response_data['message']);
         console.log(response_data['total_amount']);
         console.log(response_data);
+        // summary-list
+        $('#summary-list').load(location.href+" #summary-list>*","");
         // console.log('coupon applied');
         
         // console.log(data.total_amount);
@@ -668,7 +613,58 @@ $(document).ready(function(){
       }
     })
   })
+};
+
+function BillingFormSubmit() {
+  $('#billing-form').on('submit', function(event) {
+    event.preventDefault();
+    $.ajax({
+      type: 'POST',
+      url: billing_post_url,
+      data: {
+        street_address: $('#street-address').val(),
+        apartment_address: $('#apartment-address').val(),
+        country: $('#country').val(),
+        zipcode: $('#zipcode').val(),
+        state: $('#state').val(),
+        email: $('#email').val(),
+        shipping: $('#shipping').val(),
+        csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value,
+        datatype: 'json',
+      },
+      success: function(response_data) {
+        console.log('billing form submitted');
+        $('#BillingAddressForm').hide();
+        $('#stripe-div').show();
+        // console.log('coupon applied');
+        // console.log(data.total_amount);
+      },
+      error: function(data) {
+        console.log('Error in billing form');
+        console.log($('#zipcode').val());
+        console.log($('#street-address').val());
+        console.log($('#country').val());
+      }
+    })
+  });
+}
+
+
+$(document).ready(function(){
+  console.log('this is working');
+  $('#stripe-div').hide();
+  console.log('document ready');
+  couponAjax();
+  BillingFormSubmit();
+  $('#stripe-div').hide();
 });
+
+
+
+
+  
+
+
 
 
 
