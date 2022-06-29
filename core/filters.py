@@ -8,3 +8,7 @@ class ProductFilter(django_filters.FilterSet):
     class Meta:
         model = Item
         fields = ['price', 'release_date']
+
+      
+
+    

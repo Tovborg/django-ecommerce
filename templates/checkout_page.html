@@ -170,7 +170,7 @@
             <div class="total-count d-flex" id="total-bottom">
                 <h3>Total</h3>
                 <h4 id="cart-off-canvas-total">
-                    ${{ order.get_total }}
+                    ${{ order.get_subtotal }}
                 </h4>
             </div>
             <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
@@ -489,7 +489,15 @@
                                                     </div>
                                                 </form>
                                                 <script>
-
+                                                    document.getElementById('coupon-form').addEventListener('submit', function(e) {
+                                                        document.getElementById('discount-savings').addEventListener('click', function() {
+                                                            if (document.getElementById('discount').innerHTML === '-- ${{ order.get_discount_savings }}') {
+                                                                document.getElementById('discount').innerHTML = '-- %{{ order.discount }}'
+                                                            } else {
+                                                                document.getElementById('discount').innerHTML = '-- ${{ order.get_discount_savings }}'
+                                                            } 
+                                                        });
+                                                    });
                                                 </script>
                                             </div>
                                         </div>

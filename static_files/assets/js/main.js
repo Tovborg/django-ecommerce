@@ -583,6 +583,7 @@
 }(jQuery));
 
 
+
 order_total = 0;
 function couponAjax() {
   $('#coupon-form').on('submit', function(event) {
@@ -598,6 +599,7 @@ function couponAjax() {
       success: function(response_data) {
         $('#total').html('$' + response_data['total_amount']);
         $('#total-div').load(location.href+" #total-div>*","");
+        console.log(response_data['amount_saved'], response_data['discount']);
         console.log(response_data['message']);
         console.log(response_data['total_amount']);
         console.log(response_data);

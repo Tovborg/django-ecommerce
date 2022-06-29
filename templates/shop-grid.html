@@ -23,39 +23,132 @@
     </div>
     <div class="offcanvas-body">
 
-        <div class="cart-product-list">
+        <div class="cart-product-list" id="offcanvas-cart">
 
             <!-- Product item start -->
-            {% for item in products %}
-            <div class="product-item cart-product-item">
-                <div class="single-grid-product">
-                    <div class="product-top">
-                        <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name-part">
-                            <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.item.name }}</a></h3>
+            <script>
+                function RemoveSingleItemFromCart(event, item_slug) {
+                    event.preventDefault();
+                    console.log('Clicked');
+                    $.ajax({
+                        type: 'POST',
+                        url: "/remove-item-from-cart/12345/".replace(/12345/, item_slug.toString()),
+                        data: {
+                            'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                            'type': 'json',
+                            'slug': item_slug
+                        },
+                        success: function(response_data) {
+                            console.log(response_data);
+                            $('#total-bottom').load(location.href+" #total-bottom>*","");
+                            $('#total-div').load(location.href+" #total-div>*","");
+                            $('#cart-product-list').load(location.href+" #cart-product-list>*","");
+                            $('#price-area').load(location.href+" #price-area>*","");
+                            // make for loop that runs 10 times and logs 'test'
+                            $('#cart-items').load(location.href+" #cart-items>*","");
+                            $('#cart-total').load(location.href+" #cart-total>*","");      
 
-                            <div class="cart-quantity input-group">
-                                <a href="{% url 'core:remove_single_item_from_cart' item.item.slug %}"><div class="increase-btn dec qtybutton btn">-</div></a>
-                                <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="{{ item.quantity }}" readonly />
-                                <a href="{% url 'core:add-to-cart' item.item.slug %}"><div class="increase-btn inc qtybutton btn">+</div></a>
-                            </div>
-
-                            <button class="cart-remove-btn"><a href="{{ item.item.get_remove_from_cart_url }}">Remove</a></button>
+                        },
+                        error: function(data) {
+                            console.log(data)
+                        }
+                        
+                    })
+                };
+                function RemoveItemFromCart(event, item_slug) {
+                    event.preventDefault();
+                    console.log('Default event Prevented')
+                    $.ajax({
+                        type: 'POST',
+                        url: "/remove-from-cart/12345/".replace(/12345/, item_slug.toString()),
+                        data: {
+                            'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                            'type': 'json',
+                            'slug': item_slug
+                        },
+                        success: function(response_data) {
+                            console.log(response_data);
+                            $('#total-bottom').load(location.href+" #total-bottom>*","");
+                            $('#total-div').load(location.href+" #total-div>*","");
+                            $('#cart-product-list').load(location.href+" #cart-product-list>*","");
+                            $('#price-area').load(location.href+" #price-area>*","");
+                            // make for loop that runs 10 times and logs 'test'
+                            $('#cart-items').load(location.href+" #cart-items>*","");
+                            $('#cart-total').load(location.href+" #cart-total>*","");      
+                        },
+                        error: function(data) {
+                            console.log(data)
+                        }
+                    })
+                };
+                function addItemToCart(event, item_slug) {
+                    event.preventDefault()
+                    console.log('Default event Prevented')
+                    $.ajax({
+                        type: 'POST',
+                        url: "/ajax-add-to-cart/12345/".replace(/12345/, item_slug.toString()),
+                        data: {
+                            'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                            'type': 'json',
+                            'slug': item_slug
+                        },
+                        success: function(response_data) {
+                            console.log(response_data);
+                            
+                            $('#total-bottom').load(location.href+" #total-bottom>*","");
+                            $('#total-div').load(location.href+" #total-div>*","");
+                            $('#cart-product-list').load(location.href+" #cart-product-list>*","");
+                            $('#price-area').load(location.href+" #price-area>*","");
+                            // make for loop that runs 10 times and logs 'test'
+                            $('#cart-items').load(location.href+" #cart-items>*","");
+                            $('#cart-total').load(location.href+" #cart-total>*","");
+                            $('#summary-list').load(location.href+" #summary-list>*","");      
+                        },
+                        error: function(data) {
+                            console.log(data)
+                        }
+                    })
+                }
+            </script>
+            <div id="cart-items">
+                {% for item in object %}
+                <div class="product-item cart-product-item">
+                    <div class="single-grid-product">
+                        <div class="product-top">
+                            <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
                         </div>
-                        <div class="product-price">
-                            {% if item.item.discount_price %}
-                            <span class="regular-price">${{ item.item.price }}</span>
-                            <span class="price">${{ item.item.discount_price }}</span>
-                            {% else %}
-                            <span class="price">${{ item.get_total_item_price }}</span>
-                            {% endif %}
+                        <script>
+                            console.log('{{item.item.slug}}');
+                        </script>
+                        <div class="product-info">
+                            <div class="product-name-part">
+                                <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.item.name }}</a></h3>
+
+                                <div class="cart-quantity input-group">
+                                    <a href="javascript:void(0)" id="remove-single-item" onclick="RemoveSingleItemFromCart(event, '{{ item.item.slug }}')"><div class="increase-btn dec qtybutton btn">-</div></a>
+                                    <input id="quantity" class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="{{ item.quantity }}" readonly />
+                                    <a href="javascript:void(0)" onclick="addItemToCart(event, '{{ item.item.slug }}')"><div class="increase-btn inc qtybutton btn">+</div></a>
+                                </div>
+
+                                <button class="cart-remove-btn" id="remove-item" onclick="RemoveItemFromCart(event, '{{ item.item.slug }}')"><a href="{{ item.item.get_remove_from_cart_url }}">Remove</a></button>
+                            </div>
+                            <div class="product-price" id="cart-total">
+                                <span class="price">${{ item.get_total_item_price }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+            
+                <script>
+                    var item_slug = '{{ item.item.slug }}';
+                    var remove_single_item_from_cart_url = "{% url 'core:remove_single_item_from_cart' slug=12345 %}".replace(/12345/, item_slug.toString());
+                    console.log(remove_single_item_from_cart_url);
+                    document.getElementById()
+                </script>
+                {% endfor %}
             </div>
-            {% endfor %}
+            
+            
             <!-- Product item end -->
 
             <!-- Product item start -->
@@ -64,9 +157,11 @@
         </div>
 
         <div class="total-bottom-part">
-            <div class="total-count d-flex">
+            <div class="total-count d-flex" id="total-bottom">
                 <h3>Total</h3>
-                <h4>${{ order.get_total }}</h4>
+                <h4 id="cart-off-canvas-total">
+                    ${{ order.get_subtotal }}
+                </h4>
             </div>
             <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
                 Proceed To Checkout
@@ -263,8 +358,8 @@
                             {% for color in colors %}
                             <div class="single-colors">
                                 <div class="colors-left">
-                                    <input class="form-check-input green" type="checkbox" id="Jungle1" style="background-color: {{ color|index:1 }} !important;" name="{{ color|index:0 }}" onchange="document.getElementById('color-form').submit()">
-                                    <label class="form-check-label" for="Jungle1" >{{ color|index:0 }}</label>
+                                    <input class="form-check-input green" type="checkbox" id="Jungle1" style="background-color: {{ color.code }} !important;" name="{{ color.name }}" onchange="document.getElementById('color-form').submit()">
+                                    <label class="form-check-label" for="Jungle1" >{{ color.name }}</label>
                                 </div>
                                 <span class="colors-count">15</span>
                             </div>

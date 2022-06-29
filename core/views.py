@@ -1,5 +1,6 @@
 from locale import currency
 from pipes import Template
+from typing import ItemsView
 from django.views.generic import ListView, DetailView, View, TemplateView, FormView
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -169,6 +170,15 @@ class ItemDetailView(DetailView):
             item=item
         )
         context['form'] = ReviewForm()
+        if self.request.user.is_authenticated:
+            order_qs = Order.objects.filter(
+                user=self.request.user, ordered=False)
+            if order_qs.exists():
+                order = order_qs[0]
+                context['order'] = order
+                context['items'] = order.items.filter(
+                    ordered=False, user=self.request.user)
+
         return context
 
     def post(self, *args, **kwargs):
@@ -194,7 +204,7 @@ def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 def applyCoupon(request):
-
+    print(request.method)
     cart_order = Order.objects.get(
                 user=request.user, ordered=False)
     response_data = {}
@@ -214,6 +224,8 @@ def applyCoupon(request):
                     cart_order.save()
                     print(cart_order.discount)
                     response_data['success'] = True
+                    response_data['amount_saved'] = cart_order.get_discount_savings()
+                    response_data['discount'] = cart_order.discount
                     response_data['total_amount'] = cart_order.get_total()
                     print(cart_order.get_total())
                     response_data['message'] = 'Coupon code applied successfully!'
@@ -230,6 +242,8 @@ def applyCoupon(request):
         total = cart_order.get_total()
         get_response['total'] = total
         return JsonResponse(get_response)
+
+
 
 def billing_address(request):
     cart_order = Order.objects.get(
@@ -558,6 +572,38 @@ def add_to_cart(request, slug):
         messages.info(request, "This item was added to your cart.")
         return redirect("core:checkout-page")
 
+#rewrite the above function to use AJAX
+# def add_to_cart_ajax(request, slug):
+#     item = get_object_or_404(Item, slug=slug)
+#     order_item, created = OrderItem.objects.get_or_create(
+#         item=item,
+#         user=request.user,
+#         ordered=False
+#     )
+
+#     order_qs = Order.objects.filter(user=request.user, ordered=False)
+#     if order_qs.exists():
+#         order = order_qs[0]
+#         # check if the order item is in the order
+#         if order.items.filter(item__slug=item.slug).exists():
+#             order_item.quantity += 1
+#             order_item.save()
+#             messages.info(request, "This item quantity was updated.")
+#             return JsonResponse({"success": True, "message": "This item quantity was updated", "quantity": order_item.quantity, "total": order.get_total(), "operation": "increase_quantity"})
+#         else:
+#             order.items.add(order_item)
+#             messages.info(request, "This item was added to your cart.")
+#             return JsonResponse({"success": True, "message": "This item was added to your cart", "quantity": order_item.quantity, "total": order.get_total(), "operation": "create_new_item"})
+#     else:
+#         ordered_date = timezone.now()
+#         order = Order.objects.create(
+#             user=request.user,
+#             ordered_date=ordered_date,
+#             username=request.user,
+#         )
+#         order.items.add(order_item)
+#         messages.info(request, "This item was added to your cart.")
+#         return JsonResponse({"success": True, "message": "This item was added to your cart", "quantity": order_item.quantity, "total": order.get_total(), "operation": "create_order"})
 
 @login_required
 def payment_finished(request):
@@ -646,22 +692,47 @@ def ShopGrid(request):
     title_exact_query = request.GET.get('searchwidget1')
     pricemin = request.GET.get('minprice1')
     pricemax = request.GET.get('maxprice1')
+    color_items = Item.objects.all()
 
     used_colors = []
-    for item in all_items:
+    item_colors = []
+
+    for item in Item.objects.all():
         for color in item.color.all():
+            item_colors.append(color)
             if color not in used_colors:
-                used_colors.append((color.name, color.code))
-    colors = used_colors[::-6]
+                used_colors.append(color)
+    # used_colors = []
+    
+    # # print(all_items)
+    # for item in all_items:
+    #     for color in item.color.all():
+    #         # print(color)
+    #         if color not in used_colors:
+    #             used_colors.append((color.name, color.code))
+    # colors = used_colors[::-6]
+    """
+    Loop through all the colors and use the color name with request.GET.get(color name) and check if its on and if so filter the items by that color
+    """
+    for color in used_colors:
+        # print(request.GET.get('{}'.format(color[0])))
+        if request.GET.get('{}'.format(color.name)) == 'on':
+            all_items = color_items.filter(color__name=color.name)
+            # print(all_items)
+
+    
+
+    # print(colors)
 
     for category in categories:
         category.field_name = request.GET.get(category.name)
         if is_valid_queryparam(category.field_name):
             all_items = all_items.filter(category=category)
+            page_obj = all_items.filter(category=category)
 
-    for color in colors:
-        color_name = color[0]
-        color_code = color[1]
+    for color in used_colors:
+        color_name = color.name
+        color_code = color.code
         color_field_name = request.GET.get(color_name)
         pagination = Paginator(all_items, 8)
         page_number = request.GET.get('page')
@@ -669,21 +740,25 @@ def ShopGrid(request):
 
         if is_valid_queryparam(color_field_name):
             all_items = all_items.filter(color__name=color_name)
-
+            # print(all_items)
+            page_obj = all_items.filter(color__name=color_name)
     if is_valid_queryparam(title_contains_query):
         all_items = all_items.filter(name__icontains=title_contains_query)
+        page_obj = all_items.filter(name__icontains=title_contains_query)
     elif is_valid_queryparam(title_exact_query):
         all_items = all_items.filter(name__iexact=title_exact_query)
-
+        page_obj = all_items.filter(name__iexact=title_exact_query)
     if is_valid_queryparam(pricemin):
         all_items = all_items.filter(price__gte=pricemin)
+        page_obj = all_items.filter(price__gte=pricemin)
     if is_valid_queryparam(pricemax):
         all_items = all_items.filter(price__lt=pricemax)
-
+        page_obj = all_items.filter(price__lt=pricemax)
+    # print(page_obj)
     context = {
         'object': all_items,
         'categories': categories,
-        'colors': colors,  # colors
+        'colors': used_colors,  # colors
         'page_obj': page_obj  # pagination
     }
     if request.user.is_authenticated:
@@ -699,6 +774,9 @@ def ShopGrid(request):
             context['order'] = order
 
     return render(request, 'shop-grid.html', context)
+
+
+
 
 
 class WomensView(ListView):

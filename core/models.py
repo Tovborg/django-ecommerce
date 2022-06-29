@@ -186,14 +186,14 @@ class Order(models.Model):
         return sum([item.get_final_price() for item in self.items.all()])
 
     def get_total(self):
-        total = 0
-        for order_item in self.items.all():
-            total += order_item.get_final_price()
+        #return total amount of the order, with 15% tax added, then minus total amount with discount in percentage if there is any discount applied to the order
+        total = self.get_subtotal()
+        total += total * 0.15
         if self.discount:
-            # return total minus discount in percent
-            total = total - (total * self.discount / 100)
-        # return total with 15% tax
-        return int(total + (total * 0.15))
+            total -= total * (self.discount / 100)
+        return total
+        
+
 
     def get_discount_savings(self):
         total = 0
@@ -205,7 +205,7 @@ class Order(models.Model):
             return total
 
     def get_tax(self):
-        return int(self.get_total() * 0.085)
+        return int(self.get_subtotal() * 0.15)
         
 
     

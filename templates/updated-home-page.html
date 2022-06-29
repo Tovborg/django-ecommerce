@@ -9,39 +9,132 @@
     </div>
     <div class="offcanvas-body">
 
-        <div class="cart-product-list">
+        <div class="cart-product-list" id="offcanvas-cart">
 
             <!-- Product item start -->
-            {% for item in products %}
-            <div class="product-item cart-product-item">
-                <div class="single-grid-product">
-                    <div class="product-top">
-                        <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name-part">
-                            <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.item.name }}</a></h3>
+            <script>
+                function RemoveSingleItemFromCart(event, item_slug) {
+                    event.preventDefault();
+                    console.log('Clicked');
+                    $.ajax({
+                        type: 'POST',
+                        url: "/remove-item-from-cart/12345/".replace(/12345/, item_slug.toString()),
+                        data: {
+                            'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                            'type': 'json',
+                            'slug': item_slug
+                        },
+                        success: function(response_data) {
+                            console.log(response_data);
+                            $('#total-bottom').load(location.href+" #total-bottom>*","");
+                            $('#total-div').load(location.href+" #total-div>*","");
+                            $('#cart-product-list').load(location.href+" #cart-product-list>*","");
+                            $('#price-area').load(location.href+" #price-area>*","");
+                            // make for loop that runs 10 times and logs 'test'
+                            $('#cart-items').load(location.href+" #cart-items>*","");
+                            $('#cart-total').load(location.href+" #cart-total>*","");      
 
-                            <div class="cart-quantity input-group">
-                                <a href="{% url 'core:remove_single_item_from_cart' item.item.slug %}"><div class="increase-btn dec qtybutton btn">-</div></a>
-                                <input class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="{{ item.quantity }}" readonly />
-                                <a href="{% url 'core:add-to-cart' item.item.slug %}"><div class="increase-btn inc qtybutton btn">+</div></a>
-                            </div>
-
-                            <button class="cart-remove-btn"><a href="{{ item.item.get_remove_from_cart_url }}">Remove</a></button>
+                        },
+                        error: function(data) {
+                            console.log(data)
+                        }
+                        
+                    })
+                };
+                function RemoveItemFromCart(event, item_slug) {
+                    event.preventDefault();
+                    console.log('Default event Prevented')
+                    $.ajax({
+                        type: 'POST',
+                        url: "/remove-from-cart/12345/".replace(/12345/, item_slug.toString()),
+                        data: {
+                            'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                            'type': 'json',
+                            'slug': item_slug
+                        },
+                        success: function(response_data) {
+                            console.log(response_data);
+                            $('#total-bottom').load(location.href+" #total-bottom>*","");
+                            $('#total-div').load(location.href+" #total-div>*","");
+                            $('#cart-product-list').load(location.href+" #cart-product-list>*","");
+                            $('#price-area').load(location.href+" #price-area>*","");
+                            // make for loop that runs 10 times and logs 'test'
+                            $('#cart-items').load(location.href+" #cart-items>*","");
+                            $('#cart-total').load(location.href+" #cart-total>*","");      
+                        },
+                        error: function(data) {
+                            console.log(data)
+                        }
+                    })
+                };
+                function addItemToCart(event, item_slug) {
+                    event.preventDefault()
+                    console.log('Default event Prevented')
+                    $.ajax({
+                        type: 'POST',
+                        url: "/ajax-add-to-cart/12345/".replace(/12345/, item_slug.toString()),
+                        data: {
+                            'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                            'type': 'json',
+                            'slug': item_slug
+                        },
+                        success: function(response_data) {
+                            console.log(response_data);
+                            
+                            $('#total-bottom').load(location.href+" #total-bottom>*","");
+                            $('#total-div').load(location.href+" #total-div>*","");
+                            $('#cart-product-list').load(location.href+" #cart-product-list>*","");
+                            $('#price-area').load(location.href+" #price-area>*","");
+                            // make for loop that runs 10 times and logs 'test'
+                            $('#cart-items').load(location.href+" #cart-items>*","");
+                            $('#cart-total').load(location.href+" #cart-total>*","");
+                            $('#summary-list').load(location.href+" #summary-list>*","");      
+                        },
+                        error: function(data) {
+                            console.log(data)
+                        }
+                    })
+                }
+            </script>
+            <div id="cart-items">
+                {% for item in products %}
+                <div class="product-item cart-product-item">
+                    <div class="single-grid-product">
+                        <div class="product-top">
+                            <a href="single-product.html"><img class="product-thumbnal" src="{% static 'assets/images/cart-sidebar-img1.png' %} " alt="cart"></a>
                         </div>
-                        <div class="product-price">
-                            {% if item.item.discount_price %}
-                            <span class="regular-price">${{ item.item.price }}</span>
-                            <span class="price">${{ item.item.discount_price }}</span>
-                            {% else %}
-                            <span class="price">${{ item.get_total_item_price }}</span>
-                            {% endif %}
+                        <script>
+                            console.log('{{item.item.slug}}');
+                        </script>
+                        <div class="product-info">
+                            <div class="product-name-part">
+                                <h3 class="product-name"><a class="product-link" href="single-product.html">{{ item.item.name }}</a></h3>
+
+                                <div class="cart-quantity input-group">
+                                    <a href="javascript:void(0)" id="remove-single-item" onclick="RemoveSingleItemFromCart(event, '{{ item.item.slug }}')"><div class="increase-btn dec qtybutton btn">-</div></a>
+                                    <input id="quantity" class="qty-input cart-plus-minus-box" type="text" name="qtybutton" value="{{ item.quantity }}" readonly />
+                                    <a href="javascript:void(0)" onclick="addItemToCart(event, '{{ item.item.slug }}')"><div class="increase-btn inc qtybutton btn">+</div></a>
+                                </div>
+
+                                <button class="cart-remove-btn" id="remove-item" onclick="RemoveItemFromCart(event, '{{ item.item.slug }}')"><a href="{{ item.item.get_remove_from_cart_url }}">Remove</a></button>
+                            </div>
+                            <div class="product-price" id="cart-total">
+                                <span class="price">${{ item.get_total_item_price }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+            
+                <script>
+                    var item_slug = '{{ item.item.slug }}';
+                    var remove_single_item_from_cart_url = "{% url 'core:remove_single_item_from_cart' slug=12345 %}".replace(/12345/, item_slug.toString());
+                    console.log(remove_single_item_from_cart_url);
+                    document.getElementById()
+                </script>
+                {% endfor %}
             </div>
-            {% endfor %}
+            
+            
             <!-- Product item end -->
 
             <!-- Product item start -->
@@ -50,9 +143,11 @@
         </div>
 
         <div class="total-bottom-part">
-            <div class="total-count d-flex">
+            <div class="total-count d-flex" id="total-bottom">
                 <h3>Total</h3>
-                <h4>${{ order.get_total }}</h4>
+                <h4 id="cart-off-canvas-total">
+                    ${{ order.get_subtotal }}
+                </h4>
             </div>
             <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
                 Proceed To Checkout
@@ -67,6 +162,10 @@
         <img src="{% static 'assets/images/preloader.svg' %}" alt="img" />
     </div>
 </div>
+
+
+
+
 <div class="hero-section-v2">
     <div class="hero-section-wrap">
         <div class="signle-banner">
@@ -197,6 +296,8 @@
                             <li class="single-size">SMALL</li>
                         </ul>
                         <a href="{{ product.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
+                        
+
                     </div>
                 </div>
                 {% endfor %}
@@ -393,6 +494,7 @@
                                 <li class="single-size">SMALL</li>
                             </ul>
                             <a href="{{ product.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
+                            
                         </div>
                     </div>
                     {% endfor %}
@@ -401,72 +503,84 @@
                 </div>
             </div>
             {% endif %}
-            {% if on_sale %}{% endif %}
+            {% if on_sale %}
             <div class="tab-pane fade" id="ONSELL" role="tabpanel" aria-labelledby="ONSELL-tab">
-                {% for product in on_sale %}
-                <div class="single-grid-product-v2">
-                    <div class="product-top">
-                        {% if product.home_page_image %}
-                        <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{{product.home_page_image.url}}" alt="product" /></a>
-                        {% else %}
-                        <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-4.png' %} " alt="product" /></a>
-                        {% endif %}
-                        {% if product.discount_price %}
-                        <div class="product-flags">
-                            <span class="product-flag sale">SALE</span>
-                            <span class="product-flag discount">-{{ product.get_discount_percentage }}%</span>
-                        </div>
-                        {% endif %}
-                        <ul class="prdouct-btn-wrapper">
-                            <li class="single-product-btn">
-                                <a class="addToWishlist product-btn" href="compare.html" title="Add to compare"><i class="icon flaticon-bar-chart"></i></a>
-                            </li>
-                            <li class="single-product-btn">
-                                <a class="addCompare product-btn" href="wish-list.html" title="Add to wishlist"><i class="icon flaticon-like"></i></a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="product-info text-center">
-                        <h4 class="product-catagory">{{ product.get_label_display }}</h4>
-                        <h3 class="product-name"><a class="product-link" href="single-product-v2.html">{{ product.name }}</a></h3>
-                        <ul class="product-review">
-                            <li class="review-item active"><i class="flaticon-star"></i></li>
-                            <li class="review-item active"><i class="flaticon-star"></i></li>
-                            <li class="review-item active"><i class="flaticon-star"></i></li>
-                            <li class="review-item"><i class="flaticon-star"></i></li>
-                            <li class="review-item"><i class="flaticon-star"></i></li>
-                        </ul>
-                        <div class="product-price">
-                            {% if product.discount_price %}
-                            <span class="regular-price">${{ product.price }}</span>
-                            <span class="price">${{ product.discount_price }}</span>
+                <div class="recommend-product-slide">
+                    {% for product in on_sale %}
+                    <div class="single-grid-product-v2">
+                        <div class="product-top">
+                            {% if product.home_page_image %}
+                            <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{{product.home_page_image.url}}" alt="product" /></a>
                             {% else %}
-                            <span class="price">${{ product.price }}</span>
+                            <a href="{{ product.get_absolute_url }}"><img class="product-thumbnal" src="{% static 'assets/images/home-two-product-image-4.png' %} " alt="product" /></a>
                             {% endif %}
+                            {% if product.discount_price %}
+                            <div class="product-flags">
+                                <span class="product-flag sale">SALE</span>
+                                <span class="product-flag discount">-{{ product.get_discount_percentage }}%</span>
+                            </div>
+                            {% endif %}
+                            <ul class="prdouct-btn-wrapper">
+                                <li class="single-product-btn">
+                                    <a class="addToWishlist product-btn" href="compare.html" title="Add to compare"><i class="icon flaticon-bar-chart"></i></a>
+                                </li>
+                                <li class="single-product-btn">
+                                    <a class="addCompare product-btn" href="wish-list.html" title="Add to wishlist"><i class="icon flaticon-like"></i></a>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="variable-single-item color-switch">
-                            <div class="product-variable-color">
-                                {% for color in product.color.all %}
+                        <div class="product-info text-center">
+                            <h4 class="product-catagory">{{ product.get_label_display }}</h4>
+                            <h3 class="product-name"><a class="product-link" href="single-product-v2.html">{{ product.name }}</a></h3>
+                            <ul class="product-review">
+                                <li class="review-item active"><i class="flaticon-star"></i></li>
+                                <li class="review-item active"><i class="flaticon-star"></i></li>
+                                <li class="review-item active"><i class="flaticon-star"></i></li>
+                                <li class="review-item"><i class="flaticon-star"></i></li>
+                                <li class="review-item"><i class="flaticon-star"></i></li>
+                            </ul>
+                            <div class="product-price">
+                                {% if product.discount_price %}
+                                <span class="regular-price">${{ product.price }}</span>
+                                <span class="price">${{ product.discount_price }}</span>
+                                {% else %}
+                                <span class="price">${{ product.price }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="variable-single-item color-switch">
+                                <div class="product-variable-color">
                                     <label>
-                                        
+                                        <input name="modal-product-color"
+                                            class="color-select" type="radio" checked="">
+                                        <span class="product-color-black"></span>
+                                    </label>
+                                    <label>
                                         <input name="modal-product-color"
                                             class="color-select" type="radio">
-                                        <span class="product-color-tomato" style="background: {{ color.code }} !important;"></span>
-                                        
+                                        <span class="product-color-tomato"></span>
                                     </label>
-                                {% endfor %}
+
+                                    <label>
+                                        <input name="modal-product-color"
+                                            class="color-select" type="radio">
+                                        <span class="product-color-gray"></span>
+                                    </label>
+                                </div>
                             </div>
+                            <ul class="size-switch">
+                                <li class="single-size active">XL</li>
+                                <li class="single-size">LARGE</li>
+                                <li class="single-size">SMALL</li>
+                            </ul>
+                            <a href="{{ product.get_add_to_cart_url }}" title="Add to cart" id="add-to-cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
+                            
                         </div>
-                        <ul class="size-switch">
-                            <li class="single-size active">XL</li>
-                            <li class="single-size">LARGE</li>
-                            <li class="single-size">SMALL</li>
-                        </ul>
-                        <a href="{{ product.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
                     </div>
-                </div>
                 {% endfor %}
+                </div>
             </div>
+            {% endif %}
+
 
             <div class="tab-pane fade" id="FEATUREDITEMS" role="tabpanel" aria-labelledby="FEATUREDITEMS-tab">
                 <div class="recommend-product-slide">
@@ -537,6 +651,7 @@
                                 <li class="single-size">SMALL</li>
                             </ul>
                             <a href="{{ product.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
+                            
                         </div>
                     </div>
                 {% endfor %}
