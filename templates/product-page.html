@@ -6,7 +6,6 @@
 <script src="https://code.jquery.com/jquery-3.5.1.js" 
 integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" 
 crossorigin="anonymous"></script>
-{% if order %}
 <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvasSidebar" aria-labelledby="cartOffcanvasSidebarLabel">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="cartOffcanvasSidebarLabel">Shopping Cart</h5>
@@ -101,8 +100,9 @@ crossorigin="anonymous"></script>
                     })
                 }
             </script>
+            {% if order %}
             <div id="cart-items">
-                {% for item in items %}
+                {% for item in products %}
                 <div class="product-item cart-product-item">
                     <div class="single-grid-product">
                         <div class="product-top">
@@ -138,6 +138,21 @@ crossorigin="anonymous"></script>
                 </script>
                 {% endfor %}
             </div>
+            {% else %}
+            <div id="cart-items">
+                {% comment %} Create an aesthetically pleasing text saying your cart is empty {% endcomment %}
+                <div class="product-item cart-product-item">
+                    <div class="single-grid-product">
+                        
+                        <div class="product-info">
+                            <div class="product-name-part">
+                                <h3 class="product-name"><a class="product-link" href="single-product.html">Your cart is empty</a></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
             
             
             <!-- Product item end -->
@@ -146,22 +161,47 @@ crossorigin="anonymous"></script>
             
             <!-- Product item end -->
         </div>
-
-        <div class="total-bottom-part">
-            <div class="total-count d-flex" id="total-bottom">
-                <h3>Total</h3>
-                <h4 id="cart-off-canvas-total">
-                    ${{ order.get_subtotal }}
-                </h4>
+        {% comment %} if the user doesnt have an order grey out the Proceed To Checkout button {% endcomment %}
+        <div id="total-bottom-body">
+            {% if order %}
+            <div class="total-bottom-part" id="total-bottom-part">
+                <div class="total-count d-flex" id="total-bottom">
+                    <h3>Total</h3>
+                    <h4 id="cart-off-canvas-total">
+                        ${{ order.get_subtotal }}
+                    </h4>
+                </div>
+                <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
+                    Proceed To Checkout
+                </a>
             </div>
-            <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
-                Proceed To Checkout
-            </a>
-        </div>
+            {% else %}
+            <div class="total-bottom-part" id="disabled-total-bottom-part">
+                <div class="total-count d-flex" id="total-bottom">
+                    <h3>Total</h3>
+                    <h4 id="cart-off-canvas-total">
+                        $0.00
+                    </h4>
+                </div>
+                {% comment %} make the procced to checkout button disabled {% endcomment %}
+                <a href="javascript:void(0)" id="disabled-checkout-proceed" class="proceed-to-btn d-block text-center" disabled>
+                    Proceed To Checkout
+                </a>
+                <style>
+                    #disabled-checkout-proceed {
+                        pointer-events: none;
+                        cursor: default;
+                        {% comment %} make the button look like its disabled {% endcomment %}
+                        background-color: #ccc;
+                        color: #fff;
 
+                    }
+                </style>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </div>
-{% endif %}
 <div id="preloader">
   <div id="status">
       <img src="{% static 'assets/images/preloader.svg' %} " alt="img" />
@@ -325,12 +365,9 @@ crossorigin="anonymous"></script>
 
                               </script>
                               <a href="{{ object.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
-                          </div>
-                          <div class="product-bottom-button d-flex">
-                              <a href="{{ object.get_add_to_cart_url }}" class="primary-btn">Buy Now</a>
                               <a class="addCompare product-btn" href="{{ object.get_add_to_wishlist_url }}" title="Add to wishlist"><i class="icon flaticon-like"></i></a>
-                              
                           </div>
+                              
                       </div>
                       <div class="product-right-bottom">
                           <ul class="features">
@@ -368,189 +405,192 @@ crossorigin="anonymous"></script>
 
           <div class="tab-content" id="ProductTabContent">
 
-              <div class="tab-pane fade show active" id="Description" role="tabpanel" aria-labelledby="Description-tab">
-                  <div class="product-description">
-                      <p class="description-text">{{ object.description }}</p>
-                      <div class="feature-area mb-35">
-                          
-                      </div>
-                      <div class="feature-area">
-                          <h3 class="feature-title">Sample Ordered List</h3>
-                          <ol class="ordered-lsit mb-0">
-                              <li class="list-item">Comodous in tempor ullamcorper miaculis.</li>
-                              <li class="list-item">Pellentesque vitae neque mollis urna mattis laoreet.</li>
-                              <li class="list-item">Divamus sit amet purus justo.</li>
-                              <li class="list-item">Proin molestie egestas orci ac suscipit risus posuere loremous.</li>
-                          </ol>
-                      </div>
-                  </div>
-              </div>
+                <div class="tab-pane fade show active" id="Description" role="tabpanel" aria-labelledby="Description-tab">
+                    <div class="product-description">
+                        <p class="description-text">{{ object.description }}</p>
+                        <div class="feature-area mb-35">
+                            
+                        </div>
+                        <div class="feature-area">
+                            <h3 class="feature-title">Sample Ordered List</h3>
+                            <ol class="ordered-lsit mb-0">
+                                <li class="list-item">Comodous in tempor ullamcorper miaculis.</li>
+                                <li class="list-item">Pellentesque vitae neque mollis urna mattis laoreet.</li>
+                                <li class="list-item">Divamus sit amet purus justo.</li>
+                                <li class="list-item">Proin molestie egestas orci ac suscipit risus posuere loremous.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
 
-              {% comment %} <div class="tab-pane fade" id="Reviews" role="tabpanel" aria-labelledby="Reviews-tab">
-                  <div class="product-reviews">
-                      <div class="review-top">
-                          <div class="review-top-left">
-                              <h3 class="review-title">Customer Reviews </h3>
-                              <div class="review-start-point">
-                                  <ul class="review-list">
-                                      <li class="review-item active"><i class="flaticon-star"></i></li>
-                                      <li class="review-item active"><i class="flaticon-star"></i></li>
-                                      <li class="review-item active"><i class="flaticon-star"></i></li>
-                                      <li class="review-item active"><i class="flaticon-star"></i></li>
-                                      <li class="review-item"><i class="flaticon-star"></i></li>
-                                  </ul>
-                                  <span class="review-count">Based on ({{ reviews.count }}) Reviews </span>
-                              </div>
-                          </div>
-                          <div class="review-top-right">
-                              <button onclick="openCloseDiv()" class="write-review-btn shadow-none" id="review-button" style="outline:none; border-style:none;"><div>Write A Review</div></button>
-                          </div>
-                      </div>
+                <div class="tab-pane fade" id="Reviews" role="tabpanel" aria-labelledby="Reviews-tab">
+                    <div class="product-reviews">
+                        <div class="review-top">
+                            <div class="review-top-left">
+                                <h3 class="review-title">Customer Reviews </h3>
+                                <div class="review-start-point">
+                                    <ul class="review-list">
+                                        <li class="review-item active"><i class="flaticon-star"></i></li>
+                                        <li class="review-item active"><i class="flaticon-star"></i></li>
+                                        <li class="review-item active"><i class="flaticon-star"></i></li>
+                                        <li class="review-item active"><i class="flaticon-star"></i></li>
+                                        <li class="review-item"><i class="flaticon-star"></i></li>
+                                    </ul>
+                                    <span class="review-count">Based on ({{ reviews.count }}) Reviews </span>
+                                </div>
+                            </div>
+                            <div class="review-top-right">
+                                <button onclick="openCloseDiv()" class="write-review-btn shadow-none" id="review-button" style="outline:none; border-style:none;"><div>Write A Review</div></button>
+                            </div>
+                        </div>
                     
-                      <div class="reviews-list">
-                        <div id="review-div" class="single-review" style="display:none;">
-                            <div class="checkout">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-6">
-                                            <div class="checkout-form">
-                                                <form method="POST" id="review-form">
-                                                {% csrf_token %}
-                                                    <div class="row">
-                                                        <div class="col-lg-12">
-                                                            <h2 class="checkout-title">Write A Review</h2>
-                                                        </div>
-                                                        <div class="col-lg-12">
-                                                            <div class="form-group">
-                                                                <input type="text" class="form-control" id="reviewer" name="reviewer" placeholder="Your Name Here" required />
+                        <div class="reviews-list">
+                            <div id="review-div" class="single-review" style="display:none;">
+                                <div class="checkout">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6">
+                                                <div class="checkout-form">
+                                                    <form method="POST" id="review-form">
+                                                    {% csrf_token %}
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <h2 class="checkout-title">Write A Review</h2>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-lg-12">
-                                                            <div class="form-group">
-                                                                <textarea class="form-control" id="review_text" name="review_text" placeholder="write review here" required></textarea>
+                                                            <div class="col-lg-12">
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control" id="reviewer" name="reviewer" placeholder="Your Name Here" required />
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        
-                                                        <div class="col-lg-6">
-                                                            <div class="form-group">
-                                                                <input type="number" class="form-control" id="stars" name="stars" placeholder="Stars 1-5" required />
+                                                            <div class="col-lg-12">
+                                                                <div class="form-group">
+                                                                    <textarea class="form-control" id="review_text" name="review_text" placeholder="write review here" required></textarea>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-lg-6">
-                                                            <div class="review-top" style="border-bottom: none !important; ">
-                                                                <div class="review-top-right">
-                                                                    <button type="submit" class="write-review-btn shadow-none" id="review-button-submit" style="outline:none; border-style:none;"><div>Write A Review</div></button>
+                                                            
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group">
+                                                                    <input type="number" class="form-control" id="stars" name="stars" placeholder="Stars 1-5" required />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="review-top" style="border-bottom: none !important; ">
+                                                                    <div class="review-top-right">
+                                                                        <button type="submit" class="write-review-btn shadow-none" id="review-button-submit" style="outline:none; border-style:none;"><div>Write A Review</div></button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </form>
-                                                <script>
-                                                    $(document).on('submit','#review-form',function(e){
-                                                        e.preventDefault();
-                                                        $.ajax({
-                                                            type:'POST',
-                                                            url:'{{ object.get_absolute_url }}',
-                                                            data:
-                                                            {
-                                                                reviewer:$("#reviewer").val(),
-                                                                review_text:$("#review_text").val(),
-                                                                stars:$("#stars").val(),
-                                                                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
-                                                            },
-                                                            success:function(){
-                                                                  console.log('it works')
-                                                                  div = document.getElementById('review-div');
-                                                                  div.style.display = 'none'
-                                                                  // load review-tab
-                                                                  $('#review-tab').load(location.href+" #review-tab>*","")
-                                                                  alert('Saved');
-                                                                }
-                                                                  
-                                                                    
-                                                            })
-                                                        });
+                                                    </form>
+                                                    <script>
+                                                        $(document).on('submit','#review-form',function(e){
+                                                            e.preventDefault();
+                                                            $.ajax({
+                                                                type:'POST',
+                                                                url:'{{ object.get_absolute_url }}',
+                                                                data:
+                                                                {
+                                                                    reviewer:$("#reviewer").val(),
+                                                                    review_text:$("#review_text").val(),
+                                                                    stars:$("#stars").val(),
+                                                                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                                                                },
+                                                                success:function(){
+                                                                        console.log('it works')
+                                                                        div = document.getElementById('review-div');
+                                                                        div.style.display = 'none'
+                                                                        // load review-tab
+                                                                        $('#review-tab').load(location.href+" #review-tab>*","")
+                                                                        alert('Saved');
+                                                                    }
+                                                                        
+                                                                        
+                                                                })
+                                                            });
+                                                        
+                                                        
+                                                        
+                                                    </script>
                                                     
                                                     
-                                                    
-                                                </script>
-                                                
-                                                
-                                                <!-- Include the PayPal JavaScript SDK -->
-                                                    
-                                                    
-                                                    
+                                                    <!-- Include the PayPal JavaScript SDK -->
+                                                        
+                                                        
+                                                        
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="reviews" id="review-tab">
-                          {% for review in reviews %}
-                          <div class="single-review">
-                            <div class="reviewer">
-                                  <div class="reviewer-wrap">
-                                      <img class="reviewer-image" src="{% static 'assets/images/reviewer-v2-image-1.png' %} " alt="reviewer-image" />
-                                      <div class="reviewer-info">
-                                          <h4 class="reviewer-name">{{ review.reviewer }}</h4>
-                                          <h4 class="review-meta"><span class="time">{{ review.review_date }}</span> by <a class="author" href="javascript:void(0)">{{ review.user }}</a></h4>
-                                      </div>
-                                  </div>
-                                  <ul class="review-list">
-                                      {% for star in review.stars|times %}
-                                      <li class="review-item active"><i class="flaticon-star"></i></li>
-                                      {% endfor %}
-                                  </ul>
-                              </div>
-                              <p class="review-text">{{ review.review_text }}</p>
+                            <div id="reviews" id="review-tab">
+                                {% for review in reviews %}
+                                <div class="single-review">
+                                <div class="reviewer">
+                                        <div class="reviewer-wrap">
+                                            <img class="reviewer-image" src="{% static 'assets/images/reviewer-v2-image-1.png' %} " alt="reviewer-image" />
+                                            <div class="reviewer-info">
+                                                <h4 class="reviewer-name">{{ review.reviewer }}</h4>
+                                                <h4 class="review-meta"><span class="time">{{ review.review_date }}</span> by <a class="author" href="javascript:void(0)">{{ review.user }}</a></h4>
+                                            </div>
+                                        </div>
+                                        <ul class="review-list">
+                                            {% for star in review.stars|times %}
+                                            <li class="review-item active"><i class="flaticon-star"></i></li>
+                                            {% endfor %}
+                                            {% for star in review.stars|get_rest_of_stars|times %}
+                                            <li class="review-item"><i class="flaticon-star"></i></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <p class="review-text">{{ review.review_text }}</p>
+                                </div>
+                                {% endfor %}
                             </div>
-                          {% endfor %}
                         </div>
+                    </div>
+                </div>
 
-                  </div>
-              </div> {% endcomment %}
+                <div class="tab-pane fade" id="Shipping-Return" role="tabpanel" aria-labelledby="Shipping-Return-tab">
+                    <div class="shipping-return-area">
+                        <div class="single-return-policy">
+                            <h3 class="return-title">RETURNS POLICY</h3>
+                            <p class="return-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ut blandit risus. Donec mollis nec tellus et rutrum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut consequat quam a purus faucibus scelerisque. Mauris ac dui ante. Pellentesque congue porttitor tempus. Donec sodales dapibus urna sed dictum. Duis congue posuere libero, a aliquam est porta quis.</p>
+                            <p class="return-text">Donec ullamcorper magna enim, vitae fermentum turpis elementum quis. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
+                            <p class="return-text">Curabitur vel sem mi. Proin in lobortis ipsum. Aliquam rutrum tempor ex ac rutrum. Maecenas nunc nulla, placerat at eleifend in, viverra etos sem. Nam sagittis lacus metus, dignissim blandit magna euismod eget. Suspendisse a nisl lacus. Phasellus eget augue tincidunt, sollicitudin lectus sed, convallis desto. Pellentesque vitae dui lacinia, venenatis erat sit amet, fringilla felis. Nullam maximus nisi nec mi facilisis.</p>
+                        </div>
+                        <div class="single-return-policy">
+                            <h3 class="return-title">SHIPPING</h3>
+                            <p class="return-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ut blandit risus. Donec mollis nec tellus et rutrum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut consequat quam a purus faucibus scelerisque. Mauris ac dui ante. Pellentesque congue porttitor tempus. Donec sodales dapibus urna sed dictum. Duis congue posuere libero, a aliquam est porta quis.</p>
+                            <p class="return-text">Donec ullamcorper magna enim, vitae fermentum turpis elementum quis. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
+                            <p class="return-text">Curabitur vel sem mi. Proin in lobortis ipsum. Aliquam rutrum tempor ex ac rutrum. Maecenas nunc nulla, placerat at eleifend in, viverra etos sem. Nam sagittis lacus metus, dignissim blandit magna euismod eget. Suspendisse a nisl lacus. Phasellus eget augue tincidunt, sollicitudin lectus sed, convallis desto. Pellentesque vitae dui lacinia, venenatis erat sit amet, fringilla felis. Nullam maximus nisi nec mi facilisis.</p>
+                        </div>
+                    </div>
+                </div>
 
-              <div class="tab-pane fade" id="Shipping-Return" role="tabpanel" aria-labelledby="Shipping-Return-tab">
-                  <div class="shipping-return-area">
-                      <div class="single-return-policy">
-                          <h3 class="return-title">RETURNS POLICY</h3>
-                          <p class="return-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ut blandit risus. Donec mollis nec tellus et rutrum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut consequat quam a purus faucibus scelerisque. Mauris ac dui ante. Pellentesque congue porttitor tempus. Donec sodales dapibus urna sed dictum. Duis congue posuere libero, a aliquam est porta quis.</p>
-                          <p class="return-text">Donec ullamcorper magna enim, vitae fermentum turpis elementum quis. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-                          <p class="return-text">Curabitur vel sem mi. Proin in lobortis ipsum. Aliquam rutrum tempor ex ac rutrum. Maecenas nunc nulla, placerat at eleifend in, viverra etos sem. Nam sagittis lacus metus, dignissim blandit magna euismod eget. Suspendisse a nisl lacus. Phasellus eget augue tincidunt, sollicitudin lectus sed, convallis desto. Pellentesque vitae dui lacinia, venenatis erat sit amet, fringilla felis. Nullam maximus nisi nec mi facilisis.</p>
-                      </div>
-                      <div class="single-return-policy">
-                          <h3 class="return-title">SHIPPING</h3>
-                          <p class="return-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ut blandit risus. Donec mollis nec tellus et rutrum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut consequat quam a purus faucibus scelerisque. Mauris ac dui ante. Pellentesque congue porttitor tempus. Donec sodales dapibus urna sed dictum. Duis congue posuere libero, a aliquam est porta quis.</p>
-                          <p class="return-text">Donec ullamcorper magna enim, vitae fermentum turpis elementum quis. Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-                          <p class="return-text">Curabitur vel sem mi. Proin in lobortis ipsum. Aliquam rutrum tempor ex ac rutrum. Maecenas nunc nulla, placerat at eleifend in, viverra etos sem. Nam sagittis lacus metus, dignissim blandit magna euismod eget. Suspendisse a nisl lacus. Phasellus eget augue tincidunt, sollicitudin lectus sed, convallis desto. Pellentesque vitae dui lacinia, venenatis erat sit amet, fringilla felis. Nullam maximus nisi nec mi facilisis.</p>
-                      </div>
-                  </div>
-              </div>
-
-              <div class="tab-pane fade" id="Additional-Information" role="tabpanel" aria-labelledby="Additional-Information-tab">
-                  <div class="additional-information-area">
-                      <p class="additional-information-text">Quisque velit nisi, pretium ut lacinia in, elementum id enim. Pellentesque in ipsum id orci porta dapibus. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Curabitur aliquet quam id dui posuere blandit. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Donec sollicitudin molestie malesuada. Nulla quis lorem ut libero malesuada feugiat. Nulla quis lorem ut libero malesuada feugiat. Cras ultricies ligula sed magna dictum porta. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Sed porttitor lectus nibh. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Nulla quis lorem ut libero malesuada feugiat. </p>
-                      <ul class="additional-feature">
-                          <li class="single-feature">
-                              <h3 class="feature-title">Comodous:</h3>
-                              <p class="feature-text">Comodous in tempor ullamcorper miaculis</p>
-                          </li>
-                          <li class="single-feature">
-                              <h3 class="feature-title">Mattis laoreet:</h3>
-                              <p class="feature-text">Pellentesque vitae neque mollis urna mattis laoreet.</p>
-                          </li>
-                          <li class="single-feature">
-                              <h3 class="feature-title">Divamus de ametos:</h3>
-                              <p class="feature-text">Divamus sit amet purus justo</p>
-                          </li>
-                          <li class="single-feature">
-                              <h3 class="feature-title">Molestie:</h3>
-                              <p class="feature-text">Proin molestie egestas orci ac suscipit risus posuere loremous</p>
-                          </li>
-                      </ul>
-                  </div>
-              </div>
+                <div class="tab-pane fade" id="Additional-Information" role="tabpanel" aria-labelledby="Additional-Information-tab">
+                    <div class="additional-information-area">
+                        <p class="additional-information-text">Quisque velit nisi, pretium ut lacinia in, elementum id enim. Pellentesque in ipsum id orci porta dapibus. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Curabitur aliquet quam id dui posuere blandit. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Donec sollicitudin molestie malesuada. Nulla quis lorem ut libero malesuada feugiat. Nulla quis lorem ut libero malesuada feugiat. Cras ultricies ligula sed magna dictum porta. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Sed porttitor lectus nibh. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Nulla quis lorem ut libero malesuada feugiat. </p>
+                        <ul class="additional-feature">
+                            <li class="single-feature">
+                                <h3 class="feature-title">Comodous:</h3>
+                                <p class="feature-text">Comodous in tempor ullamcorper miaculis</p>
+                            </li>
+                            <li class="single-feature">
+                                <h3 class="feature-title">Mattis laoreet:</h3>
+                                <p class="feature-text">Pellentesque vitae neque mollis urna mattis laoreet.</p>
+                            </li>
+                            <li class="single-feature">
+                                <h3 class="feature-title">Divamus de ametos:</h3>
+                                <p class="feature-text">Divamus sit amet purus justo</p>
+                            </li>
+                            <li class="single-feature">
+                                <h3 class="feature-title">Molestie:</h3>
+                                <p class="feature-text">Proin molestie egestas orci ac suscipit risus posuere loremous</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
           </div>
       </div>

@@ -1,3 +1,4 @@
+from itertools import product
 from locale import currency
 from pipes import Template
 from typing import ItemsView
@@ -39,7 +40,16 @@ logger = logging.getLogger(__name__)
 
 
 def entry_not_found(request, exception):
-    return render(request, '404.html')
+    context = {}
+    if request.user.is_authenticated:
+        order_qs = Order.objects.filter(
+            user=request.user, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            products = order.items.filter(
+                ordered=False, user=request.user)
+            context['products'] = products
+    return render(request, '404.html', context)
 
 
 class HomeView(View):
@@ -64,8 +74,6 @@ class HomeView(View):
                 'best_selling': best_selling,
                 'on_sale': on_sale,
                 'host': host,
-                # 'products': order_items,
-                # 'order': order,
             }
             if self.request.user.is_authenticated:
                 order_qs = Order.objects.filter(
@@ -74,9 +82,7 @@ class HomeView(View):
                     order = order_qs[0]
                     products = order.items.filter(
                         ordered=False, user=self.request.user)
-                    order_items = OrderItem.objects.filter(
-                        ordered=False, user=self.request.user)
-                    context['products'] = order_items
+                    context['products'] = products
                     context['order'] = order
 
             return render(self.request, 'updated-home-page.html', context)
@@ -113,7 +119,7 @@ class CheckoutView(LoginRequiredMixin, View):
                         ordered=False, user=self.request.user)
                     order_items = OrderItem.objects.filter(
                         ordered=False, user=self.request.user)
-                    context['products'] = order_items
+                    context['products'] = products
             return render(self.request, "checkout_page.html", context)
         except ObjectDoesNotExist:
             messages.error(self.request, "You do not have an active order")
@@ -391,6 +397,7 @@ def webhook(request):
 # PAYPAL
 @login_required
 def payment_complete(request):
+    print('payment complete, block executed')
     PPClient = PayPalClient()
 
     body = json.loads(request.body)
@@ -572,38 +579,38 @@ def add_to_cart(request, slug):
         messages.info(request, "This item was added to your cart.")
         return redirect("core:checkout-page")
 
-#rewrite the above function to use AJAX
-# def add_to_cart_ajax(request, slug):
-#     item = get_object_or_404(Item, slug=slug)
-#     order_item, created = OrderItem.objects.get_or_create(
-#         item=item,
-#         user=request.user,
-#         ordered=False
-#     )
+# rewrite the above function to use AJAX
+def add_to_cart_ajax(request, slug):
+    item = get_object_or_404(Item, slug=slug)
+    order_item, created = OrderItem.objects.get_or_create(
+        item=item,
+        user=request.user,
+        ordered=False
+    )
 
-#     order_qs = Order.objects.filter(user=request.user, ordered=False)
-#     if order_qs.exists():
-#         order = order_qs[0]
-#         # check if the order item is in the order
-#         if order.items.filter(item__slug=item.slug).exists():
-#             order_item.quantity += 1
-#             order_item.save()
-#             messages.info(request, "This item quantity was updated.")
-#             return JsonResponse({"success": True, "message": "This item quantity was updated", "quantity": order_item.quantity, "total": order.get_total(), "operation": "increase_quantity"})
-#         else:
-#             order.items.add(order_item)
-#             messages.info(request, "This item was added to your cart.")
-#             return JsonResponse({"success": True, "message": "This item was added to your cart", "quantity": order_item.quantity, "total": order.get_total(), "operation": "create_new_item"})
-#     else:
-#         ordered_date = timezone.now()
-#         order = Order.objects.create(
-#             user=request.user,
-#             ordered_date=ordered_date,
-#             username=request.user,
-#         )
-#         order.items.add(order_item)
-#         messages.info(request, "This item was added to your cart.")
-#         return JsonResponse({"success": True, "message": "This item was added to your cart", "quantity": order_item.quantity, "total": order.get_total(), "operation": "create_order"})
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        # check if the order item is in the order
+        if order.items.filter(item__slug=item.slug).exists():
+            order_item.quantity += 1
+            order_item.save()
+            messages.info(request, "This item quantity was updated.")
+            return JsonResponse({"success": True, "message": "This item quantity was updated", "quantity": order_item.quantity, "total": order.get_total(), "operation": "increase_quantity"})
+        else:
+            order.items.add(order_item)
+            messages.info(request, "This item was added to your cart.")
+            return JsonResponse({"success": True, "message": "This item was added to your cart", "quantity": order_item.quantity, "total": order.get_total(), "operation": "create_new_item"})
+    else:
+        ordered_date = timezone.now()
+        order = Order.objects.create(
+            user=request.user,
+            ordered_date=ordered_date,
+            username=request.user,
+        )
+        order.items.add(order_item)
+        messages.info(request, "This item was added to your cart.")
+        return JsonResponse({"success": True, "message": "This item was added to your cart", "quantity": order_item.quantity, "total": order.get_total(), "operation": "create_order"})
 
 @login_required
 def payment_finished(request):
@@ -636,7 +643,7 @@ class WishListView(LoginRequiredMixin, ListView):
                         ordered=False, user=self.request.user)
                     order_items = OrderItem.objects.filter(
                         ordered=False, user=self.request.user)
-                    context['products'] = order_items
+                    context['products'] = products
                     context['order'] = order
             return render(self.request, "wish-list.html", context)
         else:
@@ -768,9 +775,7 @@ def ShopGrid(request):
             order = order_qs[0]
             products = order.items.filter(
                 ordered=False, user=request.user)
-            order_items = OrderItem.objects.filter(
-                ordered=False, user=request.user)
-            context['products'] = order_items
+            context['products'] = products
             context['order'] = order
 
     return render(request, 'shop-grid.html', context)
@@ -796,9 +801,7 @@ class WomensView(ListView):
                 order = order_qs[0]
                 products = order.items.filter(
                     ordered=False, user=self.request.user)
-                order_items = OrderItem.objects.filter(
-                    ordered=False, user=self.request.user)
-                context['products'] = order_items
+                context['products'] = products
                 context['order'] = order
         return render(self.request, 'womens.html', context)
 
@@ -821,9 +824,7 @@ class MensView(ListView):
                 order = order_qs[0]
                 products = order.items.filter(
                     ordered=False, user=self.request.user)
-                order_items = OrderItem.objects.filter(
-                    ordered=False, user=self.request.user)
-                context['products'] = order_items
+                context['products'] = products
                 context['order'] = order
         return render(self.request, 'mens.html', context)
 
@@ -840,7 +841,7 @@ class ContactView(View):
                     ordered=False, user=self.request.user)
                 order_items = OrderItem.objects.filter(
                     ordered=False, user=self.request.user)
-                context['products'] = order_items
+                context['products'] = products
                 context['order'] = order
         return render(self.request, 'contact.html', context)
 

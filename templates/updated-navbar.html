@@ -19,7 +19,7 @@
             <div class="header-right">
                 <ul class="btn-list">
                     <li class="single-item wishlist-area"><a class="single-btn wishlist-btn" href="{% url 'core:wishlist' %}"><i class="btn-icon flaticon-like"></i></a></li>
-                    <li class="single-item cart-area"><a class="single-btn cart-btn" data-bs-toggle="offcanvas" href="#cartOffcanvasSidebar" role="button" aria-controls="cartOffcanvasSidebar"><i class="btn-icon flaticon-shopping-bag"></i></a></li>
+                    <li class="single-item cart-area" id="cart-offcanvas"><a class="single-btn cart-btn" data-bs-toggle="offcanvas" href="#cartOffcanvasSidebar" aria-controls="cartOffcanvasSidebar"><i class="btn-icon flaticon-shopping-bag"></i></a></li>
                     {% if request.user.is_authenticated %}
                     <form method="post" action="{% url 'account_logout' %}" id="account-logout-form">
                         {% csrf_token %}

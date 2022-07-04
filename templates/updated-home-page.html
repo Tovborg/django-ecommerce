@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-{% if order %}
+{% load cart_template_tags %}
+
 <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvasSidebar" aria-labelledby="cartOffcanvasSidebarLabel">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="cartOffcanvasSidebarLabel">Shopping Cart</h5>
@@ -96,6 +97,7 @@
                     })
                 }
             </script>
+            {% if order %}
             <div id="cart-items">
                 {% for item in products %}
                 <div class="product-item cart-product-item">
@@ -133,6 +135,21 @@
                 </script>
                 {% endfor %}
             </div>
+            {% else %}
+            <div id="cart-items">
+                {% comment %} Create an aesthetically pleasing text saying your cart is empty {% endcomment %}
+                <div class="product-item cart-product-item">
+                    <div class="single-grid-product">
+                        
+                        <div class="product-info">
+                            <div class="product-name-part">
+                                <h3 class="product-name"><a class="product-link" href="single-product.html">Your cart is empty</a></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
             
             
             <!-- Product item end -->
@@ -141,28 +158,77 @@
             
             <!-- Product item end -->
         </div>
-
-        <div class="total-bottom-part">
-            <div class="total-count d-flex" id="total-bottom">
-                <h3>Total</h3>
-                <h4 id="cart-off-canvas-total">
-                    ${{ order.get_subtotal }}
-                </h4>
+        {% comment %} if the user doesnt have an order grey out the Proceed To Checkout button {% endcomment %}
+        <div id="total-bottom-body">
+            {% if products|isEmpty == False %}
+            <div class="total-bottom-part" id="total-bottom-part">
+                <div class="total-count d-flex" id="total-bottom">
+                    <h3>Total</h3>
+                    <h4 id="cart-off-canvas-total">
+                        ${{ order.get_subtotal }}
+                    </h4>
+                </div>
+                <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
+                    Proceed To Checkout
+                </a>
             </div>
-            <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
-                Proceed To Checkout
-            </a>
-        </div>
+            {% elif products|isEmpty %}
+            <div class="total-bottom-part" id="disabled-total-bottom-part">
+                <div class="total-count d-flex" id="total-bottom">
+                    <h3>Total</h3>
+                    <h4 id="cart-off-canvas-total">
+                        $0.00
+                    </h4>
+                </div>
+                {% comment %} make the procced to checkout button disabled {% endcomment %}
+                <a href="javascript:void(0)" id="disabled-checkout-proceed" class="proceed-to-btn d-block text-center" disabled>
+                    Proceed To Checkout
+                </a>
+                <style>
+                    #disabled-checkout-proceed {
+                        pointer-events: none;
+                        cursor: default;
+                        {% comment %} make the button look like its disabled {% endcomment %}
+                        background-color: #ccc;
+                        color: #fff;
 
+                    }
+                </style>
+            </div>
+            {% else %}
+            <div class="total-bottom-part" id="disabled-total-bottom-part">
+                <div class="total-count d-flex" id="total-bottom">
+                    <h3>Total</h3>
+                    <h4 id="cart-off-canvas-total">
+                        $0.00
+                    </h4>
+                </div>
+                {% comment %} make the procced to checkout button disabled {% endcomment %}
+                <a href="javascript:void(0)" id="disabled-checkout-proceed" class="proceed-to-btn d-block text-center" disabled>
+                    Proceed To Checkout
+                </a>
+                <style>
+                    #disabled-checkout-proceed {
+                        pointer-events: none;
+                        cursor: default;
+                        {% comment %} make the button look like its disabled {% endcomment %}
+                        background-color: #ccc;
+                        color: #fff;
+
+                    }
+                </style>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </div>
-{% endif %}
+
 <div id="preloader">
     <div id="status">
         <img src="{% static 'assets/images/preloader.svg' %}" alt="img" />
     </div>
 </div>
-
+<script src="{% static 'assets/js/home-page.js' %}"></script>
 
 
 
@@ -290,14 +356,7 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        <ul class="size-switch">
-                            <li class="single-size active">XL</li>
-                            <li class="single-size">LARGE</li>
-                            <li class="single-size">SMALL</li>
-                        </ul>
-                        <a href="{{ product.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
-                        
-
+                        <a href="javascript:void(0)" onclick="AjaxAddToCart(event, '{{ product.get_ajax_add_to_cart_url }}', '{{ product.slug }}'); console.log('Add-to-cart Clicked')" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
                     </div>
                 </div>
                 {% endfor %}
@@ -416,12 +475,7 @@
                                     {% endfor %}
                                 </div>
                             </div>
-                            <ul class="size-switch">
-                                <li class="single-size active">XL</li>
-                                <li class="single-size">LARGE</li>
-                                <li class="single-size">SMALL</li>
-                            </ul>
-                            <a href="{{ product.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
+                            <a href="javascript:void(0)" onclick="AjaxAddToCart(event, '{{ product.get_ajax_add_to_cart_url }}', '{{ product.slug }}'); console.log('Add-to-cart Clicked')" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
                         </div>
                     </div>
                     {% endfor %}
@@ -488,12 +542,7 @@
                                     {% endfor %}
                                 </div>
                             </div>
-                            <ul class="size-switch">
-                                <li class="single-size active">XL</li>
-                                <li class="single-size">LARGE</li>
-                                <li class="single-size">SMALL</li>
-                            </ul>
-                            <a href="{{ product.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
+                            <a href="javascript:void(0)" onclick="AjaxAddToCart(event, '{{ product.get_ajax_add_to_cart_url }}', '{{ product.slug }}'); console.log('Add-to-cart Clicked')" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
                             
                         </div>
                     </div>
@@ -567,13 +616,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <ul class="size-switch">
-                                <li class="single-size active">XL</li>
-                                <li class="single-size">LARGE</li>
-                                <li class="single-size">SMALL</li>
-                            </ul>
-                            <a href="{{ product.get_add_to_cart_url }}" title="Add to cart" id="add-to-cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
-                            
+                            <a href="javascript:void(0)" onclick="AjaxAddToCart(event, '{{ product.get_ajax_add_to_cart_url }}', '{{ product.slug }}'); console.log('Add-to-cart Clicked')" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
                         </div>
                     </div>
                 {% endfor %}
@@ -585,6 +628,7 @@
             <div class="tab-pane fade" id="FEATUREDITEMS" role="tabpanel" aria-labelledby="FEATUREDITEMS-tab">
                 <div class="recommend-product-slide">
                     {% for product in featured %}
+                    {% comment %} <h1>{{ product.get_average_rating }}</h1> {% endcomment %}
                     <div class="single-grid-product-v2">
                         <div class="product-top">
                             {% if product.home_page_image %}
@@ -645,13 +689,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <ul class="size-switch">
-                                <li class="single-size active">XL</li>
-                                <li class="single-size">LARGE</li>
-                                <li class="single-size">SMALL</li>
-                            </ul>
-                            <a href="{{ product.get_add_to_cart_url }}" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
-                            
+                            <a href="javascript:void(0)" onclick="AjaxAddToCart(event, '{{ product.get_ajax_add_to_cart_url }}', '{{ product.slug }}'); console.log('Add-to-cart Clicked')" title="Add to cart" class="add-cart">Add To Cart <i class="icon fas fa-plus-circle"></i></a>
                         </div>
                     </div>
                 {% endfor %}

@@ -29,6 +29,7 @@ urlpatterns = [
     path('create-payment-intent/', create_payment, name="create-payment-intent"),
     path('send-billing-form/', billing_address, name="send-billing-form"),
     path('ajax-add-to-cart/<slug>/', AjaxAddToCart, name="ajax-add-to-cart"),
+    path('ajax-add-cart-item/<slug>/', add_to_cart_ajax, name="ajax-add-cart-item"),
 ]
 
 handler404 = 'core.views.entry_not_found'

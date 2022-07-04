@@ -66,3 +66,20 @@ def get_items(user, index):
 @register.filter(name='times')
 def times(number):
     return range(number)
+
+@register.filter(name='isEmpty')
+def isEmpty(products):
+    if products:
+        if len(products) == 0:
+            return True
+        else:
+            return False
+    else:
+        return True
+
+@register.filter
+def get_rest_of_stars(stars):
+    return 5 - stars
+
+
+

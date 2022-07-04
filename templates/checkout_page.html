@@ -120,6 +120,7 @@
                     })
                 }
             </script>
+            {% if order %}
             <div id="cart-items">
                 {% for item in products %}
                 <div class="product-item cart-product-item">
@@ -157,6 +158,21 @@
                 </script>
                 {% endfor %}
             </div>
+            {% else %}
+            <div id="cart-items">
+                {% comment %} Create an aesthetically pleasing text saying your cart is empty {% endcomment %}
+                <div class="product-item cart-product-item">
+                    <div class="single-grid-product">
+                        
+                        <div class="product-info">
+                            <div class="product-name-part">
+                                <h3 class="product-name"><a class="product-link" href="single-product.html">Your cart is empty</a></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
             
             
             <!-- Product item end -->
@@ -165,19 +181,45 @@
             
             <!-- Product item end -->
         </div>
-
-        <div class="total-bottom-part">
-            <div class="total-count d-flex" id="total-bottom">
-                <h3>Total</h3>
-                <h4 id="cart-off-canvas-total">
-                    ${{ order.get_subtotal }}
-                </h4>
+        {% comment %} if the user doesnt have an order grey out the Proceed To Checkout button {% endcomment %}
+        <div id="total-bottom-body">
+            {% if order %}
+            <div class="total-bottom-part" id="total-bottom-part">
+                <div class="total-count d-flex" id="total-bottom">
+                    <h3>Total</h3>
+                    <h4 id="cart-off-canvas-total">
+                        ${{ order.get_subtotal }}
+                    </h4>
+                </div>
+                <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
+                    Proceed To Checkout
+                </a>
             </div>
-            <a href="{% url 'core:checkout-page' %}" class="proceed-to-btn d-block text-center">
-                Proceed To Checkout
-            </a>
-        </div>
+            {% else %}
+            <div class="total-bottom-part" id="disabled-total-bottom-part">
+                <div class="total-count d-flex" id="total-bottom">
+                    <h3>Total</h3>
+                    <h4 id="cart-off-canvas-total">
+                        $0.00
+                    </h4>
+                </div>
+                {% comment %} make the procced to checkout button disabled {% endcomment %}
+                <a href="javascript:void(0)" id="disabled-checkout-proceed" class="proceed-to-btn d-block text-center" disabled>
+                    Proceed To Checkout
+                </a>
+                <style>
+                    #disabled-checkout-proceed {
+                        pointer-events: none;
+                        cursor: default;
+                        {% comment %} make the button look like its disabled {% endcomment %}
+                        background-color: #ccc;
+                        color: #fff;
 
+                    }
+                </style>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </div>
 <!-- Cart Offcanvas Sidebar Menu area end here  -->
@@ -300,17 +342,6 @@
                             </style> {% endcomment %}
                             <script src="https://www.paypal.com/sdk/js?client-id=AQie0MKam6S2eIHkiYZTtoNxIJlNdVcD7pJN2aCp5wW-IRurKrBhsWDZ1Jmgnq_aNfyBCzg4FdS9uG5l"></script> 
                             <script>
-                                // Listen or changes to the radio fields
-
-                                
-
-                                {% comment %} docReady(function {
-                                    const paypal = document.getElementById('paypal-button-container');
-                                    const stripe = document.getElementById('card-button-container');
-                                    paypal.style.display = 'none';
-                                    stripe.style.display = 'block'
-                                }) {% endcomment %}
-
                                 document.querySelectorAll('input[name=payment_option]').forEach(function(el) {
                                     el.addEventListener('change', function(event) {
                         
@@ -332,9 +363,7 @@
 
                                 document.querySelector('#card-button-container').style.display = 'none';
                                 document.querySelector('#paypal-button-container').style.display = 'none';
-                                
-                        
-                                
+
                                 function getCookie(name) {
                                     var cookieValue = null;
                                     if (document.cookie && document.cookie !== '') {
@@ -350,56 +379,46 @@
                                     return cookieValue;
                                 }
                                 var csrftoken = getCookie('csrftoken');
+
+                                paypal.Buttons({
+
+                                    // Set up the transaction
+                                    createOrder: function(data, actions) {
+                                        return actions.order.create({
+                                            purchase_units: [{
+                                                amount: {
+                                                    value: '{{ order.get_total }}'
+                                                }
+                                            }]
+                                        });
+                                    },
                         
-                                // Render the PayPal button into #paypal-button-container
-                                function get_order_total() {
-                                    let get_total_id = document.getElementById('total').innerHTML.replaceAll('$', '');
-                                    let total_number = parseFloat(get_total_id);
-                                    return total_number;
-                                }
-                                console.log(get_order_total());
-
-                                function initPayPalButton() {
-                                    paypal.Buttons({
-
-                                        // Set up the transaction
-                                        createOrder: function(data, actions) {
-                                            return actions.order.create({
-                                                purchase_units: [{
-                                                    amount: {
-                                                        value: get_order_total()
-                                                    }
-                                                }]
-                                            });
-                                        },
-                            
-                                        // Finalize the transaction
-                                        onApprove: function(data) {
-                                            var url = "{% url 'core:payment-complete' %}"
-                                            return fetch(url, {
-                                                method: 'POST',
-                                                headers: {
-                                                    'content-type': 'application/json',
-                                                    'X-CSRFToken': csrftoken,
-                                                },
-                                                body: JSON.stringify({
-                                                    orderID: data.orderID
-                                                })
-                                            }).then(function () {
-                                                window.location.href = '{% url 'core:home-page' %}';
+                                    // Finalize the transaction
+                                    onApprove: function(data) {
+                                        var url = "{% url 'core:payment-complete' %}"
+                                        return fetch(url, {
+                                            method: 'POST',
+                                            headers: {
+                                                'content-type': 'application/json',
+                                                'X-CSRFToken': csrftoken,
+                                            },
+                                            body: JSON.stringify({
+                                                orderID: data.orderID
                                             })
-                                        },
-                            
-                            
-                                    }).render('#paypal-button-container');
-                                }
-                                initPayPalButton()
+                                        }).then(function () {
+                                            window.location.href = '{% url 'core:home-page' %}';
+                                        })
+                                    },
+                        
+                        
+                                }).render('#paypal-button-container');
+                                console.log('{{ order.get_total }}')
                             </script> 
                         </form>
                         <br>    
                         <link rel="stylesheet" href="{% static 'assets/css/checkout.css' %}" />
                         <script src="{% static 'assets/js/checkout.js' %}"></script>
-                        <div id="stripe-div">
+                        <div id="stripe-div" class="checkout-btn form-btn">
                             <form id="payment-form">
                                 <div id="payment-element">
                                 <!--Stripe.js injects the Payment Element-->

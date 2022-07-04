@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from math import floor
 from django.db import models
 from django.conf import settings
 from django.forms import IntegerField
@@ -107,6 +108,9 @@ class Item(models.Model):
     def __str__(self):
         return self.name
 
+    def get_ajax_add_to_cart_url(self):
+        return reverse("core:ajax-add-cart-item", kwargs={'slug': self.slug})
+
     def get_absolute_url(self):
         return reverse("core:product-page", kwargs={'slug': self.slug})
 
@@ -125,6 +129,20 @@ class Item(models.Model):
     def get_discount_percentage(self):
         return round((1 - (self.discount_price / self.price)) * 100)
 
+    def get_average_rating(self):
+        # get all reviews for this product
+        reviews = Reviews.objects.filter(item=self)
+        ratings = []
+        # get the average rating
+        if reviews.exists():
+            if reviews.count() > 0:
+                for review in reviews:
+                    ratings.append(review.stars)
+                return floor(sum(ratings) / len(ratings))
+            else:
+                return 0
+        else:
+            return 0
 
 class OrderItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -191,7 +209,7 @@ class Order(models.Model):
         total += total * 0.15
         if self.discount:
             total -= total * (self.discount / 100)
-        return total
+        return int(total)
         
 
 
@@ -205,17 +223,7 @@ class Order(models.Model):
             return total
 
     def get_tax(self):
-        return int(self.get_subtotal() * 0.15)
-        
-
-    
-        
-
-        
-
-        
-
-        
+        return int(self.get_subtotal() * 0.15)       
     #apply discount to the order
     def apply_discount(self):
         total = self.get_total()
