@@ -7,7 +7,7 @@ Django-ecommerce, is an ecommerce store made with the python framework Django. I
 2. An IDE
 ## Installation
 
-1. change directory into the folder you want the project to work in.
+1. change directory into the folder you want the project to work in and execute
 ```bash
 git init
 ```
